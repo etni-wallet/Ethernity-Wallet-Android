@@ -59,7 +59,7 @@ android {
         versionCode 186
         versionName "3.54.0"
 
-        applicationId "io.stormbird.wallet"
+        applicationId "io.krytech.wallet"
         minSdkVersion 23
         targetSdkVersion 32
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'

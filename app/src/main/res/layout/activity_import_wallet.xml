@@ -16,8 +16,8 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
-            style="@style/Aw.Component.TabLayout.Scrollable"
-            android:layout_width="wrap_content"
+            style="@style/Aw.Component.TabLayout.Fixed"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             app:tabGravity="center"

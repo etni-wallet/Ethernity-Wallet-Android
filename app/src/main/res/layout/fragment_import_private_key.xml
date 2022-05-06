@@ -19,8 +19,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/cozy_20"
             custom:imeOptions="actionDone"
-            custom:label="@string/enter_private_key"
-            custom:lines="2"
+            custom:hint="@string/enter_private_key"
+            custom:lines="5"
             custom:minHeightValue="90" />
 
         <TextView
@@ -29,6 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/standard_16"
+            android:visibility="gone"
             android:text="@string/suggestion_private_key" />
 
     </LinearLayout>
@@ -39,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/standard_16"
         android:orientation="vertical">
 
         <TextView
@@ -51,6 +53,7 @@
             android:autoLink="web"
             android:gravity="center_horizontal"
             android:linksClickable="true"
+            android:visibility="gone"
             android:text="@string/import_from_cloud"
             tools:text="@string/import_from_cloud" />
 
@@ -60,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/standard_16"
-            android:text="@string/title_import" />
+            android:text="@string/action_import" />
 
     </LinearLayout>
 

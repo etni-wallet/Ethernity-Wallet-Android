@@ -20,9 +20,20 @@
             android:visibility="visible"
             custom:imeOptions="actionDone"
             custom:inputType="textNoSuggestions"
-            custom:label="@string/enter_seed_phrase"
+            custom:hint="@string/enter_seed_phrase"
             custom:lines="6"
             custom:minHeightValue="170" />
+
+        <TextView
+            android:id="@+id/text_non_english_hint"
+            style="@style/Aw.Typography.Sub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/base_24"
+            android:layout_marginEnd="@dimen/base_24"
+            android:autoLink="web"
+            android:linksClickable="true"
+            android:text="@string/seed_phrase_conversion_message" />
 
     </LinearLayout>
 
@@ -32,6 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/standard_16"
         android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -42,25 +54,13 @@
             android:layout_marginBottom="@dimen/tiny_8"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/text_non_english_hint"
-            style="@style/Aw.Typography.Sub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/base_24"
-            android:layout_marginEnd="@dimen/base_24"
-            android:autoLink="web"
-            android:gravity="center_horizontal"
-            android:linksClickable="true"
-            android:text="@string/seed_phrase_conversion_message" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/import_action"
             style="@style/Aw.Component.Button.Primary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/standard_16"
-            android:text="@string/title_import" />
+            android:text="@string/action_import" />
     </LinearLayout>
 
     <LinearLayout

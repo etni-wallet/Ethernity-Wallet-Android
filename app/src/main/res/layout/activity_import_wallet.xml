@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/Aw.Component.Toolbar.BackArrow">
 
     <include layout="@layout/layout_simple_toolbar" />
 
@@ -16,9 +17,10 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabLayout"
             style="@style/Aw.Component.TabLayout.Scrollable"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
+            android:layout_gravity="center"
+            app:tabGravity="center"
             app:layout_scrollFlags="enterAlways" />
 
         <View style="@style/Aw.Component.Separator" />

@@ -96,7 +96,7 @@ public class ImportWalletActivity extends BaseActivity implements OnImportSeedLi
         pages.add(ImportType.SEED_FORM_INDEX.ordinal(), new Pair<>(getString(R.string.tab_seed), ImportSeedFragment.create()));
         pages.add(ImportType.KEYSTORE_FORM_INDEX.ordinal(), new Pair<>(getString(R.string.tab_keystore), ImportKeystoreFragment.create()));
         pages.add(ImportType.PRIVATE_KEY_FORM_INDEX.ordinal(), new Pair<>(getString(R.string.tab_private_key), ImportPrivateKeyFragment.create()));
-        pages.add(ImportType.WATCH_FORM_INDEX.ordinal(), new Pair<>(getString(R.string.watch_wallet), SetWatchWalletFragment.create()));
+//        pages.add(ImportType.WATCH_FORM_INDEX.ordinal(), new Pair<>(getString(R.string.watch_wallet), SetWatchWalletFragment.create()));
 
         ViewPager2 viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(new TabPagerAdapter(this, pages));
@@ -167,14 +167,7 @@ public class ImportWalletActivity extends BaseActivity implements OnImportSeedLi
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        switch (currentPage)
-        {
-            default:
-                break;
-            case WATCH_FORM_INDEX:
-                getMenuInflater().inflate(R.menu.menu_scan, menu);
-                break;
-        }
+        getMenuInflater().inflate(R.menu.menu_scan, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

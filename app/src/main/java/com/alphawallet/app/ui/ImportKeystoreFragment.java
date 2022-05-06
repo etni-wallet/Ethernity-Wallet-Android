@@ -29,7 +29,6 @@ public class ImportKeystoreFragment extends ImportFragment
     private PasswordInputView keystore;
     private PasswordInputView password;
     private Button importButton;
-    private TextView passwordText;//TODO delete this
     private TextView importText;
 
     @NonNull
@@ -57,7 +56,6 @@ public class ImportKeystoreFragment extends ImportFragment
     {
         keystore = getView().findViewById(R.id.input_keystore);
         password = getView().findViewById(R.id.input_password);
-        passwordText = getView().findViewById(R.id.text_password_notice);
         importText = getView().findViewById(R.id.import_text);
         importButton = getView().findViewById(R.id.import_action_ks);
         importButton.setOnClickListener(this);
@@ -93,7 +91,6 @@ public class ImportKeystoreFragment extends ImportFragment
         {
             keystore.setVisibility(View.GONE);
             password.setVisibility(View.VISIBLE);
-            passwordText.setVisibility(View.VISIBLE);
             password.requestFocus();
             updateButtonState(false);
         }
@@ -125,7 +122,6 @@ public class ImportKeystoreFragment extends ImportFragment
         {
             keystore.setVisibility(View.VISIBLE);
             password.setVisibility(View.GONE);
-            passwordText.setVisibility(View.GONE);
             keystore.requestFocus();
             updateButtonState(true);
             return true;
@@ -178,10 +174,6 @@ public class ImportKeystoreFragment extends ImportFragment
 
     public void reset()
     {
-        if (password != null)
-        {
-            passwordText.setVisibility(View.GONE);
-        }
         if (keystore != null)
         {
             keystore.setVisibility(View.VISIBLE);

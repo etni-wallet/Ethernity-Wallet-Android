@@ -14,21 +14,22 @@ import com.alphawallet.app.util.Helper;
 
 import org.junit.Test;
 
-public class DappBrowserTest extends BaseE2ETest
-{
-
-    @Test
-    public void should_switch_network()
-    {
-        String urlString = "https://opensea.io";
-
-        createNewWallet();
-        visit(urlString);
-        onView(isRoot()).perform(waitUntil(withText("Ethereum"), 60));
-        selectTestNet();
-        navigateToBrowser();
-        Helper.wait(3);
-        pressBack();
-        onView(isRoot()).perform(waitUntil(withText("Kovan"), 60));
-    }
-}
+//TODO ETH-6 Import Wallet exclude tests
+//public class DappBrowserTest extends BaseE2ETest
+//{
+//
+//    @Test
+//    public void should_switch_network()
+//    {
+//        String urlString = "https://opensea.io";
+//
+//        createNewWallet();
+//        visit(urlString);
+//        onView(isRoot()).perform(waitUntil(withText("Ethereum"), 60));
+//        selectTestNet();
+//        navigateToBrowser();
+//        Helper.wait(3);
+//        pressBack();
+//        onView(isRoot()).perform(waitUntil(withText("Kovan"), 60));
+//    }
+//}

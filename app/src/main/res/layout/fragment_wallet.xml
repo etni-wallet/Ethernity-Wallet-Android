@@ -17,7 +17,7 @@
             app:layout_scrollFlags="scroll|snap"
             app:titleEnabled="false">
 
-            <include layout="@layout/layout_simple_toolbar_with_avatar" />
+            <include layout="@layout/layout_simple_toolbar_with_action" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 

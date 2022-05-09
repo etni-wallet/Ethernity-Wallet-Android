@@ -240,6 +240,7 @@
     <string name="browser_label">Browser</string>
     <string name="settings_label">Settings</string>
     <string name="activity_label">Activity</string>
+    <string name="education_label">Education</string>
     <string name="toolbar_header_importing_tickets">Importing Tokens</string>
     <string name="ticket">Ticket</string>
     <string name="tickets">Tickets</string>

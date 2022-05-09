@@ -93,7 +93,7 @@
 
     <style name="Aw.Typography.Toolbar">
         <item name="android:fontFamily">@font/font_semibold</item>
-        <item name="android:textSize">@dimen/sp20</item>
+        <item name="android:textSize">@dimen/dp30</item>
         <item name="android:gravity">center</item>
         <item name="android:ellipsize">end</item>
         <item name="android:paddingStart">@dimen/standard_16</item>

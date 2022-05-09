@@ -102,7 +102,6 @@ public class WalletFragment extends BaseFragment implements
 
     private SystemView systemView;
     private TokensAdapter adapter;
-    private UserAvatar addressAvatar;
     private View selectedToken;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private String importFileName;
@@ -145,8 +144,6 @@ public class WalletFragment extends BaseFragment implements
         setImportToken();
 
         viewModel.prepare();
-
-        addressAvatar.setWaiting();
 
         getChildFragmentManager()
                 .setFragmentResultListener(SEARCH_FRAGMENT, this, (requestKey, bundle) ->
@@ -199,8 +196,6 @@ public class WalletFragment extends BaseFragment implements
         refreshLayout = view.findViewById(R.id.refresh_layout);
         systemView = view.findViewById(R.id.system_view);
         recyclerView = view.findViewById(R.id.list);
-        addressAvatar = view.findViewById(R.id.user_address_blockie);
-        addressAvatar.setVisibility(View.VISIBLE);
 
         systemView.showProgress(true);
 
@@ -219,21 +214,10 @@ public class WalletFragment extends BaseFragment implements
             adapter.setWalletAddress(wallet.address);
         }
 
-        addressAvatar.bind(wallet, this);
-        addressAvatar.setVisibility(View.VISIBLE);
-
-        addressAvatar.setOnClickListener(v ->
-        {
-            // open wallets activity
-            viewModel.showManageWallets(getContext(), false);
-        });
-
         //Do we display new user backup popup?
         Bundle result = new Bundle();
         result.putBoolean(C.SHOW_BACKUP, wallet.lastBackupTime > 0);
         getParentFragmentManager().setFragmentResult(C.SHOW_BACKUP, result); //reset tokens service and wallet page with updated filters
-
-        addressAvatar.setWaiting();
     }
 
     private void setRealmListener(final long updateTime)
@@ -296,7 +280,6 @@ public class WalletFragment extends BaseFragment implements
     @Override
     public void syncComplete(TokensService svs, int syncCount)
     {
-        if (syncCount > 0) handler.post(() -> addressAvatar.finishWaiting());
         if (viewModel.getTokensService().isMainNetActive())
         {
             svs.getFiatValuePair()
@@ -631,7 +614,6 @@ public class WalletFragment extends BaseFragment implements
                 //first abort the current operation
                 adapter.clear();
                 //show syncing
-                addressAvatar.setWaiting();
             });
         }
     }
@@ -842,10 +824,6 @@ public class WalletFragment extends BaseFragment implements
     @Override
     public boolean onMenuItemClick(MenuItem menuItem)
     {
-        if (menuItem.getItemId() == R.id.action_my_wallet)
-        {
-            viewModel.showMyAddress(getContext());
-        }
         if (menuItem.getItemId() == R.id.action_scan)
         {
             viewModel.showQRCodeScanning(getActivity());

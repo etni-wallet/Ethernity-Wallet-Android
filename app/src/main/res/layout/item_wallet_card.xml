@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="150dp"
+    android:layout_marginStart="@dimen/dp16"
+    android:layout_marginEnd="@dimen/dp16"
+    android:layout_marginTop="@dimen/dp16"
+    android:background="@drawable/ic_cards_texture">
+
+    <TextView
+        android:id="@+id/card_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp16"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Main Account" />
+
+    <TextView
+        android:id="@+id/card_balance_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp16"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp28"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/card_name_tv"
+        tools:text="$310.000" />
+
+    <TextView
+        android:id="@+id/card_address_tv"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/card_name_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@color/white"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_margin="@dimen/dp16"
+        tools:text="0xRdad274.."/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

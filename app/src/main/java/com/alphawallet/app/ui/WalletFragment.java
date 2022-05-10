@@ -44,6 +44,7 @@ import com.alphawallet.app.entity.ContractLocator;
 import com.alphawallet.app.entity.CustomViewSettings;
 import com.alphawallet.app.entity.ErrorEnvelope;
 import com.alphawallet.app.entity.ServiceSyncCallback;
+import com.alphawallet.app.entity.SyncCallback;
 import com.alphawallet.app.entity.TokenFilter;
 import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.WalletPage;
@@ -51,12 +52,15 @@ import com.alphawallet.app.entity.WalletType;
 import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.entity.tokens.TokenCardMeta;
 import com.alphawallet.app.interact.GenericWalletInteract;
+import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.repository.entity.RealmToken;
 import com.alphawallet.app.service.TickerService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
 import com.alphawallet.app.ui.widget.adapter.TokensAdapter;
+import com.alphawallet.app.ui.widget.adapter.WalletCardAdapter;
+import com.alphawallet.app.ui.widget.divider.DotsIndicatorDecoration;
 import com.alphawallet.app.ui.widget.entity.AvatarWriteCallback;
 import com.alphawallet.app.ui.widget.entity.WarningData;
 import com.alphawallet.app.ui.widget.holder.TokenGridHolder;
@@ -64,16 +68,17 @@ import com.alphawallet.app.ui.widget.holder.TokenHolder;
 import com.alphawallet.app.ui.widget.holder.WarningHolder;
 import com.alphawallet.app.util.LocaleUtils;
 import com.alphawallet.app.viewmodel.WalletViewModel;
+import com.alphawallet.app.viewmodel.WalletsViewModel;
 import com.alphawallet.app.widget.LargeTitleView;
 import com.alphawallet.app.widget.NotificationView;
 import com.alphawallet.app.widget.ProgressView;
 import com.alphawallet.app.widget.SystemView;
-import com.alphawallet.app.widget.UserAvatar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -92,20 +97,26 @@ public class WalletFragment extends BaseFragment implements
         Runnable,
         BackupTokenCallback,
         AvatarWriteCallback,
-        ServiceSyncCallback
+        ServiceSyncCallback,
+        SyncCallback
 {
     private static final String TAG = "WFRAG";
 
     public static final String SEARCH_FRAGMENT = "w_search";
 
+    private final long balanceChain = EthereumNetworkRepository.getOverrideToken().chainId;
+
     private WalletViewModel viewModel;
+    private WalletsViewModel walletsViewModel;
 
     private SystemView systemView;
     private TokensAdapter adapter;
+    private WalletCardAdapter cardsAdapter;
     private View selectedToken;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private String importFileName;
     private RecyclerView recyclerView;
+    private RecyclerView cardsRecyclerView;
     private SwipeRefreshLayout refreshLayout;
     private boolean isVisible;
     private TokenFilter currentTabPos = TokenFilter.ALL;
@@ -144,6 +155,7 @@ public class WalletFragment extends BaseFragment implements
         setImportToken();
 
         viewModel.prepare();
+        walletsViewModel.onPrepare(balanceChain, this);
 
         getChildFragmentManager()
                 .setFragmentResultListener(SEARCH_FRAGMENT, this, (requestKey, bundle) ->
@@ -177,10 +189,23 @@ public class WalletFragment extends BaseFragment implements
         refreshLayout.setOnRefreshListener(this::refreshList);
         recyclerView.addRecyclerListener(holder -> adapter.onRViewRecycled(holder));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        cardsAdapter = new WalletCardAdapter();
+        cardsRecyclerView.setAdapter(cardsAdapter);
+        cardsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false));
+
+        final int radius = getResources().getDimensionPixelSize(R.dimen.dp5);
+        final int dotsHeight = getResources().getDimensionPixelSize(R.dimen.dp5);
+        final int color = ContextCompat.getColor(requireContext(), R.color.text_primary);
+        cardsRecyclerView.addItemDecoration(new DotsIndicatorDecoration(radius, radius * 4, dotsHeight, color, color));
     }
 
     private void initViewModel()
     {
+        walletsViewModel = new ViewModelProvider(this)
+                .get(WalletsViewModel.class);
+        walletsViewModel.wallets().observe(getViewLifecycleOwner(), this::onFetchWallets);
+
         viewModel = new ViewModelProvider(this)
                 .get(WalletViewModel.class);
         viewModel.progress().observe(getViewLifecycleOwner(), systemView::showProgress);
@@ -191,11 +216,20 @@ public class WalletFragment extends BaseFragment implements
         viewModel.getTokensService().startWalletSync(this);
     }
 
+    private void onFetchWallets(Wallet[] wallets) {
+        List<Wallet> more = Arrays.asList(wallets);
+        more.add(wallets[0]);
+        more.add(wallets[0]);
+        more.add(wallets[0]);
+        cardsAdapter.setWallets(more);
+    }
+
     private void initViews(@NonNull View view)
     {
         refreshLayout = view.findViewById(R.id.refresh_layout);
         systemView = view.findViewById(R.id.system_view);
         recyclerView = view.findViewById(R.id.list);
+        cardsRecyclerView = view.findViewById(R.id.cards_rv);
 
         systemView.showProgress(true);
 
@@ -705,6 +739,21 @@ public class WalletFragment extends BaseFragment implements
     {
         //write to database
         viewModel.saveAvatar(wallet);
+    }
+
+    @Override
+    public void syncUpdate(String wallet, Pair<Double, Double> value) {
+
+    }
+
+    @Override
+    public void syncCompleted(String wallet, Pair<Double, Double> value) {
+
+    }
+
+    @Override
+    public void syncStarted(String wallet, Pair<Double, Double> value) {
+
     }
 
     public class SwipeCallback extends ItemTouchHelper.SimpleCallback

@@ -21,6 +21,11 @@
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cards_rv"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
         <com.alphawallet.app.widget.LargeTitleView
             android:id="@+id/large_title_view"
             android:layout_width="match_parent"

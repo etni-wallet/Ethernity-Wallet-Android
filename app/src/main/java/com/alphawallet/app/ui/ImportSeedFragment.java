@@ -84,7 +84,7 @@ public class ImportSeedFragment extends ImportFragment implements OnSuggestionCl
         seedPhrase.getEditText().addTextChangedListener(this);
         updateButtonState(false);
         pattern = Pattern.compile(validator, Pattern.MULTILINE);
-        wordCount.setVisibility(View.VISIBLE);
+        wordCount.setVisibility(View.GONE);
 
         seedPhrase.setLayoutListener(getActivity(), this);
 
@@ -105,7 +105,7 @@ public class ImportSeedFragment extends ImportFragment implements OnSuggestionCl
         }
         else
         {
-            nonEnglishHint.setVisibility(View.GONE);
+            nonEnglishHint.setVisibility(View.VISIBLE);
         }
     }
 
@@ -186,14 +186,14 @@ public class ImportSeedFragment extends ImportFragment implements OnSuggestionCl
         }
         else
         {
-            wordCount.setVisibility(View.VISIBLE);
+            wordCount.setVisibility(View.GONE);
         }
 
         wordCount.setText(passwordPhraseCounter.getText());
 
         if (!passwordPhraseCounter.match() && importButton != null && importButton.getVisibility() == View.VISIBLE)
         {
-            importButton.setVisibility(View.GONE);
+            importButton.setVisibility(View.VISIBLE);
             setHintState(false);
         }
 
@@ -228,7 +228,7 @@ public class ImportSeedFragment extends ImportFragment implements OnSuggestionCl
                 else if (!(suggestionsAdapter.getSingleSuggestion().equals(lastWord) && passwordPhraseCounter.match()) && listSuggestions.getVisibility() == View.GONE)
                 {
                     listSuggestions.setVisibility(View.VISIBLE);
-                    importButton.setVisibility(View.GONE);
+                    importButton.setVisibility(View.VISIBLE);
                 }
             }
             else
@@ -268,7 +268,7 @@ public class ImportSeedFragment extends ImportFragment implements OnSuggestionCl
     {
         if (listSuggestions.getVisibility() == View.GONE && passwordPhraseCounter != null && !passwordPhraseCounter.match())
         {
-            if (importButton != null) importButton.setVisibility(View.GONE);
+            if (importButton != null) importButton.setVisibility(View.VISIBLE);
             setHintState(false);
         }
     }

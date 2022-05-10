@@ -47,7 +47,7 @@
     <!-- ?colorSurfaceQuinary -->
     <color name="surface_quinary">@color/mercury</color>
     <!-- ?colorOnSurface -->
-    <color name="surface_inverse">@color/black</color>
+    <color name="surface_inverse">@color/accent_orange</color>
     <!-- ?colorSurfaceDark -->
     <color name="surface_dark">@color/mine</color>
     <!-- ?colorBackgroundFloating -->

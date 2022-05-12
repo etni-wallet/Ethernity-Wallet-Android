@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="150dp"
+    android:layout_height="match_parent"
     android:layout_marginStart="@dimen/dp16"
-    android:layout_marginEnd="@dimen/dp16"
     android:layout_marginTop="@dimen/dp16"
-    android:background="@drawable/ic_cards_texture">
+    android:layout_marginEnd="@dimen/dp16"
+    android:background="@drawable/ic_card_texture"
+    android:minHeight="150dp">
 
     <TextView
         android:id="@+id/card_name_tv"
@@ -30,21 +30,55 @@
         android:textSize="@dimen/sp28"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/card_name_tv"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="$310.000" />
 
     <TextView
         android:id="@+id/card_address_tv"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/card_name_tv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:textColor="@color/white"
+        android:layout_marginStart="@dimen/dp16"
+        android:layout_marginBottom="@dimen/dp16"
+        android:background="@drawable/background_card_address"
         android:ellipsize="end"
         android:maxLines="1"
-        android:layout_margin="@dimen/dp16"
-        tools:text="0xRdad274.."/>
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/card_action_send_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_name_tv"
+        tools:text="0xRdad274.." />
+
+    <TextView
+        android:id="@+id/card_action_send_tv"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/background_card_action"
+        android:drawableEnd="@drawable/ic_action_send"
+        android:padding="8dp"
+        android:text="@string/action_send"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/card_action_receive_tv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_address_tv" />
+
+    <TextView
+        android:id="@+id/card_action_receive_tv"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/background_card_action"
+        android:drawableEnd="@drawable/ic_action_receive"
+        android:padding="8dp"
+        android:text="@string/action_receive"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintBaseline_toBaselineOf="@id/card_action_send_tv"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/card_action_send_tv"
+        app:layout_constraintTop_toBottomOf="@id/card_address_tv" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

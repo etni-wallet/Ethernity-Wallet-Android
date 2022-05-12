@@ -32,9 +32,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+import androidx.recyclerview.widget.SnapHelper;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.alphawallet.app.C;
 import com.alphawallet.app.R;
@@ -55,7 +58,6 @@ import com.alphawallet.app.interact.GenericWalletInteract;
 import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.repository.entity.RealmToken;
-import com.alphawallet.app.service.TickerService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
 import com.alphawallet.app.ui.widget.adapter.TokensAdapter;
@@ -69,7 +71,6 @@ import com.alphawallet.app.ui.widget.holder.WarningHolder;
 import com.alphawallet.app.util.LocaleUtils;
 import com.alphawallet.app.viewmodel.WalletViewModel;
 import com.alphawallet.app.viewmodel.WalletsViewModel;
-import com.alphawallet.app.widget.LargeTitleView;
 import com.alphawallet.app.widget.NotificationView;
 import com.alphawallet.app.widget.ProgressView;
 import com.alphawallet.app.widget.SystemView;
@@ -116,13 +117,12 @@ public class WalletFragment extends BaseFragment implements
     private final Handler handler = new Handler(Looper.getMainLooper());
     private String importFileName;
     private RecyclerView recyclerView;
-    private RecyclerView cardsRecyclerView;
+    private ViewPager2 cardsRecyclerView;
     private SwipeRefreshLayout refreshLayout;
     private boolean isVisible;
     private TokenFilter currentTabPos = TokenFilter.ALL;
     private Realm realm = null;
     private RealmResults<RealmToken> realmUpdates;
-    private LargeTitleView largeTitleView;
     private long realmUpdateTime;
 
     @Nullable
@@ -192,12 +192,14 @@ public class WalletFragment extends BaseFragment implements
 
         cardsAdapter = new WalletCardAdapter();
         cardsRecyclerView.setAdapter(cardsAdapter);
-        cardsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL, false));
 
-        final int radius = getResources().getDimensionPixelSize(R.dimen.dp5);
-        final int dotsHeight = getResources().getDimensionPixelSize(R.dimen.dp5);
-        final int color = ContextCompat.getColor(requireContext(), R.color.text_primary);
-        cardsRecyclerView.addItemDecoration(new DotsIndicatorDecoration(radius, radius * 4, dotsHeight, color, color));
+        final int radius = getResources().getDimensionPixelSize(R.dimen.sp02);
+        final int padding = getResources().getDimensionPixelSize(R.dimen.dp8);
+        final int dotsHeight = getResources().getDimensionPixelSize(R.dimen.sp02);
+        final int color = ContextCompat.getColor(requireContext(), R.color.text_secondary);
+        cardsRecyclerView.addItemDecoration(new DotsIndicatorDecoration(radius, padding, dotsHeight, color, color));
+        SnapHelper helper = new PagerSnapHelper();
+        helper.attachToRecyclerView(recyclerView);
     }
 
     private void initViewModel()
@@ -217,10 +219,7 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private void onFetchWallets(Wallet[] wallets) {
-        List<Wallet> more = Arrays.asList(wallets);
-        more.add(wallets[0]);
-        more.add(wallets[0]);
-        more.add(wallets[0]);
+        List<Wallet> more = Arrays.asList(wallets[0], wallets[0]);
         cardsAdapter.setWallets(more);
     }
 
@@ -229,14 +228,12 @@ public class WalletFragment extends BaseFragment implements
         refreshLayout = view.findViewById(R.id.refresh_layout);
         systemView = view.findViewById(R.id.system_view);
         recyclerView = view.findViewById(R.id.list);
-        cardsRecyclerView = view.findViewById(R.id.cards_rv);
+        cardsRecyclerView = view.findViewById(R.id.wallet_cards);
 
         systemView.showProgress(true);
 
         systemView.attachRecyclerView(recyclerView);
         systemView.attachSwipeRefreshLayout(refreshLayout);
-
-        largeTitleView = view.findViewById(R.id.large_title_view);
 
         ((ProgressView) view.findViewById(R.id.progress_view)).hide();
     }
@@ -341,11 +338,6 @@ public class WalletFragment extends BaseFragment implements
         {
             // to avoid NaN
             double changePercent = fiatValues.first != 0 ? ((fiatValues.first - fiatValues.second) / fiatValues.second) * 100.0 : 0.0;
-            largeTitleView.subtitle.setText(getString(R.string.wallet_total_change, TickerService.getCurrencyString(fiatValues.first - fiatValues.second),
-                    TickerService.getPercentageConversion(changePercent)));
-            largeTitleView.title.setText(TickerService.getCurrencyString(fiatValues.first));
-            int color = ContextCompat.getColor(requireContext(), changePercent < 0 ? R.color.negative : R.color.positive);
-            largeTitleView.subtitle.setTextColor(color);
 
             if (viewModel.getWallet() != null && viewModel.getWallet().type != WalletType.WATCH && isVisible)
             {
@@ -515,10 +507,6 @@ public class WalletFragment extends BaseFragment implements
         if (viewModel == null)
         {
             ((HomeActivity) getActivity()).resetFragment(WalletPage.WALLET);
-        }
-        else if (largeTitleView != null)
-        {
-            largeTitleView.setVisibility(viewModel.getTokensService().isMainNetActive() ? View.VISIBLE : View.GONE); //show or hide Fiat summary
         }
     }
 
@@ -882,7 +870,7 @@ public class WalletFragment extends BaseFragment implements
 
     private void initNotificationView(View view)
     {
-        NotificationView notificationView = view.findViewById(R.id.notification);
+        NotificationView notificationView = view.findViewById(R.id.wallet_notification);
         boolean hasShownWarning = viewModel.isMarshMallowWarningShown();
 
         if (!hasShownWarning && android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)

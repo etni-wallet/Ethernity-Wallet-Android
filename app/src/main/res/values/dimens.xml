@@ -1,4 +1,17 @@
 <resources>
+    <!-- Small Dimens -->
+    <dimen name="sp01">1sp</dimen>
+    <dimen name="sp02">2sp</dimen>
+    <dimen name="sp03">3sp</dimen>
+    <dimen name="sp04">4sp</dimen>
+    <dimen name="sp05">5sp</dimen>
+    <dimen name="sp06">6sp</dimen>
+    <dimen name="sp07">7sp</dimen>
+    <dimen name="sp08">8sp</dimen>
+    <dimen name="sp09">9sp</dimen>
+    <dimen name="sp10">10sp</dimen>
+    <dimen name="sp11">11sp</dimen>
+
     <!-- Text Dimens -->
     <dimen name="sp12">10sp</dimen>
     <dimen name="sp13">11sp</dimen>

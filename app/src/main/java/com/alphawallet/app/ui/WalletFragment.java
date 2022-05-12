@@ -6,6 +6,7 @@ import static com.alphawallet.app.C.ErrorCode.EMPTY_COLLECTION;
 import static com.alphawallet.app.C.Key.WALLET;
 import static com.alphawallet.app.repository.TokensRealmSource.ADDRESS_FORMAT;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -99,8 +101,7 @@ public class WalletFragment extends BaseFragment implements
         BackupTokenCallback,
         AvatarWriteCallback,
         ServiceSyncCallback,
-        SyncCallback
-{
+        SyncCallback {
     private static final String TAG = "WFRAG";
 
     public static final String SEARCH_FRAGMENT = "w_search";
@@ -127,18 +128,14 @@ public class WalletFragment extends BaseFragment implements
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
         LocaleUtils.setActiveLocale(getContext()); // Can't be placed before above line
 
-        if (CustomViewSettings.canAddTokens())
-        {
+        if (CustomViewSettings.canAddTokens()) {
             toolbar(view, R.menu.menu_wallet, this::onMenuItemClick);
-        }
-        else
-        {
+        } else {
             toolbar(view);
         }
 
@@ -161,8 +158,7 @@ public class WalletFragment extends BaseFragment implements
                 .setFragmentResultListener(SEARCH_FRAGMENT, this, (requestKey, bundle) ->
                 {
                     Fragment fragment = getChildFragmentManager().findFragmentByTag(SEARCH_FRAGMENT);
-                    if (fragment != null && fragment.isVisible() && !fragment.isDetached())
-                    {
+                    if (fragment != null && fragment.isVisible() && !fragment.isDetached()) {
                         fragment.onDetach();
                         getChildFragmentManager().beginTransaction()
                                 .remove(fragment)
@@ -173,8 +169,7 @@ public class WalletFragment extends BaseFragment implements
         return view;
     }
 
-    private void initList()
-    {
+    private void initList() {
         adapter = new TokensAdapter(this, viewModel.getAssetDefinitionService(), viewModel.getTokensService(),
                 tokenManagementLauncher);
         adapter.setHasStableIds(true);
@@ -196,14 +191,14 @@ public class WalletFragment extends BaseFragment implements
         final int radius = getResources().getDimensionPixelSize(R.dimen.sp02);
         final int padding = getResources().getDimensionPixelSize(R.dimen.dp8);
         final int dotsHeight = getResources().getDimensionPixelSize(R.dimen.sp02);
-        final int color = ContextCompat.getColor(requireContext(), R.color.text_secondary);
-        cardsRecyclerView.addItemDecoration(new DotsIndicatorDecoration(radius, padding, dotsHeight, color, color));
+        final int activeColor = ContextCompat.getColor(requireContext(), R.color.surface_inverse);
+        final int inactiveColor = ContextCompat.getColor(requireContext(), R.color.text_secondary);
+        cardsRecyclerView.addItemDecoration(new DotsIndicatorDecoration(radius, padding, dotsHeight, inactiveColor, activeColor));
         SnapHelper helper = new PagerSnapHelper();
         helper.attachToRecyclerView(recyclerView);
     }
 
-    private void initViewModel()
-    {
+    private void initViewModel() {
         walletsViewModel = new ViewModelProvider(this)
                 .get(WalletsViewModel.class);
         walletsViewModel.wallets().observe(getViewLifecycleOwner(), this::onFetchWallets);
@@ -223,8 +218,7 @@ public class WalletFragment extends BaseFragment implements
         cardsAdapter.setWallets(more);
     }
 
-    private void initViews(@NonNull View view)
-    {
+    private void initViews(@NonNull View view) {
         refreshLayout = view.findViewById(R.id.refresh_layout);
         systemView = view.findViewById(R.id.system_view);
         recyclerView = view.findViewById(R.id.list);
@@ -238,10 +232,8 @@ public class WalletFragment extends BaseFragment implements
         ((ProgressView) view.findViewById(R.id.progress_view)).hide();
     }
 
-    private void onDefaultWallet(Wallet wallet)
-    {
-        if (CustomViewSettings.showManageTokens())
-        {
+    private void onDefaultWallet(Wallet wallet) {
+        if (CustomViewSettings.showManageTokens()) {
             adapter.setWalletAddress(wallet.address);
         }
 
@@ -251,11 +243,9 @@ public class WalletFragment extends BaseFragment implements
         getParentFragmentManager().setFragmentResult(C.SHOW_BACKUP, result); //reset tokens service and wallet page with updated filters
     }
 
-    private void setRealmListener(final long updateTime)
-    {
+    private void setRealmListener(final long updateTime) {
         if (realm == null || realm.isClosed()) realm = viewModel.getRealmInstance();
-        if (realmUpdates != null)
-        {
+        if (realmUpdates != null) {
             realmUpdates.removeAllChangeListeners();
             realm.removeAllChangeListeners();
         }
@@ -269,8 +259,7 @@ public class WalletFragment extends BaseFragment implements
             long lastUpdateTime = updateTime;
             List<TokenCardMeta> metas = new ArrayList<>();
             //make list
-            for (RealmToken t : realmTokens)
-            {
+            for (RealmToken t : realmTokens) {
                 if (t.getUpdateTime() > lastUpdateTime) lastUpdateTime = t.getUpdateTime();
                 if (!viewModel.getTokensService().getNetworkFilters().contains(t.getChainId()))
                     continue;
@@ -286,8 +275,7 @@ public class WalletFragment extends BaseFragment implements
                 metas.add(meta);
             }
 
-            if (metas.size() > 0)
-            {
+            if (metas.size() > 0) {
                 realmUpdateTime = lastUpdateTime;
                 updateMetas(metas);
                 handler.postDelayed(() -> setRealmListener(realmUpdateTime), 500);
@@ -295,12 +283,10 @@ public class WalletFragment extends BaseFragment implements
         });
     }
 
-    private void updateMetas(List<TokenCardMeta> metas)
-    {
+    private void updateMetas(List<TokenCardMeta> metas) {
         handler.post(() ->
         {
-            if (metas.size() > 0)
-            {
+            if (metas.size() > 0) {
                 adapter.setTokens(metas.toArray(new TokenCardMeta[0]));
                 systemView.hide();
             }
@@ -309,10 +295,8 @@ public class WalletFragment extends BaseFragment implements
 
     //Refresh value of wallet once sync is complete
     @Override
-    public void syncComplete(TokensService svs, int syncCount)
-    {
-        if (viewModel.getTokensService().isMainNetActive())
-        {
+    public void syncComplete(TokensService svs, int syncCount) {
+        if (viewModel.getTokensService().isMainNetActive()) {
             svs.getFiatValuePair()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -320,8 +304,7 @@ public class WalletFragment extends BaseFragment implements
                     .isDisposed();
         }
 
-        if (syncCount > 0)
-        {
+        if (syncCount > 0) {
             //now refresh the tokens to pick up any new ticker updates
             viewModel.getTokensService().getTickerUpdateList()
                     .subscribeOn(Schedulers.io())
@@ -332,26 +315,20 @@ public class WalletFragment extends BaseFragment implements
     }
 
     //Could the view have been destroyed?
-    private void updateValue(Pair<Double, Double> fiatValues)
-    {
-        try
-        {
+    private void updateValue(Pair<Double, Double> fiatValues) {
+        try {
             // to avoid NaN
             double changePercent = fiatValues.first != 0 ? ((fiatValues.first - fiatValues.second) / fiatValues.second) * 100.0 : 0.0;
 
-            if (viewModel.getWallet() != null && viewModel.getWallet().type != WalletType.WATCH && isVisible)
-            {
+            if (viewModel.getWallet() != null && viewModel.getWallet().type != WalletType.WATCH && isVisible) {
                 viewModel.checkBackup(fiatValues.first);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             // empty: expected if view has terminated before we can shut down the service return
         }
     }
 
-    private void refreshList()
-    {
+    private void refreshList() {
         handler.post(() ->
         {
             adapter.clear();
@@ -361,20 +338,16 @@ public class WalletFragment extends BaseFragment implements
     }
 
     @Override
-    public void comeIntoFocus()
-    {
+    public void comeIntoFocus() {
         isVisible = true;
-        if (viewModel.getWallet() != null && !TextUtils.isEmpty(viewModel.getWallet().address))
-        {
+        if (viewModel.getWallet() != null && !TextUtils.isEmpty(viewModel.getWallet().address)) {
             setRealmListener(realmUpdateTime);
         }
     }
 
     @Override
-    public void leaveFocus()
-    {
-        if (realmUpdates != null)
-        {
+    public void leaveFocus() {
+        if (realmUpdates != null) {
             realmUpdates.removeAllChangeListeners();
             realmUpdates = null;
         }
@@ -383,35 +356,38 @@ public class WalletFragment extends BaseFragment implements
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
     }
 
-    private void initTabLayout(View view)
-    {
+    private void initTabLayout(View view) {
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
-        if (CustomViewSettings.hideTabBar())
-        {
+        if (CustomViewSettings.hideTabBar()) {
             tabLayout.setVisibility(View.GONE);
             return;
         }
         tabLayout.addTab(tabLayout.newTab().setText(R.string.all));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.assets));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.collectibles));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.defi_header));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.governance_header));
+//        tabLayout.addTab(tabLayout.newTab().setText(R.string.collectibles));
+//        tabLayout.addTab(tabLayout.newTab().setText(R.string.defi_header));
+//        tabLayout.addTab(tabLayout.newTab().setText(R.string.governance_header));
         //tabLayout.addTab(tabLayout.newTab().setText(R.string.attestations));
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
-        {
+        View headerView = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                .inflate(R.layout.layout_wallet_tab, null, false);
+
+        TextView assetsTab = (TextView) headerView.findViewById(R.id.tab_assets);
+        TextView transactionsTab = (TextView) headerView.findViewById(R.id.tab_transactions);
+
+        tabLayout.getTabAt(0).setCustomView(assetsTab);
+        tabLayout.getTabAt(1).setCustomView(transactionsTab);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab)
-            {
+            public void onTabSelected(TabLayout.Tab tab) {
                 TokenFilter newFilter = setLinearLayoutManager(tab.getPosition());
                 adapter.setFilterType(newFilter);
-                switch (newFilter)
-                {
+                switch (newFilter) {
                     case ALL:
                     case ASSETS:
                     case DEFI:
@@ -429,27 +405,21 @@ public class WalletFragment extends BaseFragment implements
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab)
-            {
+            public void onTabUnselected(TabLayout.Tab tab) {
             }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab)
-            {
+            public void onTabReselected(TabLayout.Tab tab) {
             }
         });
     }
 
-    private void setGridLayoutManager(TokenFilter tab)
-    {
+    private void setGridLayoutManager(TokenFilter tab) {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup()
-        {
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
-            public int getSpanSize(int position)
-            {
-                if (adapter.getItemViewType(position) == TokenGridHolder.VIEW_TYPE)
-                {
+            public int getSpanSize(int position) {
+                if (adapter.getItemViewType(position) == TokenGridHolder.VIEW_TYPE) {
                     return 1;
                 }
                 return 2;
@@ -459,17 +429,14 @@ public class WalletFragment extends BaseFragment implements
         currentTabPos = tab;
     }
 
-    private TokenFilter setLinearLayoutManager(int selectedTab)
-    {
+    private TokenFilter setLinearLayoutManager(int selectedTab) {
         currentTabPos = TokenFilter.values()[selectedTab];
         return currentTabPos;
     }
 
     @Override
-    public void onTokenClick(View view, Token token, List<BigInteger> ids, boolean selected)
-    {
-        if (selectedToken == null)
-        {
+    public void onTokenClick(View view, Token token, List<BigInteger> ids, boolean selected) {
+        if (selectedToken == null) {
             getParentFragmentManager().setFragmentResult(C.TOKEN_CLICK, new Bundle());
             selectedToken = view;
             Token clickOrigin = viewModel.getTokenFromService(token);
@@ -480,40 +447,33 @@ public class WalletFragment extends BaseFragment implements
     }
 
     @Override
-    public void onLongTokenClick(View view, Token token, List<BigInteger> tokenId)
-    {
+    public void onLongTokenClick(View view, Token token, List<BigInteger> tokenId) {
 
     }
 
     @Override
-    public void reloadTokens()
-    {
+    public void reloadTokens() {
         viewModel.reloadTokens();
     }
 
     @Override
-    public void onBuyToken()
-    {
+    public void onBuyToken() {
         Intent intent = viewModel.getBuyIntent(getCurrentWallet().address);
         ((HomeActivity) getActivity()).onActivityResult(C.TOKEN_SEND_ACTIVITY, RESULT_OK, intent);
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         currentTabPos = TokenFilter.ALL;
         selectedToken = null;
-        if (viewModel == null)
-        {
+        if (viewModel == null) {
             ((HomeActivity) getActivity()).resetFragment(WalletPage.WALLET);
         }
     }
 
-    private void onTokens(TokenCardMeta[] tokens)
-    {
-        if (tokens != null)
-        {
+    private void onTokens(TokenCardMeta[] tokens) {
+        if (tokens != null) {
             adapter.setTokens(tokens);
             checkScrollPosition();
             viewModel.calculateFiatValues();
@@ -521,13 +481,11 @@ public class WalletFragment extends BaseFragment implements
         systemView.showProgress(false);
 
         realmUpdateTime = 0;
-        for (TokenCardMeta tcm : tokens)
-        {
+        for (TokenCardMeta tcm : tokens) {
             if (tcm.lastUpdate > realmUpdateTime) realmUpdateTime = tcm.lastUpdate;
         }
 
-        if (isVisible)
-        {
+        if (isVisible) {
             setRealmListener(realmUpdateTime);
         }
     }
@@ -536,10 +494,8 @@ public class WalletFragment extends BaseFragment implements
      * Checks to see if the current session was started from clicking on a TokenScript notification
      * If it was, identify the contract and pass information to adapter which will identify the corresponding contract token card
      */
-    private void setImportToken()
-    {
-        if (importFileName != null)
-        {
+    private void setImportToken() {
+        if (importFileName != null) {
             ContractLocator importToken = viewModel.getAssetDefinitionService().getHoldingContract(importFileName);
             if (importToken != null)
                 Toast.makeText(getContext(), importToken.address, Toast.LENGTH_LONG).show();
@@ -551,22 +507,18 @@ public class WalletFragment extends BaseFragment implements
     /**
      * If the adapter has identified the clicked-on script update from the above call and that card is present, scroll to the card.
      */
-    private void checkScrollPosition()
-    {
+    private void checkScrollPosition() {
         int scrollPos = adapter.getScrollPosition();
-        if (scrollPos > 0 && recyclerView != null)
-        {
+        if (scrollPos > 0 && recyclerView != null) {
             ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(scrollPos, 0);
         }
     }
 
-    private void backupEvent(GenericWalletInteract.BackupLevel backupLevel)
-    {
+    private void backupEvent(GenericWalletInteract.BackupLevel backupLevel) {
         if (adapter.hasBackupWarning()) return;
 
         WarningData wData;
-        switch (backupLevel)
-        {
+        switch (backupLevel) {
             case BACKUP_NOT_REQUIRED:
                 break;
             case WALLET_HAS_LOW_VALUE:
@@ -590,44 +542,34 @@ public class WalletFragment extends BaseFragment implements
         }
     }
 
-    private void onError(ErrorEnvelope errorEnvelope)
-    {
-        if (errorEnvelope.code == EMPTY_COLLECTION)
-        {
+    private void onError(ErrorEnvelope errorEnvelope) {
+        if (errorEnvelope.code == EMPTY_COLLECTION) {
             systemView.showEmpty(getString(R.string.no_tokens));
-        }
-        else
-        {
+        } else {
             systemView.showError(getString(R.string.error_fail_load_tokens), this);
         }
     }
 
     @Override
-    public void onClick(View view)
-    {
-        if (view.getId() == R.id.try_again)
-        {
+    public void onClick(View view) {
+        if (view.getId() == R.id.try_again) {
             viewModel.prepare();
         }
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
-        if (realmUpdates != null)
-        {
+        if (realmUpdates != null) {
             realmUpdates.removeAllChangeListeners();
         }
         if (realm != null && !realm.isClosed()) realm.close();
         if (adapter != null && recyclerView != null) adapter.onDestroy(recyclerView);
     }
 
-    public void resetTokens()
-    {
-        if (viewModel != null && adapter != null)
-        {
+    public void resetTokens() {
+        if (viewModel != null && adapter != null) {
             //reload tokens
             viewModel.reloadTokens();
 
@@ -641,8 +583,7 @@ public class WalletFragment extends BaseFragment implements
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
 //        if (selectedToken != null && selectedToken.findViewById(R.id.token_layout) != null)
 //        {
 //            selectedToken.findViewById(R.id.token_layout).setBackgroundResource(R.drawable.background_marketplace_event);
@@ -658,24 +599,19 @@ public class WalletFragment extends BaseFragment implements
                 Intent data = result.getData();
                 if (data != null) keyBackup = data.getStringExtra("Key");
                 if (data != null) noLockScreen = data.getBooleanExtra("nolock", false);
-                if (result.getResultCode() == RESULT_OK)
-                {
+                if (result.getResultCode() == RESULT_OK) {
                     ((HomeActivity) getActivity()).backupWalletSuccess(keyBackup);
-                }
-                else
-                {
+                } else {
                     ((HomeActivity) getActivity()).backupWalletFail(keyBackup, noLockScreen);
                 }
             });
 
     @Override
-    public void BackupClick(Wallet wallet)
-    {
+    public void BackupClick(Wallet wallet) {
         Intent intent = new Intent(getContext(), BackupKeyActivity.class);
         intent.putExtra(WALLET, wallet);
 
-        switch (viewModel.getWalletType())
-        {
+        switch (viewModel.getWalletType()) {
             case HDKEY:
                 intent.putExtra("TYPE", BackupOperationType.BACKUP_HD_KEY);
                 break;
@@ -689,8 +625,7 @@ public class WalletFragment extends BaseFragment implements
     }
 
     @Override
-    public void remindMeLater(Wallet wallet)
-    {
+    public void remindMeLater(Wallet wallet) {
         handler.post(() ->
         {
             if (viewModel != null) viewModel.setKeyWarningDismissTime(wallet.address);
@@ -708,8 +643,7 @@ public class WalletFragment extends BaseFragment implements
                 getParentFragmentManager().setFragmentResult(C.ADDED_TOKEN, b);
             });
 
-    public void storeWalletBackupTime(String backedUpKey)
-    {
+    public void storeWalletBackupTime(String backedUpKey) {
         handler.post(() ->
         {
             if (viewModel != null) viewModel.setKeyBackupTime(backedUpKey);
@@ -717,14 +651,12 @@ public class WalletFragment extends BaseFragment implements
         });
     }
 
-    public void setImportFilename(String fName)
-    {
+    public void setImportFilename(String fName) {
         importFileName = fName;
     }
 
     @Override
-    public void avatarFound(Wallet wallet)
-    {
+    public void avatarFound(Wallet wallet) {
         //write to database
         viewModel.saveAvatar(wallet);
     }
@@ -744,21 +676,17 @@ public class WalletFragment extends BaseFragment implements
 
     }
 
-    public class SwipeCallback extends ItemTouchHelper.SimpleCallback
-    {
+    public class SwipeCallback extends ItemTouchHelper.SimpleCallback {
         private final TokensAdapter mAdapter;
         private Drawable icon;
         private ColorDrawable background;
 
-        SwipeCallback(TokensAdapter adapter)
-        {
+        SwipeCallback(TokensAdapter adapter) {
             super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
             mAdapter = adapter;
-            if (getActivity() != null)
-            {
+            if (getActivity() != null) {
                 icon = ContextCompat.getDrawable(getActivity(), R.drawable.ic_hide_token);
-                if (icon != null)
-                {
+                if (icon != null) {
                     icon.setTint(ContextCompat.getColor(getActivity(), R.color.error_inverse));
                 }
                 background = new ColorDrawable(ContextCompat.getColor(getActivity(), R.color.error));
@@ -766,26 +694,20 @@ public class WalletFragment extends BaseFragment implements
         }
 
         @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1)
-        {
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
             return false;
         }
 
         @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i)
-        {
-            if (viewHolder instanceof WarningHolder)
-            {
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+            if (viewHolder instanceof WarningHolder) {
                 remindMeLater(viewModel.getWallet());
-            }
-            else if (viewHolder instanceof TokenHolder)
-            {
+            } else if (viewHolder instanceof TokenHolder) {
                 Token token = ((TokenHolder) viewHolder).token;
                 viewModel.setTokenEnabled(token, false);
                 adapter.removeToken(token.tokenInfo.chainId, token.getAddress());
 
-                if (getContext() != null)
-                {
+                if (getContext() != null) {
                     Snackbar snackbar = Snackbar
                             .make(viewHolder.itemView, token.tokenInfo.name + " " + getContext().getString(R.string.token_hidden), Snackbar.LENGTH_LONG)
                             .setAction(getString(R.string.action_snackbar_undo), view ->
@@ -800,15 +722,11 @@ public class WalletFragment extends BaseFragment implements
         }
 
         @Override
-        public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder)
-        {
-            if (viewHolder.getItemViewType() == TokenHolder.VIEW_TYPE)
-            {
+        public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            if (viewHolder.getItemViewType() == TokenHolder.VIEW_TYPE) {
                 Token t = ((TokenHolder) viewHolder).token;
                 if (t != null && t.isEthereum()) return 0;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
 
@@ -816,8 +734,7 @@ public class WalletFragment extends BaseFragment implements
         }
 
         @Override
-        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive)
-        {
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
 
             View itemView = viewHolder.itemView;
@@ -826,25 +743,20 @@ public class WalletFragment extends BaseFragment implements
             int iconTop = itemView.getTop() + (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
             int iconBottom = iconTop + icon.getIntrinsicHeight();
 
-            if (dX > 0)
-            {
+            if (dX > 0) {
                 int iconLeft = itemView.getLeft() + iconMargin + icon.getIntrinsicWidth();
                 int iconRight = itemView.getLeft() + iconMargin;
                 icon.setBounds(iconRight, iconTop, iconLeft, iconBottom);
                 background.setBounds(itemView.getLeft(), itemView.getTop(),
                         itemView.getLeft() + ((int) dX) + offset,
                         itemView.getBottom());
-            }
-            else if (dX < 0)
-            {
+            } else if (dX < 0) {
                 int iconLeft = itemView.getRight() - iconMargin - icon.getIntrinsicWidth();
                 int iconRight = itemView.getRight() - iconMargin;
                 icon.setBounds(iconLeft, iconTop, iconRight, iconBottom);
                 background.setBounds(itemView.getRight() + ((int) dX) - offset,
                         itemView.getTop(), itemView.getRight(), itemView.getBottom());
-            }
-            else
-            {
+            } else {
                 background.setBounds(0, 0, 0, 0);
             }
 
@@ -853,28 +765,23 @@ public class WalletFragment extends BaseFragment implements
         }
     }
 
-    public Wallet getCurrentWallet()
-    {
+    public Wallet getCurrentWallet() {
         return viewModel.getWallet();
     }
 
     @Override
-    public boolean onMenuItemClick(MenuItem menuItem)
-    {
-        if (menuItem.getItemId() == R.id.action_scan)
-        {
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.action_scan) {
             viewModel.showQRCodeScanning(getActivity());
         }
         return super.onMenuItemClick(menuItem);
     }
 
-    private void initNotificationView(View view)
-    {
+    private void initNotificationView(View view) {
         NotificationView notificationView = view.findViewById(R.id.wallet_notification);
         boolean hasShownWarning = viewModel.isMarshMallowWarningShown();
 
-        if (!hasShownWarning && android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.M)
-        {
+        if (!hasShownWarning && android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
             notificationView.setTitle(getContext().getString(R.string.title_version_support_warning));
             notificationView.setMessage(getContext().getString(R.string.message_version_support_warning));
             notificationView.setPrimaryButtonText(getContext().getString(R.string.hide_notification));
@@ -883,16 +790,13 @@ public class WalletFragment extends BaseFragment implements
                 notificationView.setVisibility(View.GONE);
                 viewModel.setMarshMallowWarning(true);
             });
-        }
-        else
-        {
+        } else {
             notificationView.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void onSearchClicked()
-    {
+    public void onSearchClicked() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
         startActivity(intent);
     }

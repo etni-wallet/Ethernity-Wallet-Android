@@ -32,7 +32,7 @@
             style="@style/Aw.Component.TabLayout.Scrollable"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
+            android:layout_gravity="center_horizontal"
             app:layout_scrollFlags="enterAlways" />
 
         <View style="@style/Aw.Component.Separator" />
@@ -41,8 +41,8 @@
             android:id="@+id/wallet_notification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:background="@drawable/background_bottom_border" />
+            android:background="@drawable/background_bottom_border"
+            android:visibility="gone" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

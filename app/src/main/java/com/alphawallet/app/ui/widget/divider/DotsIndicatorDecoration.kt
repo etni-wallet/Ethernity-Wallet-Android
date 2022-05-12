@@ -107,7 +107,7 @@ class DotsIndicatorDecoration(
         inactivePaint.isAntiAlias = true
         inactivePaint.color = colorInactive
         activePaint.strokeCap = Paint.Cap.ROUND
-        activePaint.strokeWidth = strokeWidth
+        activePaint.strokeWidth = 0f
         activePaint.style = Paint.Style.FILL
         activePaint.isAntiAlias = true
         activePaint.color = colorActive

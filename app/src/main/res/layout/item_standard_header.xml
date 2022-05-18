@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/standard_header_height"
-    android:background="?colorSurfaceSecondary"
     android:orientation="vertical">
 
     <TextView
@@ -37,10 +36,5 @@
         android:focusable="true"
         android:visibility="gone"
         tools:visibility="visible" />
-
-    <View
-        android:id="@+id/separator"
-        style="@style/Aw.Component.Separator"
-        android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

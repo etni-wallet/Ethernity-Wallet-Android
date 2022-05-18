@@ -235,7 +235,7 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
     //Only show the header if the item type is added to the list
     private void addHeaderLayout(TokenCardMeta tcm)
     {
-        items.add(new HeaderItem(tcm.group));
+//        items.add(new HeaderItem(tcm.group));
         items.add(new ChainItem(tcm.getChain(), tcm.group));
     }
 

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_search_tokens"
         android:layout_width="match_parent"
         android:layout_height="@dimen/massive_44"
@@ -12,33 +12,67 @@
         android:layout_marginTop="@dimen/tiny_8"
         android:layout_marginEnd="@dimen/tiny_8"
         android:layout_marginBottom="@dimen/tiny_8"
-        android:background="@drawable/background_round_search"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp8"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="@dimen/dp8"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/background_round_search"
+            app:layout_constraintEnd_toStartOf="@id/manage_tokens"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/search_icon"
             android:layout_width="@dimen/base_24"
             android:layout_height="@dimen/base_24"
-            android:layout_marginStart="@dimen/small_12"
-            android:src="@drawable/ic_search_small"
+            android:layout_marginEnd="@dimen/small_12"
+            android:src="@drawable/ic_search"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/edit_search"
+            app:layout_constraintTop_toTopOf="parent"
             app:tint="?android:textColorSecondary" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_search"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/tiny_8"
             android:layout_marginEnd="@dimen/standard_16"
             android:background="@null"
             android:clickable="false"
             android:focusable="false"
-            android:hint="@string/search_for_tokens"
+            android:gravity="center"
+            android:hint="@string/search_for_assets"
             android:imeOptions="actionSearch"
             android:inputType="textFilter"
             android:maxLength="20"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textColorHint="@color/ethernity_text_gray"
+            android:textSize="@dimen/sp15"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/manage_tokens"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/manage_tokens"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_manage_tokens"
+            android:paddingStart="@dimen/dp8"
+            android:paddingTop="@dimen/dp8"
+            android:layout_marginEnd="@dimen/dp8"
+            android:background="@drawable/background_white_round_corners_5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/click_layer"

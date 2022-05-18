@@ -83,7 +83,7 @@
     </style>
 
     <style name="Aw.Component.RecyclerView" parent="">
-        <item name="android:background">@color/surface</item>
+<!--        <item name="android:background">@color/white</item>-->
     </style>
 
     <style name="Aw.Component.Separator" parent="Widget.MaterialComponents.TextView">

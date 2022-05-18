@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.alphawallet.app.C;
 import com.alphawallet.app.R;
+import com.alphawallet.app.entity.ActivityMeta;
 import com.alphawallet.app.entity.BackupOperationType;
 import com.alphawallet.app.entity.BackupTokenCallback;
 import com.alphawallet.app.entity.ContractLocator;
@@ -51,26 +53,31 @@ import com.alphawallet.app.entity.ErrorEnvelope;
 import com.alphawallet.app.entity.ServiceSyncCallback;
 import com.alphawallet.app.entity.SyncCallback;
 import com.alphawallet.app.entity.TokenFilter;
+import com.alphawallet.app.entity.TransactionMeta;
 import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.WalletPage;
 import com.alphawallet.app.entity.WalletType;
 import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.entity.tokens.TokenCardMeta;
+import com.alphawallet.app.interact.ActivityDataInteract;
 import com.alphawallet.app.interact.GenericWalletInteract;
 import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.repository.entity.RealmToken;
+import com.alphawallet.app.repository.entity.RealmTransfer;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
+import com.alphawallet.app.ui.widget.adapter.ActivityAdapter;
 import com.alphawallet.app.ui.widget.adapter.TokensAdapter;
 import com.alphawallet.app.ui.widget.adapter.WalletCardAdapter;
-import com.alphawallet.app.ui.widget.divider.DotsIndicatorDecoration;
 import com.alphawallet.app.ui.widget.entity.AvatarWriteCallback;
+import com.alphawallet.app.ui.widget.entity.TokenTransferData;
 import com.alphawallet.app.ui.widget.entity.WarningData;
 import com.alphawallet.app.ui.widget.holder.TokenGridHolder;
 import com.alphawallet.app.ui.widget.holder.TokenHolder;
 import com.alphawallet.app.ui.widget.holder.WarningHolder;
 import com.alphawallet.app.util.LocaleUtils;
+import com.alphawallet.app.viewmodel.ActivityViewModel;
 import com.alphawallet.app.viewmodel.WalletViewModel;
 import com.alphawallet.app.viewmodel.WalletsViewModel;
 import com.alphawallet.app.widget.NotificationView;
@@ -78,17 +85,20 @@ import com.alphawallet.app.widget.ProgressView;
 import com.alphawallet.app.widget.SystemView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import kotlin.Unit;
 
 /**
  * Created by justindeguzman on 2/28/18.
@@ -101,7 +111,8 @@ public class WalletFragment extends BaseFragment implements
         BackupTokenCallback,
         AvatarWriteCallback,
         ServiceSyncCallback,
-        SyncCallback {
+        SyncCallback,
+        ActivityDataInteract {
     private static final String TAG = "WFRAG";
 
     public static final String SEARCH_FRAGMENT = "w_search";
@@ -110,7 +121,8 @@ public class WalletFragment extends BaseFragment implements
 
     private WalletViewModel viewModel;
     private WalletsViewModel walletsViewModel;
-
+    private ActivityViewModel activityViewModel;
+    private ActivityAdapter activityAdapter;
     private SystemView systemView;
     private TokensAdapter adapter;
     private WalletCardAdapter cardsAdapter;
@@ -125,6 +137,8 @@ public class WalletFragment extends BaseFragment implements
     private Realm realm = null;
     private RealmResults<RealmToken> realmUpdates;
     private long realmUpdateTime;
+    private TextView assetsTab;
+    private TextView transactionsTab;
 
     @Nullable
     @Override
@@ -152,6 +166,7 @@ public class WalletFragment extends BaseFragment implements
         setImportToken();
 
         viewModel.prepare();
+        activityViewModel.prepare();
         walletsViewModel.onPrepare(balanceChain, this);
 
         getChildFragmentManager()
@@ -170,11 +185,12 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private void initList() {
+        activityAdapter = new ActivityAdapter(viewModel.getTokensService(), activityViewModel.provideTransactionsInteract(),
+                viewModel.getAssetDefinitionService(), this);
         adapter = new TokensAdapter(this, viewModel.getAssetDefinitionService(), viewModel.getTokensService(),
                 tokenManagementLauncher);
         adapter.setHasStableIds(true);
         setLinearLayoutManager(TokenFilter.ALL.ordinal());
-        recyclerView.setAdapter(adapter);
         if (recyclerView.getItemAnimator() != null)
             ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
@@ -185,23 +201,23 @@ public class WalletFragment extends BaseFragment implements
         recyclerView.addRecyclerListener(holder -> adapter.onRViewRecycled(holder));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        cardsAdapter = new WalletCardAdapter();
+        cardsAdapter = new WalletCardAdapter(this::showCreateWalletMenu);
         cardsRecyclerView.setAdapter(cardsAdapter);
 
-        final int radius = getResources().getDimensionPixelSize(R.dimen.sp02);
-        final int padding = getResources().getDimensionPixelSize(R.dimen.dp8);
-        final int dotsHeight = getResources().getDimensionPixelSize(R.dimen.sp02);
-        final int activeColor = ContextCompat.getColor(requireContext(), R.color.surface_inverse);
-        final int inactiveColor = ContextCompat.getColor(requireContext(), R.color.text_secondary);
-        cardsRecyclerView.addItemDecoration(new DotsIndicatorDecoration(radius, padding, dotsHeight, inactiveColor, activeColor));
         SnapHelper helper = new PagerSnapHelper();
         helper.attachToRecyclerView(recyclerView);
     }
 
+    private Unit showCreateWalletMenu() {
+        Toast.makeText(requireContext(), "Show menu", Toast.LENGTH_SHORT).show();
+        return null;
+    }
+
     private void initViewModel() {
-        walletsViewModel = new ViewModelProvider(this)
-                .get(WalletsViewModel.class);
+        activityViewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
+        walletsViewModel = new ViewModelProvider(this).get(WalletsViewModel.class);
         walletsViewModel.wallets().observe(getViewLifecycleOwner(), this::onFetchWallets);
+        activityViewModel.activityItems().observe(getViewLifecycleOwner(), this::onItemsLoaded);
 
         viewModel = new ViewModelProvider(this)
                 .get(WalletViewModel.class);
@@ -213,9 +229,64 @@ public class WalletFragment extends BaseFragment implements
         viewModel.getTokensService().startWalletSync(this);
     }
 
+    private void onItemsLoaded(ActivityMeta[] activityMetas) {
+        ActivityMeta activityMeta1 = new ActivityMeta(100l, "A");
+        ActivityMeta activityMeta2 = new ActivityMeta(200l, "b");
+        ActivityMeta activityMeta3 = new ActivityMeta(300l, "c");
+        ActivityMeta[] mockData = {
+                activityMeta1,
+                activityMeta2,
+                activityMeta3
+        };
+        Log.i("Transactions","size " + mockData.length);
+//        activityAdapter.updateActivityItems(buildTransactionList(realm, mockData).toArray(new ActivityMeta[0]));
+//        activityAdapter.updateActivityItems(mockData);
+    }
+
+    private List<ActivityMeta> buildTransactionList(Realm realm, ActivityMeta[] activityItems) {
+        //selectively filter the items with the following rules:
+        // - allow through all normal transactions with no token transfer consequences
+        // - for any transaction with token transfers; if there's only one token transfer, only show the transfer
+        // - for any transaction with more than one token transfer, show the transaction and show the child transfer consequences
+        List<ActivityMeta> filteredList = new ArrayList<>();
+
+        for (ActivityMeta am : activityItems) {
+            if (am instanceof TransactionMeta) {
+                List<TokenTransferData> tokenTransfers = getTokenTransfersForHash(realm, (TransactionMeta) am);
+                if (tokenTransfers.size() != 1) {
+                    filteredList.add(am);
+                } //only 1 token transfer ? No need to show the underlying transaction
+                filteredList.addAll(tokenTransfers);
+            }
+        }
+
+        return filteredList;
+    }
+
+    private List<TokenTransferData> getTokenTransfersForHash(Realm realm, TransactionMeta tm) {
+        List<TokenTransferData> transferData = new ArrayList<>();
+        //summon realm items
+        //get matching entries for this transaction
+        RealmResults<RealmTransfer> transfers = realm.where(RealmTransfer.class)
+                .equalTo("hash", tm.hash)
+                .findAll();
+
+        if (transfers != null && transfers.size() > 0) {
+            //list of transfers, descending in time to give ordered list
+            long nextTransferTime = transfers.size() == 1 ? tm.getTimeStamp() : tm.getTimeStamp() - 1; // if there's only 1 transfer, keep the transaction timestamp
+            for (RealmTransfer rt : transfers) {
+                TokenTransferData ttd = new TokenTransferData(rt.getHash(), tm.chainId,
+                        rt.getTokenAddress(), rt.getEventName(), rt.getTransferDetail(), nextTransferTime);
+                transferData.add(ttd);
+                nextTransferTime--;
+            }
+        }
+
+        return transferData;
+    }
+
     private void onFetchWallets(Wallet[] wallets) {
-        List<Wallet> more = Arrays.asList(wallets[0], wallets[0]);
-        cardsAdapter.setWallets(more);
+        cardsAdapter.setWallets(Arrays.asList(wallets));
     }
 
     private void initViews(@NonNull View view) {
@@ -373,45 +444,88 @@ public class WalletFragment extends BaseFragment implements
 //        tabLayout.addTab(tabLayout.newTab().setText(R.string.governance_header));
         //tabLayout.addTab(tabLayout.newTab().setText(R.string.attestations));
 
-        View headerView = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                .inflate(R.layout.layout_wallet_tab, null, false);
+//        tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"));
+//        tabLayout.setTabTextColors(Color.parseColor("#6D6D6D"), Color.parseColor("#ffffff"));
 
-        TextView assetsTab = (TextView) headerView.findViewById(R.id.tab_assets);
-        TextView transactionsTab = (TextView) headerView.findViewById(R.id.tab_transactions);
+        View headerView = ((LayoutInflater) requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                .inflate(R.layout.layout_wallet_tab, null);
 
-        tabLayout.getTabAt(0).setCustomView(assetsTab);
-        tabLayout.getTabAt(1).setCustomView(transactionsTab);
+        assetsTab = headerView.findViewById(R.id.tab_assets);
+        transactionsTab = headerView.findViewById(R.id.tab_transactions);
+
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setCustomView(assetsTab);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setCustomView(transactionsTab);
+
+        tabLayout.getTabAt(0).getCustomView().setActivated(true);
+        assetsTab.setTextColor(requireContext().getColor(R.color.white));
+        transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_text));
+        recyclerView.setAdapter(adapter);
+
+        TabLayout dotsTabLayout = view.findViewById(R.id.wallet_card_dots);
+        new TabLayoutMediator(dotsTabLayout, cardsRecyclerView, (tab, position) -> {
+        }).attach();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                tab.view.setSelected(true);
                 TokenFilter newFilter = setLinearLayoutManager(tab.getPosition());
                 adapter.setFilterType(newFilter);
                 switch (newFilter) {
                     case ALL:
+                        transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_text));
+                        assetsTab.setTextColor(requireContext().getColor(R.color.white));
+                        recyclerView.setAdapter(adapter);
+                        break;
                     case ASSETS:
-                    case DEFI:
-                    case GOVERNANCE:
-                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                        viewModel.prepare();
+                        transactionsTab.setTextColor(requireContext().getColor(R.color.white));
+                        assetsTab.setTextColor(requireContext().getColor(R.color.ethernity_text));
+                        recyclerView.setAdapter(activityAdapter);
                         break;
-                    case COLLECTIBLES:
-                        setGridLayoutManager(TokenFilter.COLLECTIBLES);
-                        viewModel.prepare();
-                        break;
-                    case ATTESTATIONS: // TODO: Filter Attestations
-                        break;
+//                    case DEFI:
+//                    case GOVERNANCE:
+//                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//                        viewModel.prepare();
+//                        break;
+//                    case COLLECTIBLES:
+//                        setGridLayoutManager(TokenFilter.COLLECTIBLES);
+//                        viewModel.prepare();
+//                        break;
+//                    case ATTESTATIONS: // TODO: Filter Attestations
+//                        break;
                 }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
+                tab.view.setSelected(true);
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+    }
+
+    private void setTabActive(TabLayout tabLayout, TabLayout.Tab tab, boolean selected) {
+        if (tabLayout.getTabCount() - 1 == tabLayout.getSelectedTabPosition()) {
+            //last position show '+' instead of dot
+            if (selected) {
+                tab.view.setSelected(true);
+                tab.view.setActivated(false);
+            } else {
+                tab.view.setSelected(false);
+                tab.view.setActivated(false);
+            }
+        } else {
+            if (selected) {
+                tab.view.setSelected(true);
+                tab.view.setActivated(true);
+            } else {
+                tab.view.setSelected(false);
+                tab.view.setActivated(true);
+            }
+        }
     }
 
     private void setGridLayoutManager(TokenFilter tab) {
@@ -674,6 +788,11 @@ public class WalletFragment extends BaseFragment implements
     @Override
     public void syncStarted(String wallet, Pair<Double, Double> value) {
 
+    }
+
+    @Override
+    public void fetchMoreData(long latestDate) {
+        //todo see ActivityFragment implementation
     }
 
     public class SwipeCallback extends ItemTouchHelper.SimpleCallback {

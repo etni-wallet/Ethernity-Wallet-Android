@@ -53,6 +53,12 @@
 	<color name="shark">#232325</color>
 	<color name="atlantis">#7cca42</color>
 <!-- Ethernity -->
-	<color name="accent_orange">#F89430</color>
-	<color name="light_gray">#F0F0F0</color>
+	<color name="ethernity_accent_orange">#F89430</color>
+	<color name="ethernity_light_gray">#F0F0F0</color>
+	<color name="ethernity_gray">#F4F4F4</color>
+	<color name="ethernity_blue">#0C86FF</color>
+	<color name="ethernity_text">#6D6D6D</color>
+	<color name="ethernity_text_gray">#8D8D92</color>
+	<color name="ethernity_light">#E8E8E8</color>
+	<color name="ethernity_dots_unselected">#6e6e6e</color>
 </resources>

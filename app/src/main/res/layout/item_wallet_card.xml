@@ -27,12 +27,12 @@
             android:id="@+id/card_balance_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp16"
+            android:layout_marginTop="@dimen/dp16"
+            android:layout_marginEnd="@dimen/dp30"
             android:textColor="@color/white"
             android:textSize="@dimen/sp28"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/card_name_tv"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="$310.000" />
 
@@ -89,6 +89,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/card_action_send_tv"
             app:layout_constraintTop_toBottomOf="@id/card_address_tv" />
+
+        <ImageView
+            android:id="@+id/card_action_dots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp30"
+            android:src="@drawable/ic_card_action_dots"
+            app:layout_constraintBottom_toBottomOf="@id/card_action_receive_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/card_action_receive_tv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

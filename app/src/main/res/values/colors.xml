@@ -47,7 +47,7 @@
     <!-- ?colorSurfaceQuinary -->
     <color name="surface_quinary">@color/mercury</color>
     <!-- ?colorOnSurface -->
-    <color name="surface_inverse">@color/accent_orange</color>
+    <color name="surface_inverse">@color/ethernity_accent_orange</color>
     <!-- ?colorSurfaceDark -->
     <color name="surface_dark">@color/mine</color>
     <!-- ?colorBackgroundFloating -->
@@ -68,4 +68,6 @@
     <color name="text_secondary_inverse">@color/white</color>
 
     <color name="surface_faded">@color/translucent_light</color>
+
+    <color name="ethernity_background_gray">@color/ethernity_gray</color>
 </resources>

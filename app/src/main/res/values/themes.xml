@@ -69,7 +69,7 @@
         <item name="colorSurfaceDark">@color/surface_dark</item>
 
         <!-- Default Component Styles -->
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">@color/ethernity_text</item>
         <item name="android:textColorHint">@color/text_secondary</item>
         <item name="android:textColorHintInverse">@color/text_secondary_inverse</item>
         <item name="android:textViewStyle">@style/Aw.Typography</item>

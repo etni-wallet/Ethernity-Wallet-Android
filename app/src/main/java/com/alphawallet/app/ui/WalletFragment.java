@@ -6,7 +6,6 @@ import static com.alphawallet.app.C.ErrorCode.EMPTY_COLLECTION;
 import static com.alphawallet.app.C.Key.WALLET;
 import static com.alphawallet.app.repository.TokensRealmSource.ADDRESS_FORMAT;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
@@ -16,7 +15,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -80,6 +78,7 @@ import com.alphawallet.app.util.LocaleUtils;
 import com.alphawallet.app.viewmodel.ActivityViewModel;
 import com.alphawallet.app.viewmodel.WalletViewModel;
 import com.alphawallet.app.viewmodel.WalletsViewModel;
+import com.alphawallet.app.widget.EmptyTransactionsView;
 import com.alphawallet.app.widget.NotificationView;
 import com.alphawallet.app.widget.ProgressView;
 import com.alphawallet.app.widget.SystemView;
@@ -166,7 +165,7 @@ public class WalletFragment extends BaseFragment implements
         setImportToken();
 
         viewModel.prepare();
-        activityViewModel.prepare();
+        viewModel.defaultWallet().observe(getViewLifecycleOwner(), this::onDefaultWallet);
         walletsViewModel.onPrepare(balanceChain, this);
 
         getChildFragmentManager()
@@ -214,9 +213,10 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private void initViewModel() {
-        activityViewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
         walletsViewModel = new ViewModelProvider(this).get(WalletsViewModel.class);
         walletsViewModel.wallets().observe(getViewLifecycleOwner(), this::onFetchWallets);
+
+        activityViewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
         activityViewModel.activityItems().observe(getViewLifecycleOwner(), this::onItemsLoaded);
 
         viewModel = new ViewModelProvider(this)
@@ -229,18 +229,22 @@ public class WalletFragment extends BaseFragment implements
         viewModel.getTokensService().startWalletSync(this);
     }
 
-    private void onItemsLoaded(ActivityMeta[] activityMetas) {
-        ActivityMeta activityMeta1 = new ActivityMeta(100l, "A");
-        ActivityMeta activityMeta2 = new ActivityMeta(200l, "b");
-        ActivityMeta activityMeta3 = new ActivityMeta(300l, "c");
-        ActivityMeta[] mockData = {
-                activityMeta1,
-                activityMeta2,
-                activityMeta3
-        };
-        Log.i("Transactions","size " + mockData.length);
-//        activityAdapter.updateActivityItems(buildTransactionList(realm, mockData).toArray(new ActivityMeta[0]));
-//        activityAdapter.updateActivityItems(mockData);
+    private void onItemsLoaded(ActivityMeta[] activityItems) {
+        try (Realm realm = viewModel.getRealmInstance()) {
+            activityAdapter.updateActivityItems(buildTransactionList(realm, activityItems).toArray(new ActivityMeta[0]));
+            showEmptyTx();
+        }
+    }
+
+    private void showEmptyTx() {
+        if (activityAdapter.isEmpty()) {
+            EmptyTransactionsView emptyView = new EmptyTransactionsView(getContext(), this);
+            systemView.showEmpty(emptyView);
+        }
+    }
+
+    private void hideEmptyTx() {
+        systemView.hide();
     }
 
     private List<ActivityMeta> buildTransactionList(Realm realm, ActivityMeta[] activityItems) {
@@ -306,6 +310,7 @@ public class WalletFragment extends BaseFragment implements
     private void onDefaultWallet(Wallet wallet) {
         if (CustomViewSettings.showManageTokens()) {
             adapter.setWalletAddress(wallet.address);
+            activityAdapter.setDefaultWallet(wallet);
         }
 
         //Do we display new user backup popup?
@@ -402,9 +407,15 @@ public class WalletFragment extends BaseFragment implements
     private void refreshList() {
         handler.post(() ->
         {
-            adapter.clear();
-            viewModel.prepare();
-            viewModel.notifyRefresh();
+            if (assetsTab.isSelected()) {
+                adapter.clear();
+                viewModel.prepare();
+                viewModel.notifyRefresh();
+            }
+            if (transactionsTab.isSelected()) {
+                activityAdapter.clear();
+                activityViewModel.prepare();
+            }
         });
     }
 
@@ -447,8 +458,9 @@ public class WalletFragment extends BaseFragment implements
 //        tabLayout.setSelectedTabIndicatorColor(Color.parseColor("#FF0000"));
 //        tabLayout.setTabTextColors(Color.parseColor("#6D6D6D"), Color.parseColor("#ffffff"));
 
-        View headerView = ((LayoutInflater) requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
-                .inflate(R.layout.layout_wallet_tab, null);
+        View headerView = LayoutInflater.from(requireContext()).inflate(R.layout.layout_wallet_tab, view.findViewById(R.id.pager_root));
+//        View headerView = ((LayoutInflater) requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+//                .inflate(R.layout.layout_wallet_tab, null);
 
         assetsTab = headerView.findViewById(R.id.tab_assets);
         transactionsTab = headerView.findViewById(R.id.tab_transactions);
@@ -458,7 +470,7 @@ public class WalletFragment extends BaseFragment implements
 
         tabLayout.getTabAt(0).getCustomView().setActivated(true);
         assetsTab.setTextColor(requireContext().getColor(R.color.white));
-        transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_text));
+        transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_tab_selected));
         recyclerView.setAdapter(adapter);
 
         TabLayout dotsTabLayout = view.findViewById(R.id.wallet_card_dots);
@@ -472,27 +484,20 @@ public class WalletFragment extends BaseFragment implements
                 TokenFilter newFilter = setLinearLayoutManager(tab.getPosition());
                 adapter.setFilterType(newFilter);
                 switch (newFilter) {
-                    case ALL:
-                        transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_text));
+                    case ALL: //Assets tab
+                        transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_tab_selected));
                         assetsTab.setTextColor(requireContext().getColor(R.color.white));
                         recyclerView.setAdapter(adapter);
+                        viewModel.prepare();
+                        hideEmptyTx();
                         break;
-                    case ASSETS:
+                    case ASSETS: //Transactions tab
                         transactionsTab.setTextColor(requireContext().getColor(R.color.white));
-                        assetsTab.setTextColor(requireContext().getColor(R.color.ethernity_text));
+                        assetsTab.setTextColor(requireContext().getColor(R.color.ethernity_tab_selected));
                         recyclerView.setAdapter(activityAdapter);
+                        activityViewModel.prepare();
+                        showEmptyTx();
                         break;
-//                    case DEFI:
-//                    case GOVERNANCE:
-//                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//                        viewModel.prepare();
-//                        break;
-//                    case COLLECTIBLES:
-//                        setGridLayoutManager(TokenFilter.COLLECTIBLES);
-//                        viewModel.prepare();
-//                        break;
-//                    case ATTESTATIONS: // TODO: Filter Attestations
-//                        break;
                 }
             }
 

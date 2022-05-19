@@ -51,8 +51,8 @@ public class AWalletBottomNavigationView extends LinearLayout
         dappBrowserLabel.setOnClickListener(v -> selectItem(DAPP_BROWSER));
         settingsTab.setOnClickListener(v -> selectItem(SETTINGS));
 
-        regularTypeface = ResourcesCompat.getFont(getContext(), R.font.font_regular);
-        semiboldTypeface = ResourcesCompat.getFont(getContext(), R.font.font_semibold);
+        regularTypeface = ResourcesCompat.getFont(getContext(), R.font.inter_regular);
+        semiboldTypeface = ResourcesCompat.getFont(getContext(), R.font.inter_semi_bold);
 
         // set wallet fragment selected on start
         setSelectedItem(WALLET);

@@ -235,6 +235,7 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
     //Only show the header if the item type is added to the list
     private void addHeaderLayout(TokenCardMeta tcm)
     {
+//ETH-14 : remove this
 //        items.add(new HeaderItem(tcm.group));
         items.add(new ChainItem(tcm.getChain(), tcm.group));
     }
@@ -242,7 +243,8 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
     private void addManageTokensLayout() {
         if (walletAddress != null && !walletAddress.isEmpty() && tokensService.isMainNetActive()
             && (filterType == TokenFilter.ALL || filterType == TokenFilter.ASSETS)) { //only show buy button if filtering all or assets
-            items.add(new ManageTokensSortedItem(new ManageTokensData(walletAddress, managementLauncher)));
+//ETH-14 : remove this
+//            items.add(new ManageTokensSortedItem(new ManageTokensData(walletAddress, managementLauncher)));
         }
     }
 

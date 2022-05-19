@@ -10,20 +10,24 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
             app:layout_scrollFlags="scroll|snap"
             app:titleEnabled="false">
 
-            <include layout="@layout/layout_simple_toolbar_with_action" />
+            <include
+                layout="@layout/layout_simple_toolbar_with_action"
+                tools:layout="@layout/layout_simple_toolbar_with_action" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/pager_root"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/ethernity_background_gray">
 
@@ -34,7 +38,6 @@
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingBottom="16dp"
-                app:layout_constraintBottom_toTopOf="@id/tab_layout"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -54,9 +57,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginStart="@dimen/dp16"
-                android:layout_marginTop="@dimen/dp30"
-                android:layout_marginEnd="@dimen/dp16"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:background="@drawable/background_wallet_tab"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +67,7 @@
                 app:layout_scrollFlags="enterAlways"
                 app:tabIndicatorHeight="0dp"
                 app:tabSelectedTextColor="@color/white"
-                app:tabTextColor="@color/ethernity_text" />
+                app:tabTextColor="@color/ethernity_tab_selected" />
 
             <com.alphawallet.app.widget.NotificationView
                 android:id="@+id/wallet_notification"

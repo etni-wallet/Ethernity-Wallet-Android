@@ -47,7 +47,7 @@
             android:background="@color/transparent"
             android:contentDescription="@string/scan_qr"
             android:padding="@dimen/small_12"
-            android:src="@drawable/ic_camera_scan" />
+            android:src="@drawable/ic_scan" />
 
     </RelativeLayout>
 

@@ -6,6 +6,7 @@ import static com.alphawallet.app.C.ErrorCode.EMPTY_COLLECTION;
 import static com.alphawallet.app.C.Key.WALLET;
 import static com.alphawallet.app.repository.TokensRealmSource.ADDRESS_FORMAT;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
@@ -20,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,10 +80,12 @@ import com.alphawallet.app.util.LocaleUtils;
 import com.alphawallet.app.viewmodel.ActivityViewModel;
 import com.alphawallet.app.viewmodel.WalletViewModel;
 import com.alphawallet.app.viewmodel.WalletsViewModel;
+import com.alphawallet.app.widget.AddWalletView;
 import com.alphawallet.app.widget.EmptyTransactionsView;
 import com.alphawallet.app.widget.NotificationView;
 import com.alphawallet.app.widget.ProgressView;
 import com.alphawallet.app.widget.SystemView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -138,6 +142,8 @@ public class WalletFragment extends BaseFragment implements
     private long realmUpdateTime;
     private TextView assetsTab;
     private TextView transactionsTab;
+    private Dialog dialog;
+    private ImageView addImageView;
 
     @Nullable
     @Override
@@ -200,16 +206,20 @@ public class WalletFragment extends BaseFragment implements
         recyclerView.addRecyclerListener(holder -> adapter.onRViewRecycled(holder));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        cardsAdapter = new WalletCardAdapter(this::showCreateWalletMenu);
+        cardsAdapter = new WalletCardAdapter(this::onCardMenuWallet);
         cardsRecyclerView.setAdapter(cardsAdapter);
+        cardsRecyclerView.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                Wallet wallet = cardsAdapter.getWallet(position);
+                adapter.setWalletAddress(wallet.address);
+                activityAdapter.setDefaultWallet(wallet);
+            }
+        });
 
         SnapHelper helper = new PagerSnapHelper();
         helper.attachToRecyclerView(recyclerView);
-    }
-
-    private Unit showCreateWalletMenu() {
-        Toast.makeText(requireContext(), "Show menu", Toast.LENGTH_SHORT).show();
-        return null;
     }
 
     private void initViewModel() {
@@ -234,6 +244,23 @@ public class WalletFragment extends BaseFragment implements
             activityAdapter.updateActivityItems(buildTransactionList(realm, activityItems).toArray(new ActivityMeta[0]));
             showEmptyTx();
         }
+    }
+
+    private Unit onCardMenuWallet() {
+        AddWalletView addWalletView = new AddWalletView(getContext());
+//        addWalletView.setOnNewWalletClickListener(getContext());
+//        addWalletView.setOnImportWalletClickListener(getContext());
+//        addWalletView.setOnWatchWalletClickListener(getContext());
+//        addWalletView.setOnCloseActionListener(getContext());
+        dialog = new BottomSheetDialog(getContext());
+//        dialog = new BottomSheetDialog(this, R.style.Aw_Component_BottomSheetDialog);
+        dialog.setContentView(addWalletView);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+//        BottomSheetBehavior behavior = BottomSheetBehavior.from((View) addWalletView.getParent());
+//        dialog.setOnShowListener(dialog -> behavior.setPeekHeight(addWalletView.getHeight()));
+        dialog.show();
+        return null;
     }
 
     private void showEmptyTx() {
@@ -298,6 +325,8 @@ public class WalletFragment extends BaseFragment implements
         systemView = view.findViewById(R.id.system_view);
         recyclerView = view.findViewById(R.id.list);
         cardsRecyclerView = view.findViewById(R.id.wallet_cards);
+        addImageView = view.findViewById(R.id.toolbar_action_add);
+        addImageView.setOnClickListener( l -> onCardMenuWallet());
 
         systemView.showProgress(true);
 

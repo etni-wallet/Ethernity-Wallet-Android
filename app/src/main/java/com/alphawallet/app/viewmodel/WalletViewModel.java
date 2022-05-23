@@ -28,11 +28,13 @@ import com.alphawallet.app.entity.tokens.TokenCardMeta;
 import com.alphawallet.app.interact.ChangeTokenEnableInteract;
 import com.alphawallet.app.interact.FetchTokensInteract;
 import com.alphawallet.app.interact.GenericWalletInteract;
+import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.repository.OnRampRepositoryType;
 import com.alphawallet.app.repository.PreferenceRepositoryType;
 import com.alphawallet.app.repository.WalletItem;
 import com.alphawallet.app.router.ManageWalletsRouter;
 import com.alphawallet.app.router.MyAddressRouter;
+import com.alphawallet.app.router.SendTokenRouter;
 import com.alphawallet.app.router.TokenDetailRouter;
 import com.alphawallet.app.service.AssetDefinitionService;
 import com.alphawallet.app.service.RealmManager;
@@ -394,5 +396,12 @@ public class WalletViewModel extends BaseViewModel
         Intent intent = new Intent();
         intent.putExtra(C.DAPP_URL_LOAD, onRampRepository.getUri(address, null));
         return intent;
+    }
+
+    public void sendTokens(Activity activity, Wallet wallet){
+        long chainId = EthereumNetworkRepository.getOverrideToken().chainId;
+        Token token = getTokensService().getToken(chainId, wallet.address);
+        new SendTokenRouter().open(activity, wallet.address, token.getSymbol(), token.tokenInfo.decimals,
+                wallet, token, token.tokenInfo.chainId);
     }
 }

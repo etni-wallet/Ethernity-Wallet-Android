@@ -67,6 +67,7 @@ import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.repository.entity.RealmToken;
 import com.alphawallet.app.repository.entity.RealmTransfer;
+import com.alphawallet.app.router.SendTokenRouter;
 import com.alphawallet.app.service.KeyService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
@@ -322,17 +323,14 @@ public class WalletFragment extends BaseFragment implements
         }
     }
 
-    private void onCreateWalletError(ErrorEnvelope errorEnvelope)
-    {
+    private void onCreateWalletError(ErrorEnvelope errorEnvelope) {
         dialogError = errorEnvelope.message;
         if (handler != null) handler.post(displayWalletError);
     }
 
-    private final Runnable displayWalletError = new Runnable()
-    {
+    private final Runnable displayWalletError = new Runnable() {
         @Override
-        public void run()
-        {
+        public void run() {
             aDialog = new AWalletAlertDialog(getActivity());
             aDialog.setTitle(R.string.title_dialog_error);
             aDialog.setIcon(AWalletAlertDialog.ERROR);
@@ -351,11 +349,8 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private Unit onWalletSend() {
-//        Wallet wallet = activityAdapter.getWallet();
-//        long chainId = getArguments().getLong(C.EXTRA_CHAIN_ID, EthereumNetworkBase.MAINNET_ID);
-//        Token token = viewModel.getTokensService().getToken(chainId, wallet.address);
-//        new SendTokenRouter().open(getActivity(), wallet.address, token.getSymbol(), token.tokenInfo.decimals,
-//                wallet, token, token.tokenInfo.chainId);
+        Wallet wallet = activityAdapter.getWallet();
+        viewModel.sendTokens(requireActivity(), wallet);
         return null;
     }
 

@@ -7,6 +7,7 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.alphawallet.app.R;
 import com.alphawallet.app.ui.widget.entity.ManageTokensData;
@@ -18,9 +19,15 @@ public class SearchTokensHolder extends BinderViewHolder<ManageTokensData> {
         void onFocus();
     }
 
+    public interface AddHideTokenHandler {
+        void onAddHideToken();
+    }
+
     final EditText editSearch;
     final SearchHandler searchHandler;
+    final AddHideTokenHandler tokenHandler;
     final View searchTokenClick;
+    final AppCompatImageView addHideToken;
     String wallet;
 
     @Override
@@ -36,13 +43,19 @@ public class SearchTokensHolder extends BinderViewHolder<ManageTokensData> {
         searchTokenClick.setOnClickListener(v -> {
             if (searchHandler != null) searchHandler.onFocus();
         });
+
+        addHideToken.setOnClickListener(v -> {
+            if (tokenHandler != null) tokenHandler.onAddHideToken();
+        });
     }
 
-    public SearchTokensHolder(int res_id, ViewGroup parent, SearchHandler handler) {
+    public SearchTokensHolder(int res_id, ViewGroup parent, SearchHandler handler, AddHideTokenHandler tokenHandler) {
         super(res_id, parent);
         this.editSearch = findViewById(R.id.edit_search);
         this.searchHandler = handler;
+        this.tokenHandler = tokenHandler;
         this.searchTokenClick = findViewById(R.id.click_layer);
+        this.addHideToken = findViewById(R.id.manage_tokens);
         this.wallet = null;
     }
 }

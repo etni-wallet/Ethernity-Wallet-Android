@@ -238,10 +238,7 @@ public class WalletViewModel extends BaseViewModel
             myAddressRouter.open(context, defaultWallet.getValue());
         });
         actionsView.setOnAddHideTokensClickListener(v -> {
-            dialog.dismiss();
-            Intent intent = new Intent(context, TokenManagementActivity.class);
-            intent.putExtra(EXTRA_ADDRESS, getWalletAddr());
-            context.startActivity(intent);
+            addHideToken(context);
         });
         actionsView.setOnRenameThisWalletClickListener(v -> {
             dialog.dismiss();
@@ -256,6 +253,13 @@ public class WalletViewModel extends BaseViewModel
         BottomSheetBehavior<?> behavior = BottomSheetBehavior.from((View) actionsView.getParent());
         dialog.setOnShowListener(dialog -> behavior.setPeekHeight(actionsView.getHeight()));
         dialog.show();
+    }
+
+    public void addHideToken(Context context){
+        if(dialog != null) dialog.dismiss();
+        Intent intent = new Intent(context, TokenManagementActivity.class);
+        intent.putExtra(EXTRA_ADDRESS, getWalletAddr());
+        context.startActivity(intent);
     }
 
     public void showQRCodeScanning(Activity activity) {

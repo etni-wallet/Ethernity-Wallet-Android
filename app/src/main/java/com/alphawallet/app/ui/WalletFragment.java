@@ -67,7 +67,6 @@ import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.repository.entity.RealmToken;
 import com.alphawallet.app.repository.entity.RealmTransfer;
-import com.alphawallet.app.router.SendTokenRouter;
 import com.alphawallet.app.service.KeyService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
@@ -90,7 +89,6 @@ import com.alphawallet.app.widget.EmptyTransactionsView;
 import com.alphawallet.app.widget.NotificationView;
 import com.alphawallet.app.widget.ProgressView;
 import com.alphawallet.app.widget.SystemView;
-import com.alphawallet.ethereum.EthereumNetworkBase;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -227,6 +225,7 @@ public class WalletFragment extends BaseFragment implements
                 Wallet wallet = walletAdapter.getWallet(position);
                 adapter.setWalletAddress(wallet.address);
                 activityAdapter.setDefaultWallet(wallet);
+                refreshList();
             }
         });
 
@@ -254,16 +253,15 @@ public class WalletFragment extends BaseFragment implements
     private void onItemsLoaded(ActivityMeta[] activityItems) {
         try (Realm realm = viewModel.getRealmInstance()) {
             activityAdapter.updateActivityItems(buildTransactionList(realm, activityItems).toArray(new ActivityMeta[0]));
-            showEmptyTx();
         }
     }
 
     private Unit onWalletAdd() {
         AddWalletView addWalletView = new AddWalletView(getContext());
         addWalletView.setOnNewWalletClickListener(this::onNewWallet);
-//        addWalletView.setOnImpoxrtWalletClickListener(getContext());
+        addWalletView.setOnImportWalletClickListener(this::onImportWallet);
 //        addWalletView.setOnWatchWalletClickListener(getContext());
-//        addWalletView.setOnCloseActionListener(getContext());
+        addWalletView.setOnCloseActionListener(this::onCloseDialogMenu);
         dialog = new BottomSheetDialog(requireContext());
 //        dialog = new BottomSheetDialog(this, R.style.Aw_Component_BottomSheetDialog);
         dialog.setContentView(addWalletView);
@@ -303,6 +301,27 @@ public class WalletFragment extends BaseFragment implements
         });
     }
 
+    private void onImportWallet(View view) {
+        hideDialog();
+        walletsViewModel.importWallet(getActivity());
+    }
+
+    private void onCloseDialogMenu(View view) {
+        hideDialog();
+    }
+
+    private void hideDialog() {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+            dialog = null;
+        }
+
+        if (aDialog != null && aDialog.isShowing()) {
+            aDialog.dismiss();
+            aDialog = null;
+        }
+    }
+
     private void onCreateWalletError(ErrorEnvelope errorEnvelope)
     {
         dialogError = errorEnvelope.message;
@@ -332,11 +351,11 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private Unit onWalletSend() {
-        Wallet wallet = activityAdapter.getWallet();
-        long chainId = getArguments().getLong(C.EXTRA_CHAIN_ID, EthereumNetworkBase.MAINNET_ID);
-        Token token = viewModel.getTokensService().getToken(chainId, wallet.address);
-        new SendTokenRouter().open(getActivity(), wallet.address, token.getSymbol(), token.tokenInfo.decimals,
-                wallet, token, token.tokenInfo.chainId);
+//        Wallet wallet = activityAdapter.getWallet();
+//        long chainId = getArguments().getLong(C.EXTRA_CHAIN_ID, EthereumNetworkBase.MAINNET_ID);
+//        Token token = viewModel.getTokensService().getToken(chainId, wallet.address);
+//        new SendTokenRouter().open(getActivity(), wallet.address, token.getSymbol(), token.tokenInfo.decimals,
+//                wallet, token, token.tokenInfo.chainId);
         return null;
     }
 
@@ -600,14 +619,12 @@ public class WalletFragment extends BaseFragment implements
                         assetsTab.setTextColor(requireContext().getColor(R.color.white));
                         recyclerView.setAdapter(adapter);
                         viewModel.prepare();
-                        hideEmptyTx();
                         break;
                     case ASSETS: //Transactions tab
                         transactionsTab.setTextColor(requireContext().getColor(R.color.white));
                         assetsTab.setTextColor(requireContext().getColor(R.color.ethernity_tab_selected));
                         recyclerView.setAdapter(activityAdapter);
                         activityViewModel.prepare();
-                        showEmptyTx();
                         break;
                 }
             }
@@ -1034,5 +1051,10 @@ public class WalletFragment extends BaseFragment implements
     public void onSearchClicked() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onAddHideToken() {
+        viewModel.addHideToken(requireContext());
     }
 }

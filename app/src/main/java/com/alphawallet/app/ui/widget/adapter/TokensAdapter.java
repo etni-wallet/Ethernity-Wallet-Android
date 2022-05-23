@@ -164,7 +164,7 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder> {
                 break;
 
             case SearchTokensHolder.VIEW_TYPE:
-                holder = new SearchTokensHolder(R.layout.layout_manage_token_search, parent, tokensAdapterCallback::onSearchClicked);
+                holder = new SearchTokensHolder(R.layout.layout_manage_token_search, parent, tokensAdapterCallback::onSearchClicked, tokensAdapterCallback::onAddHideToken);
                 break;
 
             case WarningHolder.VIEW_TYPE:

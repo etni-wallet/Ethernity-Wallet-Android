@@ -31,7 +31,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:testOnly="false"
-        android:theme="@style/AppTheme.NoActionBar"
+        android:theme="@style/Theme.App.Starting"
         android:usesCleartextTraffic="true"
         tools:replace="android:name, android:theme, android:allowBackup">
 
@@ -39,7 +39,7 @@
             android:name=".ui.HomeActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar.Splash"
+            android:theme="@style/Theme.App.Starting"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,6 +47,7 @@
             </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -97,7 +98,8 @@
 
         <activity
             android:name=".ui.WalletsActivity"
-            android:label="@string/title_account_list" />
+            android:label="@string/title_account_list"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SplashActivity"
@@ -110,192 +112,239 @@
         <activity
             android:name=".ui.NameThisWalletActivity"
             android:label="@string/name_this_wallet"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".ui.ImportWalletActivity"
             android:label="@string/title_import"
             android:screenOrientation="sensor"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
 
         <activity
             android:name=".ui.TransactionDetailActivity"
-            android:label="@string/title_transaction_details" />
+            android:label="@string/title_transaction_details"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.MyAddressActivity"
-            android:label="@string/title_my_address" />
+            android:label="@string/title_my_address"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SendActivity"
             android:label="@string/title_activity_send"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.AddTokenActivity"
-            android:label="@string/title_add_token" />
+            android:label="@string/title_add_token"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.AssetDisplayActivity"
-            android:label="@string/title_use_token" />
+            android:label="@string/title_use_token"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.RedeemSignatureDisplayActivity"
-            android:label="@string/title_use_token" />
+            android:label="@string/title_use_token"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.GasSettingsActivity"
-            android:label="@string/title_send_settings" />
+            android:label="@string/title_send_settings"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SellDetailActivity"
             android:label="@string/action_sell"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".ui.RedeemAssetSelectActivity"
-            android:label="@string/title_redeem" />
+            android:label="@string/title_redeem"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.ImportTokenActivity"
-            android:label="@string/title_import_token" />
+            android:label="@string/title_import_token"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.TransferTicketDetailActivity"
-            android:label="@string/label_transfer_ticket_detail" />
+            android:label="@string/label_transfer_ticket_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.TokenDetailActivity"
-            android:label="@string/token_details" />
+            android:label="@string/token_details"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.Erc20DetailActivity"
-            android:label="@string/erc20_details" />
+            android:label="@string/erc20_details"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.TokenFunctionActivity"
-            android:label="@string/token_function" />
+            android:label="@string/token_function"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.FunctionActivity"
-            android:label="@string/token_function" />
+            android:label="@string/token_function"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.WalletActionsActivity"
-            android:label="Wallet Actions" />
+            android:label="Wallet Actions"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.AddEditDappActivity"
-            android:label="Add DApp" />
+            android:label="Add DApp"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SelectNetworkActivity"
-            android:label="Select DApp Browser Network" />
+            android:label="Select DApp Browser Network"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SelectNetworkFilterActivity"
-            android:label="Select Network Filters" />
+            android:label="Select Network Filters"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.TokenManagementActivity"
-            android:label="Manage Tokens" />
+            android:label="Manage Tokens"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SelectLocaleActivity"
-            android:label="Select Language" />
+            android:label="Select Language"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SelectCurrencyActivity"
-            android:label="Select Currency" />
+            android:label="Select Currency"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.ScammerWarningActivity"
             android:label="Scammer Warning"
-            android:noHistory="true" />
+            android:noHistory="true"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.BackupKeyActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
             android:name=".ui.SupportSettingsActivity"
-            android:label="Support Settings" />
+            android:label="Support Settings"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.AdvancedSettingsActivity"
-            android:label="Advanced Settings" />
+            android:label="Advanced Settings"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.StaticViewer"
-            android:label="View Text" />
+            android:label="View Text"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.TokenScriptManagementActivity"
-            android:label="@string/tokenscript_management" />
+            android:label="@string/tokenscript_management"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.TokenActivity"
-            android:label="@string/activity_label" />
+            android:label="@string/activity_label"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.WalletConnectActivity"
             android:label="WalletConnect"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.BackupFlowActivity"
-            android:label="WalletConnect" />
+            android:label="WalletConnect"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SignDetailActivity"
-            android:label="Sign Details" />
+            android:label="Sign Details"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.WalletConnectSessionActivity"
-            android:label="WalletConnect Sessions" />
+            android:label="WalletConnect Sessions"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.TransactionSuccessActivity"
-            android:label="Transaction Success" />
+            android:label="Transaction Success"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SetPriceAlertActivity"
             android:label="Set New Alert"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".ui.AddCustomRPCNetworkActivity"
-            android:label="@string/title_activity_add_custom_rpcnetwork" />
+            android:label="@string/title_activity_add_custom_rpcnetwork"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.NFTActivity"
-            android:label="ERC721 Master Activity" />
+            android:label="ERC721 Master Activity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.Erc1155AssetSelectActivity"
-            android:label="ERC1155 Asset Selection" />
+            android:label="ERC1155 Asset Selection"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.NFTAssetDetailActivity"
-            android:label="ERC1155 Asset Details" />
+            android:label="ERC1155 Asset Details"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.Erc1155AssetListActivity"
-            android:label="ERC1155 Asset Details" />
+            android:label="ERC1155 Asset Details"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.TransferNFTActivity"
-            android:label="NFT Transfer" />
+            android:label="NFT Transfer"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SelectThemeActivity"
-            android:label="Select Mode" />
+            android:label="Select Mode"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.SearchActivity"
-            android:label="Search Tokens" />
+            android:label="Search Tokens"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".ui.QRScanning.QRScanner"
-            android:label="@string/qr_scanner" />
+            android:label="@string/qr_scanner"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".service.PriceAlertsService"

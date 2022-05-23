@@ -77,6 +77,7 @@
 
     <!-- Component Dimens -->
     <dimen name="dialog_corner_radius">4dp</dimen>
+    <dimen name="button_corner_radius">8dp</dimen>
     <dimen name="action_sheet_header">60dp</dimen>
 
 </resources>

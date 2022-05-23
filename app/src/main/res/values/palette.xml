@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<!--
+    <!--
 
-	These colors represent the branding palette of AlphaWallet.
+    These colors represent the branding palette of AlphaWallet.
 
-	** ATTENTION **
-	If you want to customize or rebrand the app, define your new colors here.
+    ** ATTENTION **
+    If you want to customize or rebrand the app, define your new colors here.
 
-	AVOID referencing these colors directly onto the view, as these do not provide
-	flexibility for light/dark modes. Prioritize using the color references defined
-	in `themes.xml` (ex. ?colorPrimary, ?colorSurface, etc).
+    AVOID referencing these colors directly onto the view, as these do not provide
+    flexibility for light/dark modes. Prioritize using the color references defined
+    in `themes.xml` (ex. ?colorPrimary, ?colorSurface, etc).
 
 	-->
 	<color name="pinkish_grey">#bdbdbd</color>
@@ -52,7 +52,37 @@
 	<color name="venus">#232323</color>
 	<color name="shark">#232325</color>
 	<color name="atlantis">#7cca42</color>
+
 <!-- Ethernity -->
 	<color name="accent_orange">#F89430</color>
 	<color name="light_gray">#F0F0F0</color>
+
+
+    <!--	Ethernity-->
+
+    <!--	Primary Colors-->
+    <color name="electric_blue_lightest">#0C86FF</color>
+    <color name="electric_blue_lighter">#0A42E7</color>
+    <color name="electric_blue_light">#0808DD</color>
+    <color name="electric_blue">#0000B7</color>
+    <color name="dark_blue">#030363</color>
+    <color name="dark_blue_light">#04047C</color>
+    <color name="dark_blue_lighter">#0E0E88</color>
+    <color name="dark_blue_lightest">#131395</color>
+    <!--	States-->
+    <color name="primary_button">#F89430</color>
+    <color name="primary_button_hover">#FFB259</color>
+    <color name="light_mode_selected">#FDE4CB</color>
+    <color name="dark_mode_selected">#432F22</color>
+    <color name="primary_button_click">#D1711D</color>
+
+    <color name="secondary_button">#ffffff</color>
+    <color name="secondary_button_hover">#FFECD8</color>
+    <color name="secondary_button_click">#FFCFA0</color>
+    <!--	Alerts-->
+    <color name="success">#61C454</color>
+    <color name="link">#0C86FF</color>
+    <color name="warning">#F5BD4F</color>
+    <color name="alert_error">#EE6A5F</color>
+
 </resources>

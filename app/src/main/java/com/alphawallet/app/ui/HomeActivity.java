@@ -38,6 +38,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -195,6 +196,8 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         LocaleUtils.setDeviceLocale(getBaseContext());
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
         LocaleUtils.setActiveLocale(this);
         getLifecycle().addObserver(this);

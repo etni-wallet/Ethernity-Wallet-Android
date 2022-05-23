@@ -509,7 +509,7 @@
     <string name="postponed_backup_warning">Backup postponed.</string>
     <string name="key_error">Key Error</string>
     <string name="password_6_characters_or_more">Password 6 characters or more</string>
-    <string name="create_a_new_wallet">Create a new Wallet</string>
+    <string name="create_a_new_wallet">Create New Wallet</string>
     <string name="watch">Watch</string>
     <string name="already_have_a_wallet">I already have a wallet:</string>
     <string name="watch_wallet">Watch-only Wallets</string>
@@ -902,7 +902,6 @@
     <string name="switch_to_list_view">Switch to List View</string>
     <string name="reload_metadata">Reload Metadata</string>
     <string name="label_market_price">Market Price:</string>
-    <string name="i_already_have_a_wallet">I already have a Wallet</string>
     <string name="title_select_theme">Select Mode</string>
     <string name="title_network_info">Network Info</string>
     <string name="website_text">Website</string>

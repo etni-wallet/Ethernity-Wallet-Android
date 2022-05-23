@@ -52,7 +52,7 @@ Java_com_alphawallet_app_repository_EthereumNetworkBase_getInfuraKey( JNIEnv* en
 #elif (HAS_INFURA == 1)
     return (*env)->NewStringUTF(env, IFKEY);
 #else
-    const jstring key = "da3717f25f824cc1baa32d812386d93f";
+    const jstring key = "0455f990966a465296240e83b7202833";
     return (*env)->NewStringUTF(env, key);
 #endif
 }
@@ -120,7 +120,7 @@ Java_com_alphawallet_app_repository_EthereumNetworkBase_getSecondaryInfuraKey( J
 #elif (HAS_INFURA == 1)
     return (*env)->NewStringUTF(env, IFKEY);
 #else
-    const jstring key = "da3717f25f824cc1baa32d812386d93f";
+    const jstring key = "0455f990966a465296240e83b7202833";
     return (*env)->NewStringUTF(env, key);
 #endif
 }

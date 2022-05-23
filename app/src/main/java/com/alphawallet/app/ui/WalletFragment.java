@@ -7,6 +7,7 @@ import static com.alphawallet.app.C.Key.WALLET;
 import static com.alphawallet.app.repository.TokensRealmSource.ADDRESS_FORMAT;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
@@ -48,12 +49,12 @@ import com.alphawallet.app.entity.ActivityMeta;
 import com.alphawallet.app.entity.BackupOperationType;
 import com.alphawallet.app.entity.BackupTokenCallback;
 import com.alphawallet.app.entity.ContractLocator;
+import com.alphawallet.app.entity.CreateWalletCallbackInterface;
 import com.alphawallet.app.entity.CustomViewSettings;
 import com.alphawallet.app.entity.ErrorEnvelope;
 import com.alphawallet.app.entity.ServiceSyncCallback;
 import com.alphawallet.app.entity.SyncCallback;
 import com.alphawallet.app.entity.TokenFilter;
-import com.alphawallet.app.entity.TokensMapping;
 import com.alphawallet.app.entity.TransactionMeta;
 import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.WalletPage;
@@ -67,11 +68,12 @@ import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.repository.entity.RealmToken;
 import com.alphawallet.app.repository.entity.RealmTransfer;
 import com.alphawallet.app.router.SendTokenRouter;
+import com.alphawallet.app.service.KeyService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
 import com.alphawallet.app.ui.widget.adapter.ActivityAdapter;
 import com.alphawallet.app.ui.widget.adapter.TokensAdapter;
-import com.alphawallet.app.ui.widget.adapter.WalletCardAdapter;
+import com.alphawallet.app.ui.widget.adapter.WalletAdapter;
 import com.alphawallet.app.ui.widget.entity.AvatarWriteCallback;
 import com.alphawallet.app.ui.widget.entity.TokenTransferData;
 import com.alphawallet.app.ui.widget.entity.WarningData;
@@ -82,6 +84,7 @@ import com.alphawallet.app.util.LocaleUtils;
 import com.alphawallet.app.viewmodel.ActivityViewModel;
 import com.alphawallet.app.viewmodel.WalletViewModel;
 import com.alphawallet.app.viewmodel.WalletsViewModel;
+import com.alphawallet.app.widget.AWalletAlertDialog;
 import com.alphawallet.app.widget.AddWalletView;
 import com.alphawallet.app.widget.EmptyTransactionsView;
 import com.alphawallet.app.widget.NotificationView;
@@ -131,12 +134,12 @@ public class WalletFragment extends BaseFragment implements
     private ActivityAdapter activityAdapter;
     private SystemView systemView;
     private TokensAdapter adapter;
-    private WalletCardAdapter cardsAdapter;
+    private WalletAdapter walletAdapter;
     private View selectedToken;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private String importFileName;
     private RecyclerView recyclerView;
-    private ViewPager2 cardsRecyclerView;
+    private ViewPager2 walletHorizontalList;
     private SwipeRefreshLayout refreshLayout;
     private boolean isVisible;
     private TokenFilter currentTabPos = TokenFilter.ALL;
@@ -145,8 +148,9 @@ public class WalletFragment extends BaseFragment implements
     private long realmUpdateTime;
     private TextView assetsTab;
     private TextView transactionsTab;
+    private AWalletAlertDialog aDialog;
+    private String dialogError;
     private Dialog dialog;
-    private ImageView addImageView;
 
     @Nullable
     @Override
@@ -209,13 +213,18 @@ public class WalletFragment extends BaseFragment implements
         recyclerView.addRecyclerListener(holder -> adapter.onRViewRecycled(holder));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        cardsAdapter = new WalletCardAdapter(this::onWalletMenu, this::onWalletSend, this::onWalletReceive);
-        cardsRecyclerView.setAdapter(cardsAdapter);
-        cardsRecyclerView.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+        walletAdapter = new WalletAdapter(
+                this::onWalletAdd,
+                this::onWalletMenu,
+                this::onWalletSend,
+                this::onWalletReceive
+        );
+        walletHorizontalList.setAdapter(walletAdapter);
+        walletHorizontalList.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Wallet wallet = cardsAdapter.getWallet(position);
+                Wallet wallet = walletAdapter.getWallet(position);
                 adapter.setWalletAddress(wallet.address);
                 activityAdapter.setDefaultWallet(wallet);
             }
@@ -251,7 +260,7 @@ public class WalletFragment extends BaseFragment implements
 
     private Unit onWalletAdd() {
         AddWalletView addWalletView = new AddWalletView(getContext());
-//        addWalletView.setOnNewWalletClickListener(getContext());
+        addWalletView.setOnNewWalletClickListener(this::onNewWallet);
 //        addWalletView.setOnImpoxrtWalletClickListener(getContext());
 //        addWalletView.setOnWatchWalletClickListener(getContext());
 //        addWalletView.setOnCloseActionListener(getContext());
@@ -265,6 +274,57 @@ public class WalletFragment extends BaseFragment implements
         dialog.show();
         return null;
     }
+
+    private void onNewWallet(View view) {
+        walletsViewModel.newWallet(getActivity(), new CreateWalletCallbackInterface() {
+            @Override
+            public void HDKeyCreated(String address, Context ctx, KeyService.AuthenticationLevel level) {
+                if (address == null) onCreateWalletError(new ErrorEnvelope(""));
+                else walletsViewModel.StoreHDWallet(address, level);
+                dialog.dismiss();
+            }
+
+            @Override
+            public void keyFailure(String message) {
+                onCreateWalletError(new ErrorEnvelope(message));
+                dialog.dismiss();
+            }
+
+            @Override
+            public void cancelAuthentication() {
+                onCreateWalletError(new ErrorEnvelope(getString(R.string.authentication_cancelled)));
+                dialog.dismiss();
+            }
+
+            @Override
+            public void fetchMnemonic(String mnemonic) {
+
+            }
+        });
+    }
+
+    private void onCreateWalletError(ErrorEnvelope errorEnvelope)
+    {
+        dialogError = errorEnvelope.message;
+        if (handler != null) handler.post(displayWalletError);
+    }
+
+    private final Runnable displayWalletError = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            aDialog = new AWalletAlertDialog(getActivity());
+            aDialog.setTitle(R.string.title_dialog_error);
+            aDialog.setIcon(AWalletAlertDialog.ERROR);
+            aDialog.setMessage(TextUtils.isEmpty(dialogError)
+                    ? getString(R.string.error_create_wallet)
+                    : dialogError);
+            aDialog.setButtonText(R.string.dialog_ok);
+            aDialog.setButtonListener(v -> aDialog.dismiss());
+            aDialog.show();
+        }
+    };
 
     private Unit onWalletMenu() {
         viewModel.showMyAddress(requireContext());
@@ -339,15 +399,15 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private void onFetchWallets(Wallet[] wallets) {
-        cardsAdapter.setWallets(Arrays.asList(wallets));
+        walletAdapter.setWallets(Arrays.asList(wallets));
     }
 
     private void initViews(@NonNull View view) {
         refreshLayout = view.findViewById(R.id.refresh_layout);
         systemView = view.findViewById(R.id.system_view);
         recyclerView = view.findViewById(R.id.list);
-        cardsRecyclerView = view.findViewById(R.id.wallet_cards);
-        addImageView = view.findViewById(R.id.toolbar_action_add);
+        walletHorizontalList = view.findViewById(R.id.wallet_list_horizontal);
+        ImageView addImageView = view.findViewById(R.id.toolbar_action_add);
         addImageView.setOnClickListener(l -> onWalletAdd());
 
         systemView.showProgress(true);
@@ -524,8 +584,8 @@ public class WalletFragment extends BaseFragment implements
         transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_tab_selected));
         recyclerView.setAdapter(adapter);
 
-        TabLayout dotsTabLayout = view.findViewById(R.id.wallet_card_dots);
-        new TabLayoutMediator(dotsTabLayout, cardsRecyclerView, (tab, position) -> {
+        TabLayout dotsTabLayout = view.findViewById(R.id.wallet_list_indicator);
+        new TabLayoutMediator(dotsTabLayout, walletHorizontalList, (tab, position) -> {
         }).attach();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

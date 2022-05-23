@@ -15,17 +15,19 @@ import com.alphawallet.app.entity.Wallet
 import com.alphawallet.app.widget.CopyTextView
 
 
-class WalletCardAdapter(
-    val menuAction: () -> Unit,
-    val sendAction: () -> Unit,
-    val receiveAction: () -> Unit,
+class WalletAdapter(
+    private val addAction: () -> Unit,
+    private val menuAction: () -> Unit,
+    private val sendAction: () -> Unit,
+    private val receiveAction: () -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var wallets = emptyList<Wallet>()
 
     fun setWallets(wallets: List<Wallet>) {
         val list = wallets.toMutableList()
-        list.add(Wallet(""))
+        list.add(Wallet("")) //add CreateOrImportViewHolder at the end
+        this.wallets = emptyList()
         this.wallets = list
         notifyDataSetChanged()
     }
@@ -57,7 +59,7 @@ class WalletCardAdapter(
                 holder.bind(wallets[position], menuAction, sendAction, receiveAction)
             }
             is CreateOrImportWalletViewHolder -> {
-                holder.bind { menuAction() }
+                holder.bind { addAction() }
             }
         }
     }
@@ -66,7 +68,7 @@ class WalletCardAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (position) {
-            in wallets.indices - 1 -> WalletCardViewHolder.VIEW_TYPE
+            in 0..wallets.size - 2 -> WalletCardViewHolder.VIEW_TYPE
             else -> CreateOrImportWalletViewHolder.VIEW_TYPE
         }
     }
@@ -78,25 +80,27 @@ class WalletCardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val VIEW_TYPE = 1007
     }
 
-    private val cardName = itemView.findViewById<TextView>(R.id.card_name_tv)
-    private val cardBalance = itemView.findViewById<TextView>(R.id.card_balance_tv)
-    private val copyTextAddress = itemView.findViewById<TextView>(R.id.card_address_tv)
-    private val cardActionMenu = itemView.findViewById<AppCompatImageView>(R.id.card_action_menu)
-    private val sendButton = itemView.findViewById<TextView>(R.id.card_action_send)
-    private val receiveButton = itemView.findViewById<TextView>(R.id.card_action_receive)
+    private val walletName = itemView.findViewById<TextView>(R.id.wallet_name_tv)
+    private val walletBalance = itemView.findViewById<TextView>(R.id.wallet_balance_tv)
+    private val copyTextAddress = itemView.findViewById<TextView>(R.id.wallet_address_tv)
+    private val walletActionMenu =
+        itemView.findViewById<AppCompatImageView>(R.id.wallet_action_menu)
+    private val walletActionSend = itemView.findViewById<TextView>(R.id.wallet_action_send)
+    private val walletActionReceive = itemView.findViewById<TextView>(R.id.wallet_action_receive)
 
-    fun bind(wallet: Wallet,
-             menuAction: () -> Unit,
-             sendAction: () -> Unit,
-             receiveAction: () -> Unit,
+    fun bind(
+        wallet: Wallet,
+        menuAction: () -> Unit,
+        sendAction: () -> Unit,
+        receiveAction: () -> Unit,
     ) {
-        cardName.text = wallet.name.ifBlank { "MainAccount" }
-        cardBalance.text = wallet.balance
+        walletName.text = wallet.name.ifBlank { "MainAccount" }
+        walletBalance.text = wallet.balance
         copyTextAddress.text = wallet.address
-        cardActionMenu.setOnClickListener { menuAction() }
         copyTextAddress.setOnClickListener { copyText() }
-        sendButton.setOnClickListener { sendAction() }
-        receiveButton.setOnClickListener { receiveAction() }
+        walletActionMenu.setOnClickListener { menuAction() }
+        walletActionSend.setOnClickListener { sendAction() }
+        walletActionReceive.setOnClickListener { receiveAction() }
     }
 
     private fun copyText() {

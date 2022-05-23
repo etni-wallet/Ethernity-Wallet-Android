@@ -50,13 +50,13 @@
             android:paddingEnd="@dimen/dp8"
             android:textColor="@color/white"
             app:drawableEndCompat="@drawable/ic_copy"
-            app:layout_constraintBottom_toTopOf="@id/card_action_send_tv"
+            app:layout_constraintBottom_toTopOf="@id/card_action_send"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_name_tv"
             tools:text="0xRdad274.." />
 
         <TextView
-            android:id="@+id/card_action_send_tv"
+            android:id="@+id/card_action_send"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp16"
@@ -69,12 +69,12 @@
             android:textColor="@color/white"
             app:drawableEndCompat="@drawable/ic_action_send"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/card_action_receive_tv"
+            app:layout_constraintEnd_toStartOf="@id/card_action_receive"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_address_tv" />
 
         <TextView
-            android:id="@+id/card_action_receive_tv"
+            android:id="@+id/card_action_receive"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp16"
@@ -85,9 +85,9 @@
             android:textAlignment="center"
             android:textColor="@color/white"
             app:drawableEndCompat="@drawable/ic_action_receive"
-            app:layout_constraintBaseline_toBaselineOf="@id/card_action_send_tv"
+            app:layout_constraintBaseline_toBaselineOf="@id/card_action_send"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/card_action_send_tv"
+            app:layout_constraintStart_toEndOf="@id/card_action_send"
             app:layout_constraintTop_toBottomOf="@id/card_address_tv" />
 
         <ImageView
@@ -95,10 +95,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp30"
+            android:padding="16dp"
             android:src="@drawable/ic_card_action_dots"
-            app:layout_constraintBottom_toBottomOf="@id/card_action_receive_tv"
+            app:layout_constraintBottom_toBottomOf="@id/card_action_receive"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/card_action_receive_tv" />
+            app:layout_constraintTop_toTopOf="@+id/card_action_receive" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

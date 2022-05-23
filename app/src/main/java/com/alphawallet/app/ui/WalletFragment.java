@@ -53,6 +53,7 @@ import com.alphawallet.app.entity.ErrorEnvelope;
 import com.alphawallet.app.entity.ServiceSyncCallback;
 import com.alphawallet.app.entity.SyncCallback;
 import com.alphawallet.app.entity.TokenFilter;
+import com.alphawallet.app.entity.TokensMapping;
 import com.alphawallet.app.entity.TransactionMeta;
 import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.WalletPage;
@@ -65,6 +66,7 @@ import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.repository.entity.RealmToken;
 import com.alphawallet.app.repository.entity.RealmTransfer;
+import com.alphawallet.app.router.SendTokenRouter;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
 import com.alphawallet.app.ui.widget.adapter.ActivityAdapter;
@@ -85,6 +87,7 @@ import com.alphawallet.app.widget.EmptyTransactionsView;
 import com.alphawallet.app.widget.NotificationView;
 import com.alphawallet.app.widget.ProgressView;
 import com.alphawallet.app.widget.SystemView;
+import com.alphawallet.ethereum.EthereumNetworkBase;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -206,7 +209,7 @@ public class WalletFragment extends BaseFragment implements
         recyclerView.addRecyclerListener(holder -> adapter.onRViewRecycled(holder));
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        cardsAdapter = new WalletCardAdapter(this::onCardMenuWallet);
+        cardsAdapter = new WalletCardAdapter(this::onWalletMenu, this::onWalletSend, this::onWalletReceive);
         cardsRecyclerView.setAdapter(cardsAdapter);
         cardsRecyclerView.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -246,13 +249,13 @@ public class WalletFragment extends BaseFragment implements
         }
     }
 
-    private Unit onCardMenuWallet() {
+    private Unit onWalletAdd() {
         AddWalletView addWalletView = new AddWalletView(getContext());
 //        addWalletView.setOnNewWalletClickListener(getContext());
-//        addWalletView.setOnImportWalletClickListener(getContext());
+//        addWalletView.setOnImpoxrtWalletClickListener(getContext());
 //        addWalletView.setOnWatchWalletClickListener(getContext());
 //        addWalletView.setOnCloseActionListener(getContext());
-        dialog = new BottomSheetDialog(getContext());
+        dialog = new BottomSheetDialog(requireContext());
 //        dialog = new BottomSheetDialog(this, R.style.Aw_Component_BottomSheetDialog);
         dialog.setContentView(addWalletView);
         dialog.setCancelable(true);
@@ -260,6 +263,25 @@ public class WalletFragment extends BaseFragment implements
 //        BottomSheetBehavior behavior = BottomSheetBehavior.from((View) addWalletView.getParent());
 //        dialog.setOnShowListener(dialog -> behavior.setPeekHeight(addWalletView.getHeight()));
         dialog.show();
+        return null;
+    }
+
+    private Unit onWalletMenu() {
+        viewModel.showMyAddress(requireContext());
+        return null;
+    }
+
+    private Unit onWalletSend() {
+        Wallet wallet = activityAdapter.getWallet();
+        long chainId = getArguments().getLong(C.EXTRA_CHAIN_ID, EthereumNetworkBase.MAINNET_ID);
+        Token token = viewModel.getTokensService().getToken(chainId, wallet.address);
+        new SendTokenRouter().open(getActivity(), wallet.address, token.getSymbol(), token.tokenInfo.decimals,
+                wallet, token, token.tokenInfo.chainId);
+        return null;
+    }
+
+    private Unit onWalletReceive() {
+        viewModel.showMyWalletAddress(requireContext());
         return null;
     }
 
@@ -326,7 +348,7 @@ public class WalletFragment extends BaseFragment implements
         recyclerView = view.findViewById(R.id.list);
         cardsRecyclerView = view.findViewById(R.id.wallet_cards);
         addImageView = view.findViewById(R.id.toolbar_action_add);
-        addImageView.setOnClickListener( l -> onCardMenuWallet());
+        addImageView.setOnClickListener(l -> onWalletAdd());
 
         systemView.showProgress(true);
 

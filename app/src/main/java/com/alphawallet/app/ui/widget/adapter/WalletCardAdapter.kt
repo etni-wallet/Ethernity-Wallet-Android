@@ -8,13 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.alphawallet.app.R
 import com.alphawallet.app.entity.Wallet
 import com.alphawallet.app.widget.CopyTextView
 
 
-class WalletCardAdapter(val action: () -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class WalletCardAdapter(
+    val menuAction: () -> Unit,
+    val sendAction: () -> Unit,
+    val receiveAction: () -> Unit,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var wallets = emptyList<Wallet>()
 
@@ -49,10 +54,10 @@ class WalletCardAdapter(val action: () -> Unit) : RecyclerView.Adapter<RecyclerV
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is WalletCardViewHolder -> {
-                holder.bind(wallets[position], action)
+                holder.bind(wallets[position], menuAction, sendAction, receiveAction)
             }
             is CreateOrImportWalletViewHolder -> {
-                holder.bind { action() }
+                holder.bind { menuAction() }
             }
         }
     }
@@ -76,14 +81,22 @@ class WalletCardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private val cardName = itemView.findViewById<TextView>(R.id.card_name_tv)
     private val cardBalance = itemView.findViewById<TextView>(R.id.card_balance_tv)
     private val copyTextAddress = itemView.findViewById<TextView>(R.id.card_address_tv)
-    private val cardActionMenu = itemView.findViewById<TextView>(R.id.card_action_menu)
+    private val cardActionMenu = itemView.findViewById<AppCompatImageView>(R.id.card_action_menu)
+    private val sendButton = itemView.findViewById<TextView>(R.id.card_action_send)
+    private val receiveButton = itemView.findViewById<TextView>(R.id.card_action_receive)
 
-    fun bind(wallet: Wallet, action: () -> Unit) {
+    fun bind(wallet: Wallet,
+             menuAction: () -> Unit,
+             sendAction: () -> Unit,
+             receiveAction: () -> Unit,
+    ) {
         cardName.text = wallet.name.ifBlank { "MainAccount" }
         cardBalance.text = wallet.balance
         copyTextAddress.text = wallet.address
-        cardActionMenu.setOnClickListener { action() }
+        cardActionMenu.setOnClickListener { menuAction() }
         copyTextAddress.setOnClickListener { copyText() }
+        sendButton.setOnClickListener { sendAction() }
+        receiveButton.setOnClickListener { receiveAction() }
     }
 
     private fun copyText() {

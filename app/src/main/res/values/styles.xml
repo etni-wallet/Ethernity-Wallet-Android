@@ -130,7 +130,6 @@
         <item name="android:layout_marginEnd">@dimen/standard_16</item>
         <item name="android:layout_marginBottom">@dimen/standard_16</item>
         <item name="cornerRadius">@dimen/button_corner_radius</item>
-
     </style>
 
     <style name="Aw.Component.Button.Secondary">
@@ -145,7 +144,7 @@
     <style name="Aw.Component.Button.Secondary2">
         <item name="android:lines">1</item>
         <item name="android:backgroundTint">?colorOnSurface</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">?android:textColorPrimaryInverse</item>
         <item name="android:layout_marginStart">@dimen/standard_16</item>
         <item name="android:layout_marginEnd">@dimen/standard_16</item>
         <item name="android:layout_marginBottom">@dimen/standard_16</item>

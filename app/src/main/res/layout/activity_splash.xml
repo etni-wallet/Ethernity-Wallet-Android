@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/electric_blue_lightest"
+    android:background="@drawable/welcome"
     android:fitsSystemWindows="true">
 
     <LinearLayout
@@ -18,8 +18,9 @@
             android:id="@+id/splash_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_welcome_logo"
-            android:gravity="center_horizontal" />
+            android:layout_marginTop="@dimen/hundred_200"
+            android:gravity="center_horizontal"
+            android:src="@drawable/ic_welcome_logo" />
 
     </LinearLayout>
 

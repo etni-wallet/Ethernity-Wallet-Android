@@ -227,6 +227,8 @@ public class WalletFragment extends BaseFragment implements
                 super.onPageSelected(position);
                 Wallet wallet = walletAdapter.getWallet(position);
                 adapter.setWalletAddress(wallet.address);
+                walletsViewModel.setDefaultWallet(wallet);
+                transactionFragment.setWallet(wallet);
                 refreshList();
             }
         });

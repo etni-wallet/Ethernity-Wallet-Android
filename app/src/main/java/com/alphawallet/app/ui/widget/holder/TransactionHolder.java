@@ -43,6 +43,7 @@ public class TransactionHolder extends BinderViewHolder<TransactionMeta> impleme
     private final TextView address;
     private final TextView value;
     private final TextView supplemental;
+    private final TextView tokenSymbol;
     private final TokensService tokensService;
     private final LinearLayout transactionBackground;
     private final FetchTransactionsInteract transactionsInteract;
@@ -62,6 +63,7 @@ public class TransactionHolder extends BinderViewHolder<TransactionMeta> impleme
         value = findViewById(R.id.value);
         supplemental = findViewById(R.id.supplimental);
         transactionBackground = findViewById(R.id.layout_background);
+        tokenSymbol = findViewById(R.id.token_symbol);
         tokensService = service;
         transactionsInteract = interact;
         assetService = svs;
@@ -94,7 +96,8 @@ public class TransactionHolder extends BinderViewHolder<TransactionMeta> impleme
         value.setText(transactionOperation);
         CharSequence typeValue = Utils.createFormattedValue(getContext(), operationName, shouldShowToken ? token : null);
 
-        type.setText(typeValue);
+        type.setText(operationName);
+        tokenSymbol.setText(token.getSymbol());
         //set address or contract name
         setupTransactionDetail(token);
 
@@ -102,6 +105,14 @@ public class TransactionHolder extends BinderViewHolder<TransactionMeta> impleme
         tokenIcon.bindData(token, assetService);
         tokenIcon.setStatusIcon(token.getTxStatus(transaction));
         tokenIcon.setChainIcon(token.tokenInfo.chainId);
+        switch (token.getTxStatus(transaction)) {
+            case SENT:
+                tokenIcon.loadImageFromResource(R.drawable.ic_transaction_sent);
+                break;
+            case RECEIVE:
+                tokenIcon.loadImageFromResource(R.drawable.ic_transaction_received);
+                break;
+        }
 
         String supplementalTxt = transaction.getSupplementalInfo(token.getWallet(), EthereumNetworkBase.getChainSymbol(token.tokenInfo.chainId));
         supplemental.setText(supplementalTxt);

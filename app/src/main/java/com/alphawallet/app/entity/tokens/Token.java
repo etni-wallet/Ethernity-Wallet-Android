@@ -556,7 +556,7 @@ public class Token
         if (isEthereum() && !transaction.hasInput())
         {
             //basic eth transaction
-            return getTransactionValue(transaction, precision) + " " + getSymbol();
+            return getTransactionValue(transaction, precision);// + " " + getSymbol();
         }
         else if (transaction.hasInput())
         {

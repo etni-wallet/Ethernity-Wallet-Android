@@ -199,6 +199,14 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         adapter.setDefaultWallet(wallet);
     }
 
+    public void setWallet(Wallet wallet)
+    {
+        resetTokens();
+        resetTransactions();
+        adapter.setDefaultWallet(wallet);
+        viewModel.prepare();
+    }
+
     private void showEmptyTx()
     {
         if (adapter.isEmpty())

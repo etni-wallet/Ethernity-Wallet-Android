@@ -931,4 +931,5 @@
     <string name="create_or_import_wallet">Create or Import Wallet</string>
     <string name="search_for_assets">Search for assets</string>
     <string name="search_for_transactions">Search for transactions</string>
+    <string name="transaction_item_dot_separator">.</string>
 </resources>

@@ -65,8 +65,6 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LocaleUtils.setActiveLocale(getContext());
         View view = inflater.inflate(R.layout.fragment_transactions, container, false);
-        toolbar(view);
-        setToolbarTitle(R.string.activity_label);
         initViewModel();
         initViews(view);
         return view;

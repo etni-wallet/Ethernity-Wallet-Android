@@ -882,6 +882,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                     return (BaseFragment) settingsFragment;
             }
         }
+        //todo fix racing condition IndexOutOfBoundsException: Index: 0
         else return (BaseFragment) getSupportFragmentManager().getFragments().get(page.ordinal());
     }
 

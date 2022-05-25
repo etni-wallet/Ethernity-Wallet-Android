@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,7 +68,6 @@ import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.repository.entity.RealmToken;
 import com.alphawallet.app.repository.entity.RealmTransfer;
-import com.alphawallet.app.router.SendTokenRouter;
 import com.alphawallet.app.service.KeyService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
@@ -129,17 +129,17 @@ public class WalletFragment extends BaseFragment implements
 
     private WalletViewModel viewModel;
     private WalletsViewModel walletsViewModel;
-    private ActivityViewModel activityViewModel;
-    private ActivityAdapter activityAdapter;
     private SystemView systemView;
     private TokensAdapter adapter;
     private WalletAdapter walletAdapter;
     private View selectedToken;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private String importFileName;
-    private RecyclerView recyclerView;
+    private RecyclerView assetRecyclerView;
+    private FrameLayout transactionHolder;
+    private ActivityFragment transactionFragment;
     private ViewPager2 walletHorizontalList;
-    private SwipeRefreshLayout refreshLayout;
+    private SwipeRefreshLayout refreshAssetsLayout;
     private boolean isVisible;
     private TokenFilter currentTabPos = TokenFilter.ALL;
     private Realm realm = null;
@@ -192,25 +192,27 @@ public class WalletFragment extends BaseFragment implements
                     }
                 });
 
+        transactionFragment = new ActivityFragment();
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.transaction_holder, transactionFragment)
+                .commit();
         return view;
     }
 
     private void initList() {
-        activityAdapter = new ActivityAdapter(viewModel.getTokensService(), activityViewModel.provideTransactionsInteract(),
-                viewModel.getAssetDefinitionService(), this);
         adapter = new TokensAdapter(this, viewModel.getAssetDefinitionService(), viewModel.getTokensService(),
                 tokenManagementLauncher);
         adapter.setHasStableIds(true);
         setLinearLayoutManager(TokenFilter.ALL.ordinal());
-        if (recyclerView.getItemAnimator() != null)
-            ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        if (assetRecyclerView.getItemAnimator() != null)
+            ((SimpleItemAnimator) assetRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeCallback(adapter));
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+        itemTouchHelper.attachToRecyclerView(assetRecyclerView);
 
-        refreshLayout.setOnRefreshListener(this::refreshList);
-        recyclerView.addRecyclerListener(holder -> adapter.onRViewRecycled(holder));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        refreshAssetsLayout.setOnRefreshListener(this::refreshList);
+        assetRecyclerView.addRecyclerListener(holder -> adapter.onRViewRecycled(holder));
+        assetRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         walletAdapter = new WalletAdapter(
                 this::onWalletAdd,
@@ -225,21 +227,17 @@ public class WalletFragment extends BaseFragment implements
                 super.onPageSelected(position);
                 Wallet wallet = walletAdapter.getWallet(position);
                 adapter.setWalletAddress(wallet.address);
-                activityAdapter.setDefaultWallet(wallet);
                 refreshList();
             }
         });
 
         SnapHelper helper = new PagerSnapHelper();
-        helper.attachToRecyclerView(recyclerView);
+        helper.attachToRecyclerView(assetRecyclerView);
     }
 
     private void initViewModel() {
         walletsViewModel = new ViewModelProvider(this).get(WalletsViewModel.class);
         walletsViewModel.wallets().observe(getViewLifecycleOwner(), this::onFetchWallets);
-
-        activityViewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
-        activityViewModel.activityItems().observe(getViewLifecycleOwner(), this::onItemsLoaded);
 
         viewModel = new ViewModelProvider(this)
                 .get(WalletViewModel.class);
@@ -249,12 +247,6 @@ public class WalletFragment extends BaseFragment implements
         viewModel.defaultWallet().observe(getViewLifecycleOwner(), this::onDefaultWallet);
         viewModel.onFiatValues().observe(getViewLifecycleOwner(), this::updateValue);
         viewModel.getTokensService().startWalletSync(this);
-    }
-
-    private void onItemsLoaded(ActivityMeta[] activityItems) {
-        try (Realm realm = viewModel.getRealmInstance()) {
-            activityAdapter.updateActivityItems(buildTransactionList(realm, activityItems).toArray(new ActivityMeta[0]));
-        }
     }
 
     private Unit onWalletAdd() {
@@ -349,7 +341,7 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private Unit onWalletSend() {
-        Wallet wallet = activityAdapter.getWallet();
+        Wallet wallet = viewModel.getWallet();
         viewModel.sendTokens(requireActivity(), wallet);
         return null;
     }
@@ -357,17 +349,6 @@ public class WalletFragment extends BaseFragment implements
     private Unit onWalletReceive() {
         viewModel.showMyWalletAddress(requireContext());
         return null;
-    }
-
-    private void showEmptyTx() {
-        if (activityAdapter.isEmpty()) {
-            EmptyTransactionsView emptyView = new EmptyTransactionsView(getContext(), this);
-            systemView.showEmpty(emptyView);
-        }
-    }
-
-    private void hideEmptyTx() {
-        systemView.hide();
     }
 
     private List<ActivityMeta> buildTransactionList(Realm realm, ActivityMeta[] activityItems) {
@@ -417,17 +398,18 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private void initViews(@NonNull View view) {
-        refreshLayout = view.findViewById(R.id.refresh_layout);
+        refreshAssetsLayout = view.findViewById(R.id.refresh_assets_layout);
+        transactionHolder = view.findViewById(R.id.transaction_holder);
         systemView = view.findViewById(R.id.system_view);
-        recyclerView = view.findViewById(R.id.list);
+        assetRecyclerView = view.findViewById(R.id.asset_list);
         walletHorizontalList = view.findViewById(R.id.wallet_list_horizontal);
         ImageView addImageView = view.findViewById(R.id.toolbar_action_add);
         addImageView.setOnClickListener(l -> onWalletAdd());
 
         systemView.showProgress(true);
 
-        systemView.attachRecyclerView(recyclerView);
-        systemView.attachSwipeRefreshLayout(refreshLayout);
+        systemView.attachRecyclerView(assetRecyclerView);
+        systemView.attachSwipeRefreshLayout(refreshAssetsLayout);
 
         ((ProgressView) view.findViewById(R.id.progress_view)).hide();
     }
@@ -435,7 +417,6 @@ public class WalletFragment extends BaseFragment implements
     private void onDefaultWallet(Wallet wallet) {
         if (CustomViewSettings.showManageTokens()) {
             adapter.setWalletAddress(wallet.address);
-            activityAdapter.setDefaultWallet(wallet);
         }
 
         //Do we display new user backup popup?
@@ -529,6 +510,12 @@ public class WalletFragment extends BaseFragment implements
         }
     }
 
+    private void refreshTransactions() {
+        handler.post(() -> {
+            transactionFragment.resetTransactions();
+        });
+    }
+
     private void refreshList() {
         handler.post(() ->
         {
@@ -538,8 +525,8 @@ public class WalletFragment extends BaseFragment implements
                 viewModel.notifyRefresh();
             }
             if (transactionsTab.isSelected()) {
-                activityAdapter.clear();
-                activityViewModel.prepare();
+                transactionFragment.resetTokens();
+                transactionFragment.resetTransactions();
             }
         });
     }
@@ -565,6 +552,7 @@ public class WalletFragment extends BaseFragment implements
     @Override
     public void onPause() {
         super.onPause();
+        transactionFragment.leaveFocus();
     }
 
     private void initTabLayout(View view) {
@@ -596,7 +584,7 @@ public class WalletFragment extends BaseFragment implements
         tabLayout.getTabAt(0).getCustomView().setActivated(true);
         assetsTab.setTextColor(requireContext().getColor(R.color.white));
         transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_tab_selected));
-        recyclerView.setAdapter(adapter);
+        assetRecyclerView.setAdapter(adapter);
 
         TabLayout dotsTabLayout = view.findViewById(R.id.wallet_list_indicator);
         new TabLayoutMediator(dotsTabLayout, walletHorizontalList, (tab, position) -> {
@@ -612,14 +600,17 @@ public class WalletFragment extends BaseFragment implements
                     case ALL: //Assets tab
                         transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_tab_selected));
                         assetsTab.setTextColor(requireContext().getColor(R.color.white));
-                        recyclerView.setAdapter(adapter);
                         viewModel.prepare();
+
+                        refreshAssetsLayout.setVisibility(View.VISIBLE);
+                        transactionHolder.setVisibility(View.GONE);
                         break;
                     case ASSETS: //Transactions tab
                         transactionsTab.setTextColor(requireContext().getColor(R.color.white));
                         assetsTab.setTextColor(requireContext().getColor(R.color.ethernity_tab_selected));
-                        recyclerView.setAdapter(activityAdapter);
-                        activityViewModel.prepare();
+
+                        refreshAssetsLayout.setVisibility(View.GONE);
+                        transactionHolder.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -667,7 +658,7 @@ public class WalletFragment extends BaseFragment implements
                 return 2;
             }
         });
-        recyclerView.setLayoutManager(gridLayoutManager);
+        assetRecyclerView.setLayoutManager(gridLayoutManager);
         currentTabPos = tab;
     }
 
@@ -709,6 +700,7 @@ public class WalletFragment extends BaseFragment implements
         super.onResume();
         currentTabPos = TokenFilter.ALL;
         selectedToken = null;
+        transactionFragment.comeIntoFocus();
         if (viewModel == null) {
             ((HomeActivity) getActivity()).resetFragment(WalletPage.WALLET);
         }
@@ -751,8 +743,8 @@ public class WalletFragment extends BaseFragment implements
      */
     private void checkScrollPosition() {
         int scrollPos = adapter.getScrollPosition();
-        if (scrollPos > 0 && recyclerView != null) {
-            ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(scrollPos, 0);
+        if (scrollPos > 0 && assetRecyclerView != null) {
+            ((LinearLayoutManager) assetRecyclerView.getLayoutManager()).scrollToPositionWithOffset(scrollPos, 0);
         }
     }
 
@@ -807,7 +799,7 @@ public class WalletFragment extends BaseFragment implements
             realmUpdates.removeAllChangeListeners();
         }
         if (realm != null && !realm.isClosed()) realm.close();
-        if (adapter != null && recyclerView != null) adapter.onDestroy(recyclerView);
+        if (adapter != null && assetRecyclerView != null) adapter.onDestroy(assetRecyclerView);
     }
 
     public void resetTokens() {

@@ -882,7 +882,7 @@
     <string name="switch_to_list_view">Switch to List View</string>
     <string name="reload_metadata">Reload Metadata</string>
     <string name="label_market_price">Market Price:</string>
-    <string name="i_already_have_a_wallet">I already have a Wallet</string>
+    <string name="import_wallet">I already have a Wallet</string>
     <string name="title_select_theme">Select Mode</string>
     <string name="title_network_info">Network Info</string>
     <string name="website_text">Website</string>

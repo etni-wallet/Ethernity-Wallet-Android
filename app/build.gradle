@@ -273,6 +273,9 @@ dependencies {
 
     implementation 'androidx.work:work-runtime:2.7.1'
 
+    // SplashScreen compat library
+    implementation 'androidx.core:core-splashscreen:1.0.0-beta02'
+
     //Analytics
     analyticsImplementation 'com.google.android.play:core:1.10.3'
     analyticsImplementation 'com.google.firebase:firebase-analytics:20.1.2'

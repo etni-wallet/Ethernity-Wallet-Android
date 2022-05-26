@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
+import androidx.core.splashscreen.SplashScreen;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.alphawallet.app.R;
@@ -45,7 +46,22 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
+
+
+//        fix viewmodel to provide condition for this, check HomeActivity too?
+        // Keep the splash screen visible for this Activity
+//        splashScreen.setKeepOnScreenCondition(() -> true );
+//        startSomeNextActivity();
+//        finish();
+
+        // To make status Bar Transparent and show background behind it
+        // also changed here values/themes.xml:93 and layout/activity_splash.xml:8
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
 
         //detect previous launch
         splashViewModel = new ViewModelProvider(this)

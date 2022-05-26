@@ -2,6 +2,7 @@ package com.alphawallet.app.widget;
 
 import static com.alphawallet.app.entity.WalletPage.ACTIVITY;
 import static com.alphawallet.app.entity.WalletPage.DAPP_BROWSER;
+import static com.alphawallet.app.entity.WalletPage.EDUCATION;
 import static com.alphawallet.app.entity.WalletPage.SETTINGS;
 import static com.alphawallet.app.entity.WalletPage.WALLET;
 
@@ -27,6 +28,7 @@ public class AWalletBottomNavigationView extends LinearLayout
     private final TextView walletLabel;
     private final TextView settingsBadge;
     private final TextView settingsLabel;
+    private final TextView educationLabel;
     private final RelativeLayout settingsTab;
     private final TextView activityLabel;
     private final Typeface regularTypeface;
@@ -40,6 +42,7 @@ public class AWalletBottomNavigationView extends LinearLayout
         super(context, attrs);
         inflate(context, R.layout.layout_bottom_navigation, this);
         walletLabel = findViewById(R.id.nav_wallet_text);
+        educationLabel = findViewById(R.id.nav_education_text);
         activityLabel = findViewById(R.id.nav_activity_text);
         dappBrowserLabel = findViewById(R.id.nav_browser_text);
         settingsTab = findViewById(R.id.settings_tab);
@@ -50,6 +53,7 @@ public class AWalletBottomNavigationView extends LinearLayout
         activityLabel.setOnClickListener(v -> selectItem(ACTIVITY));
         dappBrowserLabel.setOnClickListener(v -> selectItem(DAPP_BROWSER));
         settingsTab.setOnClickListener(v -> selectItem(SETTINGS));
+        educationLabel.setOnClickListener(v -> selectItem(EDUCATION));
 
         regularTypeface = ResourcesCompat.getFont(getContext(), R.font.inter_regular);
         semiboldTypeface = ResourcesCompat.getFont(getContext(), R.font.inter_semi_bold);
@@ -95,6 +99,10 @@ public class AWalletBottomNavigationView extends LinearLayout
                 activityLabel.setSelected(true);
                 activityLabel.setTypeface(semiboldTypeface);
                 break;
+            case EDUCATION:
+                educationLabel.setSelected(true);
+                educationLabel.setTypeface(semiboldTypeface);
+                break;
         }
     }
 
@@ -108,6 +116,8 @@ public class AWalletBottomNavigationView extends LinearLayout
         settingsLabel.setTypeface(regularTypeface);
         activityLabel.setSelected(false);
         activityLabel.setTypeface(regularTypeface);
+        educationLabel.setSelected(false);
+        educationLabel.setTypeface(regularTypeface);
     }
 
     public void setSettingsBadgeCount(int count)

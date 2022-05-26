@@ -25,9 +25,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:testOnly="false"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/Theme.App.Starting">
 
-        <activity android:name="com.alphawallet.app.ui.HomeActivity">
+        <activity android:name="com.alphawallet.app.ui.HomeActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

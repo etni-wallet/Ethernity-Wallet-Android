@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:colorBackground">
+    android:background="@drawable/welcome"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,8 +18,9 @@
             android:id="@+id/splash_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_logo_vertical"
-            android:gravity="center_horizontal" />
+            android:layout_marginTop="@dimen/hundred_200"
+            android:gravity="center_horizontal"
+            android:src="@drawable/ic_welcome_logo" />
 
     </LinearLayout>
 
@@ -27,26 +29,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/standard_16"
+        android:layout_margin="@dimen/large_32"
         android:orientation="vertical"
         android:visibility="gone"
         tools:visibility="visible">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_create"
-            style="@style/Aw.Component.Button.Primary"
+            android:id="@+id/button_import"
+            style="@style/Aw.Component.Button.Secondary2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/standard_16"
-            android:text="@string/create_a_new_wallet" />
+            android:text="@string/title_import" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_import"
-            style="@style/Aw.Component.Button.Secondary"
+            android:id="@+id/button_create"
+            style="@style/Aw.Component.Button.Primary2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/i_already_have_a_wallet" />
-
+            android:text="@string/create_a_new_wallet" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_watch"

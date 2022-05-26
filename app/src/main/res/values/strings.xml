@@ -511,7 +511,7 @@
     <string name="postponed_backup_warning">Backup postponed.</string>
     <string name="key_error">Key Error</string>
     <string name="password_6_characters_or_more">Password 6 characters or more</string>
-    <string name="create_a_new_wallet">Create a new Wallet</string>
+    <string name="create_a_new_wallet">Create New Wallet</string>
     <string name="watch">Watch</string>
     <string name="already_have_a_wallet">I already have a wallet:</string>
     <string name="watch_wallet">Watch-only Wallets</string>
@@ -933,4 +933,21 @@
     <string name="search_for_transactions">Search for transactions</string>
     <string name="transaction_item_dot_separator">.</string>
     <string name="remove_wallet">Remove wallet</string>
+    <string name="create_or_import_wallet">Create or Import Wallet</string>
+    <string name="search_for_assets">Search for assets</string>
+    <string name="search_for_transactions">Search for transactions</string>
+    <string name="ethernity_education_tips">Safety Tip</string>
+    <string name="ethernity_backup_reminder">Remember to backup your wallet, if your device gets lost or stolen you will lose all your funds, unless you made a backup</string>
+    <string name="ethernity_guide">Beginner’s Guide</string>
+    <string name="ethernity_education_introduction">Introduction</string>
+    <string name="ethernity_education_node_operator">How to become a Node operator</string>
+    <string name="ethernity_education_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Rhoncus egestas tempus, fermentum at at imperdiet quisque erat. Et lectus nascetur nunc feugiat est egestas enim. Est diam tortor enim, et elementum at elit commodo augue.
+
+Tellus quisque ornare mauris a urna. At vestibulum sapien neque orci, justo, volutpat quam donec ut. Lacinia nam ullamcorper lectus imperdiet nisl. Amet vitae et augue tincidunt.
+
+
+Dictumst semper at nibh scelerisque vitae neque diam diam venenatis. Tortor lorem sagittis feugiat egestas aliquam ridiculus iaculis pellentesque. Dignissim pellentesque ut mattis nunc augue pellentesque. Suscipit sollicitudin vestibulum sapien, faucibus donec ut convallis tellus. Pellentesque vel diam feugiat maecenas malesuada tortor cras sed.
+</string>
+    <string name="ethernity_education_date">February 19, 2020 5mins read</string>
+    <string name="ethernity_education_staking">How to stake your ETNY tokens</string>
 </resources>

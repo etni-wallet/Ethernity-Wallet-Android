@@ -112,12 +112,34 @@
         <item name="android:textColor">?colorSurface</item>
     </style>
 
+    <!--    For Ethernity new brand design-->
+    <style name="Aw.Component.Button.Primary2">
+        <item name="android:lines">1</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">?colorOnSurface</item>
+        <item name="android:layout_marginStart">@dimen/standard_16</item>
+        <item name="android:layout_marginEnd">@dimen/standard_16</item>
+        <item name="android:layout_marginBottom">@dimen/standard_16</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
+    </style>
+
     <style name="Aw.Component.Button.Secondary">
         <item name="android:lines">1</item>
         <item name="android:backgroundTint">@color/transparent</item>
         <item name="android:textColor">?colorOnSurface</item>
         <item name="strokeColor">?colorOnSurface</item>
         <item name="strokeWidth">1dp</item>
+    </style>
+
+    <!--    For Ethernity new brand design-->
+    <style name="Aw.Component.Button.Secondary2">
+        <item name="android:lines">1</item>
+        <item name="android:backgroundTint">?colorOnSurface</item>
+        <item name="android:textColor">?android:textColorPrimaryInverse</item>
+        <item name="android:layout_marginStart">@dimen/standard_16</item>
+        <item name="android:layout_marginEnd">@dimen/standard_16</item>
+        <item name="android:layout_marginBottom">@dimen/standard_16</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
     </style>
 
     <style name="Aw.Component.Button.Icon" parent="Aw.Component.Button.Secondary">

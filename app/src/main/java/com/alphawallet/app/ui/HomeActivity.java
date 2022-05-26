@@ -10,6 +10,7 @@ import static com.alphawallet.app.C.SETTINGS_INSTANTIATED;
 import static com.alphawallet.app.C.SHOW_BACKUP;
 import static com.alphawallet.app.entity.WalletPage.ACTIVITY;
 import static com.alphawallet.app.entity.WalletPage.DAPP_BROWSER;
+import static com.alphawallet.app.entity.WalletPage.EDUCATION;
 import static com.alphawallet.app.entity.WalletPage.SETTINGS;
 import static com.alphawallet.app.entity.WalletPage.WALLET;
 import static com.alphawallet.ethereum.EthereumNetworkBase.MAINNET_ID;
@@ -38,6 +39,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -68,6 +70,7 @@ import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.router.ImportTokenRouter;
 import com.alphawallet.app.service.NotificationService;
 import com.alphawallet.app.service.PriceAlertsService;
+import com.alphawallet.app.ui.education.EducationFragment;
 import com.alphawallet.app.ui.widget.entity.PagerCallback;
 import com.alphawallet.app.util.LocaleUtils;
 import com.alphawallet.app.util.UpdateUtils;
@@ -110,6 +113,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     private Fragment dappBrowserFragment;
     private Fragment walletFragment;
     private Fragment activityFragment;
+    private Fragment educationFragment;
     private String walletTitle;
     private static boolean updatePrompt = false;
     private TutoShowcase backupWalletDialog;
@@ -195,6 +199,8 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     protected void onCreate(@Nullable Bundle savedInstanceState)
     {
         LocaleUtils.setDeviceLocale(getBaseContext());
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
         LocaleUtils.setActiveLocale(this);
         getLifecycle().addObserver(this);
@@ -573,6 +579,11 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                 showPage(ACTIVITY);
                 return true;
             }
+            case EDUCATION:
+            {
+                showPage(EDUCATION);
+                return true;
+            }
         }
         return false;
     }
@@ -636,6 +647,12 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                 showToolbar();
                 setTitle(getString(R.string.activity_label));
                 selectNavigationItem(ACTIVITY);
+                break;
+
+            case EDUCATION:
+                showToolbar();
+                setTitle(getString(R.string.activity_label));
+                selectNavigationItem(EDUCATION);
                 break;
         }
 
@@ -853,6 +870,9 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                 case SETTINGS:
                     settingsFragment = new NewSettingsFragment();
                     return settingsFragment;
+                case EDUCATION:
+                    educationFragment = new EducationFragment();
+                    return educationFragment;
             }
         }
 
@@ -880,6 +900,8 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                     return (BaseFragment) dappBrowserFragment;
                 case SETTINGS:
                     return (BaseFragment) settingsFragment;
+                case EDUCATION:
+                    return (BaseFragment) educationFragment;
             }
         }
         //todo fix racing condition IndexOutOfBoundsException: Index: 0

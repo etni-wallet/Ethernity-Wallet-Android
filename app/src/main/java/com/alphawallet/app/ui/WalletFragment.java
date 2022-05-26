@@ -328,7 +328,7 @@ public class WalletFragment extends BaseFragment implements
     };
 
     private Unit onWalletMenu() {
-        viewModel.showMenuPopup(requireContext());
+        viewModel.showMenuPopup(requireContext(), getParentFragmentManager());
         return null;
     }
 

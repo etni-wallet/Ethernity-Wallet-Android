@@ -10,6 +10,7 @@ import android.text.format.DateUtils;
 import android.util.Pair;
 import android.view.View;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -36,6 +37,7 @@ import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.NameThisWalletActivity;
 import com.alphawallet.app.ui.QRScanning.QRScanner;
 import com.alphawallet.app.ui.TokenManagementActivity;
+import com.alphawallet.app.ui.widget.dialog.RenameWalletDialog;
 import com.alphawallet.app.widget.WalletFragmentActionsView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -208,7 +210,7 @@ public class WalletViewModel extends BaseViewModel {
         myAddressRouter.open(context, defaultWallet.getValue());
     }
 
-    public void showMenuPopup(Context context) {
+    public void showMenuPopup(Context context, FragmentManager fragmentManager) {
         // show bottomsheet dialog
         WalletFragmentActionsView actionsView = new WalletFragmentActionsView(context);
         actionsView.setOnCopyWalletAddressClickListener(v -> {
@@ -221,6 +223,7 @@ public class WalletViewModel extends BaseViewModel {
         });
         actionsView.setOnRenameThisWalletClickListener(v -> {
             dialog.dismiss();
+//            new RenameWalletDialog().show(fragmentManager, "Rename wallet");
             Intent intent = new Intent(context, NameThisWalletActivity.class);
             context.startActivity(intent);
         });

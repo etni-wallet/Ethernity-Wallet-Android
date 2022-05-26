@@ -35,9 +35,6 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:name, android:theme, android:allowBackup">
         <activity
-            android:name=".ui.education.EducationOperatorActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.HomeActivity"
             android:exported="true"
             android:launchMode="singleTask"
@@ -325,6 +322,11 @@
             android:name=".ui.Erc1155AssetListActivity"
             android:label="ERC1155 Asset Details"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".ui.education.EducationOperatorActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".ui.TransferNFTActivity"

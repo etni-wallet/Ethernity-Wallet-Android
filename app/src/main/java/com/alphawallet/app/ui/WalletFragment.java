@@ -71,7 +71,6 @@ import com.alphawallet.app.repository.entity.RealmTransfer;
 import com.alphawallet.app.service.KeyService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
-import com.alphawallet.app.ui.widget.adapter.ActivityAdapter;
 import com.alphawallet.app.ui.widget.adapter.TokensAdapter;
 import com.alphawallet.app.ui.widget.adapter.WalletAdapter;
 import com.alphawallet.app.ui.widget.entity.AvatarWriteCallback;
@@ -81,12 +80,10 @@ import com.alphawallet.app.ui.widget.holder.TokenGridHolder;
 import com.alphawallet.app.ui.widget.holder.TokenHolder;
 import com.alphawallet.app.ui.widget.holder.WarningHolder;
 import com.alphawallet.app.util.LocaleUtils;
-import com.alphawallet.app.viewmodel.ActivityViewModel;
 import com.alphawallet.app.viewmodel.WalletViewModel;
 import com.alphawallet.app.viewmodel.WalletsViewModel;
 import com.alphawallet.app.widget.AWalletAlertDialog;
 import com.alphawallet.app.widget.AddWalletView;
-import com.alphawallet.app.widget.EmptyTransactionsView;
 import com.alphawallet.app.widget.NotificationView;
 import com.alphawallet.app.widget.ProgressView;
 import com.alphawallet.app.widget.SystemView;
@@ -130,7 +127,7 @@ public class WalletFragment extends BaseFragment implements
     private WalletViewModel viewModel;
     private WalletsViewModel walletsViewModel;
     private SystemView systemView;
-    private TokensAdapter adapter;
+    private TokensAdapter assetsAdapter;
     private WalletAdapter walletAdapter;
     private View selectedToken;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -200,18 +197,18 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private void initList() {
-        adapter = new TokensAdapter(this, viewModel.getAssetDefinitionService(), viewModel.getTokensService(),
+        assetsAdapter = new TokensAdapter(this, viewModel.getAssetDefinitionService(), viewModel.getTokensService(),
                 tokenManagementLauncher);
-        adapter.setHasStableIds(true);
+        assetsAdapter.setHasStableIds(true);
         setLinearLayoutManager(TokenFilter.ALL.ordinal());
         if (assetRecyclerView.getItemAnimator() != null)
             ((SimpleItemAnimator) assetRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeCallback(adapter));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new SwipeCallback(assetsAdapter));
         itemTouchHelper.attachToRecyclerView(assetRecyclerView);
 
         refreshAssetsLayout.setOnRefreshListener(this::refreshList);
-        assetRecyclerView.addRecyclerListener(holder -> adapter.onRViewRecycled(holder));
+        assetRecyclerView.addRecyclerListener(holder -> assetsAdapter.onRViewRecycled(holder));
         assetRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         walletAdapter = new WalletAdapter(
@@ -226,9 +223,11 @@ public class WalletFragment extends BaseFragment implements
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 Wallet wallet = walletAdapter.getWallet(position);
-                adapter.setWalletAddress(wallet.address);
-                walletsViewModel.setDefaultWallet(wallet);
-                transactionFragment.setWallet(wallet);
+                if (wallet != null) {
+                    assetsAdapter.setWalletAddress(wallet.address);
+                    walletsViewModel.setDefaultWallet(wallet);
+                    transactionFragment.onDefaultWallet(wallet);
+                }
                 refreshList();
             }
         });
@@ -338,7 +337,7 @@ public class WalletFragment extends BaseFragment implements
     };
 
     private Unit onWalletMenu() {
-        viewModel.showMyAddress(requireContext());
+        viewModel.showMenuPopup(requireContext());
         return null;
     }
 
@@ -418,7 +417,7 @@ public class WalletFragment extends BaseFragment implements
 
     private void onDefaultWallet(Wallet wallet) {
         if (CustomViewSettings.showManageTokens()) {
-            adapter.setWalletAddress(wallet.address);
+            assetsAdapter.setWalletAddress(wallet.address);
         }
 
         //Do we display new user backup popup?
@@ -471,7 +470,7 @@ public class WalletFragment extends BaseFragment implements
         handler.post(() ->
         {
             if (metas.size() > 0) {
-                adapter.setTokens(metas.toArray(new TokenCardMeta[0]));
+                assetsAdapter.setTokens(metas.toArray(new TokenCardMeta[0]));
                 systemView.hide();
             }
         });
@@ -493,7 +492,7 @@ public class WalletFragment extends BaseFragment implements
             viewModel.getTokensService().getTickerUpdateList()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(adapter::notifyTickerUpdate)
+                    .subscribe(assetsAdapter::notifyTickerUpdate)
                     .isDisposed();
         }
     }
@@ -512,24 +511,18 @@ public class WalletFragment extends BaseFragment implements
         }
     }
 
-    private void refreshTransactions() {
-        handler.post(() -> {
-            transactionFragment.resetTransactions();
-        });
-    }
-
     private void refreshList() {
         handler.post(() ->
         {
             if (assetsTab.isSelected()) {
-                adapter.clear();
+                assetsAdapter.clear();
                 viewModel.prepare();
                 viewModel.notifyRefresh();
             }
-            if (transactionsTab.isSelected()) {
-                transactionFragment.resetTokens();
-                transactionFragment.resetTransactions();
-            }
+//            if (transactionsTab.isSelected()) {
+//                transactionFragment.resetTokens();
+//                transactionFragment.resetTransactions();
+//            }
         });
     }
 
@@ -586,7 +579,7 @@ public class WalletFragment extends BaseFragment implements
         tabLayout.getTabAt(0).getCustomView().setActivated(true);
         assetsTab.setTextColor(requireContext().getColor(R.color.white));
         transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_tab_selected));
-        assetRecyclerView.setAdapter(adapter);
+        assetRecyclerView.setAdapter(assetsAdapter);
 
         TabLayout dotsTabLayout = view.findViewById(R.id.wallet_list_indicator);
         new TabLayoutMediator(dotsTabLayout, walletHorizontalList, (tab, position) -> {
@@ -597,7 +590,7 @@ public class WalletFragment extends BaseFragment implements
             public void onTabSelected(TabLayout.Tab tab) {
                 tab.view.setSelected(true);
                 TokenFilter newFilter = setLinearLayoutManager(tab.getPosition());
-                adapter.setFilterType(newFilter);
+                assetsAdapter.setFilterType(newFilter);
                 switch (newFilter) {
                     case ALL: //Assets tab
                         transactionsTab.setTextColor(requireContext().getColor(R.color.ethernity_tab_selected));
@@ -654,7 +647,7 @@ public class WalletFragment extends BaseFragment implements
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (adapter.getItemViewType(position) == TokenGridHolder.VIEW_TYPE) {
+                if (assetsAdapter.getItemViewType(position) == TokenGridHolder.VIEW_TYPE) {
                     return 1;
                 }
                 return 2;
@@ -710,7 +703,7 @@ public class WalletFragment extends BaseFragment implements
 
     private void onTokens(TokenCardMeta[] tokens) {
         if (tokens != null) {
-            adapter.setTokens(tokens);
+            assetsAdapter.setTokens(tokens);
             checkScrollPosition();
             viewModel.calculateFiatValues();
         }
@@ -735,7 +728,8 @@ public class WalletFragment extends BaseFragment implements
             ContractLocator importToken = viewModel.getAssetDefinitionService().getHoldingContract(importFileName);
             if (importToken != null)
                 Toast.makeText(getContext(), importToken.address, Toast.LENGTH_LONG).show();
-            if (importToken != null && adapter != null) adapter.setScrollToken(importToken);
+            if (importToken != null && assetsAdapter != null)
+                assetsAdapter.setScrollToken(importToken);
             importFileName = null;
         }
     }
@@ -744,14 +738,14 @@ public class WalletFragment extends BaseFragment implements
      * If the adapter has identified the clicked-on script update from the above call and that card is present, scroll to the card.
      */
     private void checkScrollPosition() {
-        int scrollPos = adapter.getScrollPosition();
+        int scrollPos = assetsAdapter.getScrollPosition();
         if (scrollPos > 0 && assetRecyclerView != null) {
             ((LinearLayoutManager) assetRecyclerView.getLayoutManager()).scrollToPositionWithOffset(scrollPos, 0);
         }
     }
 
     private void backupEvent(GenericWalletInteract.BackupLevel backupLevel) {
-        if (adapter.hasBackupWarning()) return;
+        if (assetsAdapter.hasBackupWarning()) return;
 
         WarningData wData;
         switch (backupLevel) {
@@ -764,7 +758,7 @@ public class WalletFragment extends BaseFragment implements
                 wData.buttonText = getString(R.string.back_up_wallet_action, viewModel.getWalletAddr().substring(0, 5));
                 wData.colour = R.color.text_secondary;
                 wData.wallet = viewModel.getWallet();
-                adapter.addWarning(wData);
+                assetsAdapter.addWarning(wData);
                 break;
             case WALLET_HAS_HIGH_VALUE:
                 wData = new WarningData(this);
@@ -773,7 +767,7 @@ public class WalletFragment extends BaseFragment implements
                 wData.buttonText = getString(R.string.back_up_wallet_action, viewModel.getWalletAddr().substring(0, 5));
                 wData.colour = R.color.error;
                 wData.wallet = viewModel.getWallet();
-                adapter.addWarning(wData);
+                assetsAdapter.addWarning(wData);
                 break;
         }
     }
@@ -801,18 +795,19 @@ public class WalletFragment extends BaseFragment implements
             realmUpdates.removeAllChangeListeners();
         }
         if (realm != null && !realm.isClosed()) realm.close();
-        if (adapter != null && assetRecyclerView != null) adapter.onDestroy(assetRecyclerView);
+        if (assetsAdapter != null && assetRecyclerView != null)
+            assetsAdapter.onDestroy(assetRecyclerView);
     }
 
     public void resetTokens() {
-        if (viewModel != null && adapter != null) {
+        if (viewModel != null && assetsAdapter != null) {
             //reload tokens
             viewModel.reloadTokens();
 
             handler.post(() ->
             {
                 //first abort the current operation
-                adapter.clear();
+                assetsAdapter.clear();
                 //show syncing
             });
         }
@@ -865,7 +860,7 @@ public class WalletFragment extends BaseFragment implements
         handler.post(() ->
         {
             if (viewModel != null) viewModel.setKeyWarningDismissTime(wallet.address);
-            if (adapter != null) adapter.removeBackupWarning();
+            if (assetsAdapter != null) assetsAdapter.removeBackupWarning();
         });
     }
 
@@ -883,7 +878,7 @@ public class WalletFragment extends BaseFragment implements
         handler.post(() ->
         {
             if (viewModel != null) viewModel.setKeyBackupTime(backedUpKey);
-            if (adapter != null) adapter.removeBackupWarning();
+            if (assetsAdapter != null) assetsAdapter.removeBackupWarning();
         });
     }
 
@@ -946,7 +941,7 @@ public class WalletFragment extends BaseFragment implements
             } else if (viewHolder instanceof TokenHolder) {
                 Token token = ((TokenHolder) viewHolder).token;
                 viewModel.setTokenEnabled(token, false);
-                adapter.removeToken(token.tokenInfo.chainId, token.getAddress());
+                assetsAdapter.removeToken(token.tokenInfo.chainId, token.getAddress());
 
                 if (getContext() != null) {
                     Snackbar snackbar = Snackbar

@@ -90,6 +90,10 @@ public class TransactionsService
         fetchTransactions();
     }
 
+    public void addTransaction(Wallet wallet){
+
+    }
+
     private void fetchTransactions()
     {
         if (TextUtils.isEmpty(tokensService.getCurrentAddress())) return;

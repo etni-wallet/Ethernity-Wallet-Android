@@ -15,6 +15,7 @@ import com.alphawallet.app.C;
 import com.alphawallet.app.R;
 import com.alphawallet.app.entity.Transaction;
 import com.alphawallet.app.entity.TransactionMeta;
+import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.interact.FetchTransactionsInteract;
 import com.alphawallet.app.service.AssetDefinitionService;
@@ -37,6 +38,7 @@ public class TransactionHolder extends BinderViewHolder<TransactionMeta> impleme
 
     public static final String DEFAULT_ADDRESS_ADDITIONAL = "default_address";
 
+    private final Wallet wallet;
     private final TokenIcon tokenIcon;
     private final TextView date;
     private final TextView type;
@@ -53,7 +55,7 @@ public class TransactionHolder extends BinderViewHolder<TransactionMeta> impleme
     private String defaultAddress;
     private boolean fromTokenView;
 
-    public TransactionHolder(ViewGroup parent, TokensService service, FetchTransactionsInteract interact, AssetDefinitionService svs)
+    public TransactionHolder(ViewGroup parent, TokensService service, FetchTransactionsInteract interact, AssetDefinitionService svs, Wallet wallet)
     {
         super(R.layout.item_transaction, parent);
         date = findViewById(R.id.text_tx_time);
@@ -68,6 +70,7 @@ public class TransactionHolder extends BinderViewHolder<TransactionMeta> impleme
         transactionsInteract = interact;
         assetService = svs;
         itemView.setOnClickListener(this);
+        this.wallet = wallet;
     }
 
     @Override
@@ -78,7 +81,7 @@ public class TransactionHolder extends BinderViewHolder<TransactionMeta> impleme
         fromTokenView = false;
 
         //fetch data from database
-        transaction = transactionsInteract.fetchCached(defaultAddress, data.hash);
+        transaction = transactionsInteract.fetchCached(wallet, data.hash);
 
         if (this.transaction == null) {
             return;
@@ -108,9 +111,11 @@ public class TransactionHolder extends BinderViewHolder<TransactionMeta> impleme
         switch (token.getTxStatus(transaction)) {
             case SENT:
                 tokenIcon.loadImageFromResource(R.drawable.ic_transaction_sent);
+                value.setTextColor(getContext().getColor(R.color.ethernity_accent_orange));
                 break;
             case RECEIVE:
                 tokenIcon.loadImageFromResource(R.drawable.ic_transaction_received);
+                value.setTextColor(getContext().getColor(R.color.ethernity_blue));
                 break;
         }
 

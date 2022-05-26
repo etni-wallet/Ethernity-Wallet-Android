@@ -23,6 +23,7 @@ public interface TransactionRepositoryType {
 	Single<byte[]> getSignatureFast(Wallet wallet, String password, byte[] message, long chainId);
 
     Transaction fetchCachedTransaction(String walletAddr, String hash);
+    Transaction fetchCachedTransaction(Wallet wallet, String hash);
 	long fetchTxCompletionTime(String walletAddr, String hash);
 
 	Single<String> resendTransaction(Wallet from, String to, BigInteger subunitAmount, BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, byte[] data, long chainId);

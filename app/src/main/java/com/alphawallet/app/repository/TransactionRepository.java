@@ -51,6 +51,12 @@ public class TransactionRepository implements TransactionRepositoryType {
 	}
 
 	@Override
+	public Transaction fetchCachedTransaction(Wallet wallet, String hash)
+	{
+		return inDiskCache.fetchTransaction(wallet, hash);
+	}
+
+	@Override
 	public long fetchTxCompletionTime(String walletAddr, String hash)
 	{
 		Wallet wallet = new Wallet(walletAddr);

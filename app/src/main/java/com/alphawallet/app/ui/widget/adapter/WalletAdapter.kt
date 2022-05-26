@@ -32,7 +32,11 @@ class WalletAdapter(
         notifyDataSetChanged()
     }
 
-    fun getWallet(position: Int) = wallets[position]
+    fun getWallet(position: Int): Wallet? {
+        if (position == wallets.size - 1)
+            return null
+        return wallets[position]
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {

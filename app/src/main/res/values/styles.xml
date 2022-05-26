@@ -20,16 +20,11 @@
     </style>
 
     <style name="Aw.Component.ActionItem" parent="Widget.MaterialComponents.TextView">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingStart">@dimen/cozy_20</item>
-        <item name="android:paddingEnd">@dimen/cozy_20</item>
-        <item name="android:paddingTop">@dimen/cozy_20</item>
-        <item name="android:paddingBottom">@dimen/cozy_20</item>
-        <item name="android:textColor">?android:textColorPrimary</item>
-        <item name="android:textSize">@dimen/sp17</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:background">@drawable/background_menu_action</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textSize">13sp</item>
     </style>
 
     <style name="Aw.Component.BottomSheet" parent="">

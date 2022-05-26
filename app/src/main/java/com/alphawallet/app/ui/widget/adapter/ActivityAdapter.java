@@ -117,7 +117,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<BinderViewHolder<?>> i
         switch (viewType) {
             case TransactionHolder.VIEW_TYPE:
                 return new TransactionHolder(parent, tokensService, fetchTransactionsInteract,
-                        assetService);
+                        assetService, wallet);
             case EventHolder.VIEW_TYPE:
                 return new EventHolder(parent, tokensService, fetchTransactionsInteract,
                         assetService, this);

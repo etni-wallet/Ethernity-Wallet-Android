@@ -111,8 +111,8 @@
     <string name="all">All</string>
     <string name="currency">Currencies</string>
     <string name="advanced">Advanced Options</string>
-    <string name="copy_wallet_address">Copy Wallet Address</string>
-    <string name="rename_this_wallet_action">Rename this Wallet</string>
+    <string name="copy_wallet_address">Show/Copy \n Wallet Address</string>
+    <string name="rename_this_wallet_action">Rename Wallet</string>
     <string name="hint_contract_name">Name</string>
     <string name="hint_contract_venue">Venue</string>
     <string name="hint_contract_date">Date</string>
@@ -475,7 +475,7 @@
     <string name="action_continue">Continue</string>
     <string name="invalid_phrase">Invalid recovery phrase. Please check and try again.</string>
     <string name="manage_wallet">Manage Wallet</string>
-    <string name="show_seed_phrase">Show Seed Phrase</string>
+    <string name="show_seed_phrase">Show My \n Seed Phrase</string>
     <string name="lose_this_wallet">Lose this Wallet</string>
     <string name="seed_phrase_loss_warning">If you lose access to this device, your funds will be lost, unless you back up!</string>
     <string name="delete_lose_funds_warning">Be careful with deleting your wallet. If you have not backed up your wallet, you might lose all your funds.</string>
@@ -932,4 +932,5 @@
     <string name="search_for_assets">Search for assets</string>
     <string name="search_for_transactions">Search for transactions</string>
     <string name="transaction_item_dot_separator">.</string>
+    <string name="remove_wallet">Remove wallet</string>
 </resources>

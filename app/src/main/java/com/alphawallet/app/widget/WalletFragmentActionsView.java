@@ -12,9 +12,9 @@ import com.alphawallet.app.R;
 
 public class WalletFragmentActionsView extends FrameLayout implements View.OnClickListener {
     private OnClickListener onCopyWalletAddressClickListener;
-    private OnClickListener onShowMyWalletAddressClickListener;
-    private OnClickListener onAddHideTokensClickListener;
-    private OnClickListener onRenameThisWalletListener;
+    private OnClickListener onShowSeedPhraseClickListener;
+    private OnClickListener onRenameWalletListener;
+    private OnClickListener onRemoveWalletClickListener;
 
     public WalletFragmentActionsView(Context context) {
         this(context, R.layout.layout_dialog_wallet_actions);
@@ -28,37 +28,37 @@ public class WalletFragmentActionsView extends FrameLayout implements View.OnCli
 
     private void init(@LayoutRes int layoutId) {
         LayoutInflater.from(getContext()).inflate(layoutId, this, true);
-        findViewById(R.id.copy_wallet_address_action).setOnClickListener(this);
-        findViewById(R.id.show_my_wallet_address_action).setOnClickListener(this);
-        findViewById(R.id.add_hide_tokens_action).setOnClickListener(this);
-        findViewById(R.id.rename_this_wallet_action).setOnClickListener(this);
+        findViewById(R.id.show_copy_wallet_address_action).setOnClickListener(this);
+        findViewById(R.id.show_seed_action).setOnClickListener(this);
+        findViewById(R.id.rename_wallet_action).setOnClickListener(this);
+        findViewById(R.id.remove_wallet_action).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
 
-            case R.id.copy_wallet_address_action: {
+            case R.id.show_copy_wallet_address_action: {
                 if (onCopyWalletAddressClickListener != null) {
                     onCopyWalletAddressClickListener.onClick(view);
                 }
                 break;
             }
-            case R.id.show_my_wallet_address_action: {
-                if (onShowMyWalletAddressClickListener != null) {
-                    onShowMyWalletAddressClickListener.onClick(view);
+            case R.id.show_seed_action: {
+                if (onShowSeedPhraseClickListener != null) {
+                    onShowSeedPhraseClickListener.onClick(view);
                 }
                 break;
             }
-            case R.id.add_hide_tokens_action: {
-                if (onAddHideTokensClickListener != null) {
-                    onAddHideTokensClickListener.onClick(view);
+            case R.id.rename_wallet_action: {
+                if (onRenameWalletListener != null) {
+                    onRenameWalletListener.onClick(view);
                 }
                 break;
             }
-            case R.id.rename_this_wallet_action: {
-                if (onRenameThisWalletListener != null) {
-                    onRenameThisWalletListener.onClick(view);
+            case R.id.remove_wallet_action: {
+                if (onRemoveWalletClickListener != null) {
+                    onRemoveWalletClickListener.onClick(view);
                 }
             }
         }
@@ -68,15 +68,15 @@ public class WalletFragmentActionsView extends FrameLayout implements View.OnCli
         this.onCopyWalletAddressClickListener = onClickListener;
     }
 
-    public void setOnShowMyWalletAddressClickListener(OnClickListener onClickListener) {
-        this.onShowMyWalletAddressClickListener = onClickListener;
+    public void setOnShowSeedPhraseClickListener(OnClickListener onClickListener) {
+        this.onShowSeedPhraseClickListener = onClickListener;
     }
 
-    public void setOnAddHideTokensClickListener(OnClickListener onClickListener) {
-        this.onAddHideTokensClickListener = onClickListener;
+    public void setOnRemoveWalletClickListener(OnClickListener onClickListener) {
+        this.onRemoveWalletClickListener = onClickListener;
     }
 
     public void setOnRenameThisWalletClickListener(OnClickListener onClickListener) {
-        this.onRenameThisWalletListener = onClickListener;
+        this.onRenameWalletListener = onClickListener;
     }
 }

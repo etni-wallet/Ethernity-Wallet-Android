@@ -7,14 +7,5 @@
         android:icon="@drawable/ic_scan"
         android:orderInCategory="1"
         android:title="@string/action_scan_dapp"
-        app:iconTint="?colorControlNormal"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/action_my_wallet"
-        android:icon="@drawable/ic_menu"
-        android:orderInCategory="20"
-        android:title="@string/my_wallet_address"
-        app:iconTint="?colorControlNormal"
         app:showAsAction="always" />
 </menu>

@@ -5,43 +5,79 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/ethernity_background_gray"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
             app:layout_scrollFlags="scroll|snap"
             app:titleEnabled="false">
 
-            <include layout="@layout/layout_simple_toolbar_with_avatar" />
+            <include
+                layout="@layout/layout_simple_toolbar_with_action"
+                tools:layout="@layout/layout_simple_toolbar_with_action" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-        <com.alphawallet.app.widget.LargeTitleView
-            android:id="@+id/large_title_view"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/pager_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|snap" />
+            android:background="@color/ethernity_background_gray">
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            style="@style/Aw.Component.TabLayout.Scrollable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            app:layout_scrollFlags="enterAlways" />
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/wallet_cards"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingBottom="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <View style="@style/Aw.Component.Separator" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/wallet_card_dots"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                app:layout_constraintBottom_toBottomOf="@id/wallet_cards"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabIndicatorHeight="0dp" />
 
-        <com.alphawallet.app.widget.NotificationView
-            android:id="@+id/notification"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/background_bottom_border" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_wallet_tab"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/wallet_card_dots"
+                app:layout_scrollFlags="enterAlways"
+                app:tabIndicatorHeight="0dp"
+                app:tabSelectedTextColor="@color/white"
+                app:tabTextColor="@color/ethernity_tab_selected" />
+
+            <com.alphawallet.app.widget.NotificationView
+                android:id="@+id/wallet_notification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_bottom_border"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -49,6 +85,7 @@
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView

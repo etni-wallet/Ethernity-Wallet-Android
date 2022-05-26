@@ -91,7 +91,8 @@
     <string name="transaction_succeeded">Transaction successful</string>
     <string name="NA">N/A</string>
     <string name="error_wallet_not_selected">Wallet is not selected</string>
-    <string name="no_transactions_yet">Activities will appear here</string>
+    <string name="no_transactions_yet">No transactions yet</string>
+    <string name="no_transactions_yet_details">Send and receive payments to get started</string>
     <string name="unknown_balance_without_symbol">--</string>
     <string name="dummy_transaction_value">&#45;&#45;</string>
     <string name="title_dialog_sending">Sending…</string>
@@ -240,6 +241,7 @@
     <string name="browser_label">Browser</string>
     <string name="settings_label">Settings</string>
     <string name="activity_label">Activity</string>
+    <string name="education_label">Education</string>
     <string name="toolbar_header_importing_tickets">Importing Tokens</string>
     <string name="ticket">Ticket</string>
     <string name="tickets">Tickets</string>
@@ -925,4 +927,21 @@
     <string name="unable_store_key">Unable to store key: %1$s</string>
     <string name="title_ens_lookup_warning">ENS Lookup Warning</string>
     <string name="message_ens_node_not_sync">AlphaWallet has detected a discrepancy between ethereum\'s timestamp and your device\'s current time, or possibly the blockchain connection is not synchronized, please check your phone\'s time is correct, or ignore this warning.</string>
+    <string name="create_or_import_wallet">Create or Import Wallet</string>
+    <string name="search_for_assets">Search for assets</string>
+    <string name="search_for_transactions">Search for transactions</string>
+    <string name="ethernity_education_tips">Safety Tip</string>
+    <string name="ethernity_backup_reminder">Remember to backup your wallet, if your device gets lost or stolen you will lose all your funds, unless you made a backup</string>
+    <string name="ethernity_guide">Beginner’s Guide</string>
+    <string name="ethernity_education_introduction">Introduction</string>
+    <string name="ethernity_education_node_operator">How to become a Node operator</string>
+    <string name="ethernity_education_lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Rhoncus egestas tempus, fermentum at at imperdiet quisque erat. Et lectus nascetur nunc feugiat est egestas enim. Est diam tortor enim, et elementum at elit commodo augue.
+
+Tellus quisque ornare mauris a urna. At vestibulum sapien neque orci, justo, volutpat quam donec ut. Lacinia nam ullamcorper lectus imperdiet nisl. Amet vitae et augue tincidunt.
+
+
+Dictumst semper at nibh scelerisque vitae neque diam diam venenatis. Tortor lorem sagittis feugiat egestas aliquam ridiculus iaculis pellentesque. Dignissim pellentesque ut mattis nunc augue pellentesque. Suscipit sollicitudin vestibulum sapien, faucibus donec ut convallis tellus. Pellentesque vel diam feugiat maecenas malesuada tortor cras sed.
+</string>
+    <string name="ethernity_education_date">February 19, 2020 5mins read</string>
+    <string name="ethernity_education_staking">How to stake your ETNY tokens</string>
 </resources>

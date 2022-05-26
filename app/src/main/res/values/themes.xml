@@ -69,13 +69,12 @@
         <item name="colorSurfaceDark">@color/surface_dark</item>
 
         <!-- Default Component Styles -->
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">@color/ethernity_tab_selected</item>
         <item name="android:textColorHint">@color/text_secondary</item>
         <item name="android:textColorHintInverse">@color/text_secondary_inverse</item>
         <item name="android:textViewStyle">@style/Aw.Typography</item>
         <item name="toolbarStyle">@style/Aw.Component.Toolbar</item>
         <item name="appBarLayoutStyle">@style/Aw.Component.AppBarLayout</item>
-        <item name="recyclerViewStyle">@style/Aw.Component.RecyclerView</item>
         <item name="materialButtonStyle">@style/Aw.Component.Button.Primary</item>
         <item name="switchStyle">@style/Aw.Component.Switch</item>
         <item name="checkboxStyle">@style/Aw.Component.CheckBox</item>
@@ -84,6 +83,7 @@
         <item name="seedWordStyle">@style/Aw.Component.SeedWord</item>
         <item name="whatsNewEntryStyle">@style/Aw.Component.WhatsNewEntry</item>
         <item name="materialAlertDialogTheme">@style/AppTheme.AlertDialog</item>
+        <item name="fontFamily">@font/inter_regular</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

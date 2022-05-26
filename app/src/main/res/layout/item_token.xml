@@ -4,6 +4,7 @@
     android:id="@+id/token_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/background_white_round_corners_8"
     android:clickable="true"
     android:focusable="true">
 
@@ -56,17 +57,22 @@
                         android:layout_weight="1"
                         android:ellipsize="end"
                         android:singleLine="true"
+                        android:textStyle="bold"
+                        android:textSize="17sp"
                         tools:text="Ethereum" />
 
                     <TextView
-                        android:id="@+id/balance_currency"
+                        android:id="@+id/balance_coin"
                         style="@style/Aw.Typography.Title.SemiBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
+                        android:layout_marginEnd="@dimen/tiny_8"
                         android:text="@string/unknown_balance_without_symbol"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
                         android:visibility="gone"
-                        tools:text="$208.26"
+                        tools:text="0.01234 ETH"
                         tools:visibility="visible" />
 
                 </LinearLayout>
@@ -105,23 +111,32 @@
                             android:layout_marginEnd="@dimen/mini_4"
                             android:visibility="gone" />
 
-                        <TextView
-                            android:id="@+id/balance_coin"
-                            style="@style/Aw.Typography.Sub"
+                        <ImageView
+                            android:id="@+id/image_24_hrs"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/ic_price_up" />
+
+                        <TextView
+                            android:id="@+id/text_24_hrs"
+                            style="@style/Aw.Typography.Sub"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_horizontal"
+                            android:layout_marginEnd="2dp"
+                            android:gravity="center"
                             android:text="@string/unknown_balance_without_symbol"
-                            android:visibility="gone"
-                            tools:text="0.01234 ETH"
-                            tools:visibility="visible" />
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:text="1.69%" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/layout_appreciation"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:gravity="end|center_vertical"
                         android:orientation="horizontal"
                         android:visibility="gone"
@@ -131,10 +146,13 @@
                             android:id="@+id/text_appreciation"
                             style="@style/Aw.Typography.Sub"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
                             android:layout_marginEnd="@dimen/tiny_8"
+                            android:gravity="center"
                             android:text="@string/unknown_balance_without_symbol"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
                             tools:text="$3.47" />
 
                         <LinearLayout
@@ -145,23 +163,18 @@
                             android:padding="2dp"
                             tools:ignore="UseCompoundDrawables">
 
-                            <ImageView
-                                android:id="@+id/image_24_hrs"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:padding="@dimen/mini_4"
-                                android:src="@drawable/ic_price_up" />
-
                             <TextView
-                                android:id="@+id/text_24_hrs"
+                                android:id="@+id/balance_currency"
                                 style="@style/Aw.Typography.Sub"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
-                                android:layout_marginEnd="2dp"
                                 android:text="@string/unknown_balance_without_symbol"
-                                tools:text="1.659%" />
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:visibility="gone"
+                                tools:text="$208.26"
+                                tools:visibility="visible" />
                         </LinearLayout>
 
                         <ProgressBar

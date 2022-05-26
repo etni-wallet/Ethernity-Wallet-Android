@@ -26,12 +26,12 @@ public class TabUtils {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                setSelectedTabFont(tabLayout, tab, ResourcesCompat.getFont(context, R.font.font_semibold));
+                setSelectedTabFont(tabLayout, tab, ResourcesCompat.getFont(context, R.font.inter_semi_bold));
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                setSelectedTabFont(tabLayout, tab, ResourcesCompat.getFont(context, R.font.font_regular));
+                setSelectedTabFont(tabLayout, tab, ResourcesCompat.getFont(context, R.font.inter_regular));
             }
 
             @Override
@@ -42,7 +42,7 @@ public class TabUtils {
 
         TabLayout.Tab firstTab = tabLayout.getTabAt(0);
         if (firstTab != null) {
-            TabUtils.setSelectedTabFont(tabLayout, firstTab, ResourcesCompat.getFont(context, R.font.font_semibold));
+            TabUtils.setSelectedTabFont(tabLayout, firstTab, ResourcesCompat.getFont(context, R.font.inter_semi_bold));
         }
     }
 

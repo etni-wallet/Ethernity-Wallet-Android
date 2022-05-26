@@ -321,11 +321,11 @@ public class GasSettingsActivity extends BaseActivity implements GasSettingsCall
             {
                 if (selected)
                 {
-                    speedName.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.font_bold));
+                    speedName.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.inter_bold));
                 }
                 else
                 {
-                    speedName.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.font_regular));
+                    speedName.setTypeface(ResourcesCompat.getFont(getApplicationContext(), R.font.inter_regular));
                 }
             }
         }

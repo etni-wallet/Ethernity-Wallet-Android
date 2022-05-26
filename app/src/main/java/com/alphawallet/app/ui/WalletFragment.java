@@ -254,15 +254,10 @@ public class WalletFragment extends BaseFragment implements
         AddWalletView addWalletView = new AddWalletView(getContext());
         addWalletView.setOnNewWalletClickListener(this::onNewWallet);
         addWalletView.setOnImportWalletClickListener(this::onImportWallet);
-//        addWalletView.setOnWatchWalletClickListener(getContext());
-        addWalletView.setOnCloseActionListener(this::onCloseDialogMenu);
         dialog = new BottomSheetDialog(requireContext());
-//        dialog = new BottomSheetDialog(this, R.style.Aw_Component_BottomSheetDialog);
         dialog.setContentView(addWalletView);
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
-//        BottomSheetBehavior behavior = BottomSheetBehavior.from((View) addWalletView.getParent());
-//        dialog.setOnShowListener(dialog -> behavior.setPeekHeight(addWalletView.getHeight()));
         dialog.show();
         return null;
     }
@@ -298,10 +293,6 @@ public class WalletFragment extends BaseFragment implements
     private void onImportWallet(View view) {
         hideDialog();
         walletsViewModel.importWallet(getActivity());
-    }
-
-    private void onCloseDialogMenu(View view) {
-        hideDialog();
     }
 
     private void hideDialog() {

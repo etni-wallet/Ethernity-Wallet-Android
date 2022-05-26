@@ -37,7 +37,6 @@ import com.alphawallet.app.widget.AWalletAlertDialog;
 import com.alphawallet.app.widget.AddWalletView;
 import com.alphawallet.app.widget.SignTransactionDialog;
 import com.alphawallet.app.widget.SystemView;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -48,11 +47,8 @@ public class WalletsActivity extends BaseActivity implements
         View.OnClickListener,
         AddWalletView.OnNewWalletClickListener,
         AddWalletView.OnImportWalletClickListener,
-        AddWalletView.OnWatchWalletClickListener,
-        AddWalletView.OnCloseActionListener,
         CreateWalletCallbackInterface,
-        SyncCallback
-{
+        SyncCallback {
     WalletsViewModel viewModel;
 
     private RecyclerView list;
@@ -84,10 +80,8 @@ public class WalletsActivity extends BaseActivity implements
         initViews();
     }
 
-    private void initViewModel()
-    {
-        if (viewModel == null)
-        {
+    private void initViewModel() {
+        if (viewModel == null) {
             systemView = findViewById(R.id.system_view);
             viewModel = new ViewModelProvider(this)
                     .get(WalletsViewModel.class);
@@ -103,13 +97,11 @@ public class WalletsActivity extends BaseActivity implements
         viewModel.onPrepare(balanceChain, this); //adjust here to change which chain the wallet show the balance of, eg use CLASSIC_ID for an Eth Classic wallet
     }
 
-    protected Activity getThisActivity()
-    {
+    protected Activity getThisActivity() {
         return this;
     }
 
-    private void noWallets(Boolean aBoolean)
-    {
+    private void noWallets(Boolean aBoolean) {
         Intent intent = new Intent(this, SplashActivity.class);
         startActivity(intent);
         finish();
@@ -133,47 +125,41 @@ public class WalletsActivity extends BaseActivity implements
         viewModel.swipeRefreshWallets(); //check all records
     }
 
-    private void onCreateWalletError(ErrorEnvelope errorEnvelope)
-    {
+    private void onCreateWalletError(ErrorEnvelope errorEnvelope) {
         dialogError = errorEnvelope.message;
         if (handler != null) handler.post(displayWalletError);
     }
 
     @Override
-    public void syncUpdate(String wallet, Pair<Double, Double> value)
-    {
+    public void syncUpdate(String wallet, Pair<Double, Double> value) {
         runOnUiThread(() -> {
             adapter.updateWalletState(wallet, value);
         });
     }
 
     @Override
-    public void syncCompleted(String wallet, Pair<Double, Double> value)
-    {
+    public void syncCompleted(String wallet, Pair<Double, Double> value) {
         runOnUiThread(() -> {
             adapter.completeWalletSync(wallet, value);
         });
     }
 
     @Override
-    public void syncStarted(String wallet, Pair<Double, Double> value)
-    {
+    public void syncStarted(String wallet, Pair<Double, Double> value) {
         runOnUiThread(() -> {
             adapter.setUnsyncedWalletValue(wallet, value);
         });
     }
 
-    private final Runnable displayWalletError = new Runnable()
-    {
+    private final Runnable displayWalletError = new Runnable() {
         @Override
-        public void run()
-        {
+        public void run() {
             aDialog = new AWalletAlertDialog(getThisActivity());
             aDialog.setTitle(R.string.title_dialog_error);
             aDialog.setIcon(AWalletAlertDialog.ERROR);
             aDialog.setMessage(TextUtils.isEmpty(dialogError)
-                               ? getString(R.string.error_create_wallet)
-                               : dialogError);
+                    ? getString(R.string.error_create_wallet)
+                    : dialogError);
             aDialog.setButtonText(R.string.dialog_ok);
             aDialog.setButtonListener(v -> aDialog.dismiss());
             aDialog.show();
@@ -232,20 +218,14 @@ public class WalletsActivity extends BaseActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         initViewModel();
 
-        if (requestCode >= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS && requestCode <= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS + 10)
-        {
+        if (requestCode >= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS && requestCode <= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS + 10) {
             Operation taskCode = Operation.values()[requestCode - SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS];
-            if (resultCode == RESULT_OK)
-            {
+            if (resultCode == RESULT_OK) {
                 viewModel.completeAuthentication(taskCode);
-            }
-            else
-            {
+            } else {
                 viewModel.failedAuthentication(taskCode);
             }
-        }
-        else if (requestCode == C.IMPORT_REQUEST_CODE)
-        {
+        } else if (requestCode == C.IMPORT_REQUEST_CODE) {
             showToolbar();
             if (resultCode == RESULT_OK) {
                 Snackbar.make(systemView, getString(R.string.toast_message_wallet_imported), Snackbar.LENGTH_SHORT)
@@ -274,29 +254,15 @@ public class WalletsActivity extends BaseActivity implements
     }
 
     @Override
-    public void onWatchWallet(View view)
-    {
-        hideDialog();
-        viewModel.watchWallet(this);
-    }
-
-    @Override
     public void onImportWallet(View view) {
         hideDialog();
         viewModel.importWallet(this);
-    }
-
-    @Override
-    public void onClose(View view) {
-        hideDialog();
     }
 
     private void onAddWallet() {
         AddWalletView addWalletView = new AddWalletView(this);
         addWalletView.setOnNewWalletClickListener(this);
         addWalletView.setOnImportWalletClickListener(this);
-        addWalletView.setOnWatchWalletClickListener(this);
-        addWalletView.setOnCloseActionListener(this);
         dialog = new BottomSheetDialog(this);
 //        dialog = new BottomSheetDialog(this, R.style.Aw_Component_BottomSheetDialog);
         dialog.setContentView(addWalletView);
@@ -310,14 +276,12 @@ public class WalletsActivity extends BaseActivity implements
     private void onChangeDefaultWallet(Wallet wallet) {
         if (adapter == null) return;
 
-        if (selectedWallet != null && !wallet.sameAddress(selectedWallet.address))
-        {
+        if (selectedWallet != null && !wallet.sameAddress(selectedWallet.address)) {
             requiresHomeRefresh = true;
         }
 
         adapter.setDefaultWallet(wallet);
-        if (requiresHomeRefresh)
-        {
+        if (requiresHomeRefresh) {
             viewModel.stopUpdates();
             requiresHomeRefresh = false;
             viewModel.showHome(this);
@@ -331,8 +295,7 @@ public class WalletsActivity extends BaseActivity implements
         selectedWallet = wallet;
     }
 
-    private void onFetchWallets(Wallet[] wallets)
-    {
+    private void onFetchWallets(Wallet[] wallets) {
         enableDisplayHomeAsUp();
         if (adapter != null) adapter.setWallets(wallets);
         invalidateOptionsMenu();
@@ -345,8 +308,7 @@ public class WalletsActivity extends BaseActivity implements
         finish();
     }
 
-    private void callNewWalletPage(Wallet wallet)
-    {
+    private void callNewWalletPage(Wallet wallet) {
         Intent intent = new Intent(this, WalletActionsActivity.class);
         intent.putExtra("wallet", wallet);
         intent.putExtra("currency", viewModel.getNetwork().symbol);
@@ -378,27 +340,23 @@ public class WalletsActivity extends BaseActivity implements
     }
 
     @Override
-    public void HDKeyCreated(String address, Context ctx, KeyService.AuthenticationLevel level)
-    {
+    public void HDKeyCreated(String address, Context ctx, KeyService.AuthenticationLevel level) {
         if (address == null) onCreateWalletError(new ErrorEnvelope(""));
         else viewModel.StoreHDWallet(address, level);
     }
 
     @Override
-    public void keyFailure(String message)
-    {
+    public void keyFailure(String message) {
         onCreateWalletError(new ErrorEnvelope(message));
     }
 
     @Override
-    public void cancelAuthentication()
-    {
+    public void cancelAuthentication() {
         onCreateWalletError(new ErrorEnvelope(getString(R.string.authentication_cancelled)));
     }
 
     @Override
-    public void fetchMnemonic(String mnemonic)
-    {
+    public void fetchMnemonic(String mnemonic) {
 
     }
 }

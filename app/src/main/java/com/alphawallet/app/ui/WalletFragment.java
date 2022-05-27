@@ -409,6 +409,7 @@ public class WalletFragment extends BaseFragment implements
     private void onDefaultWallet(Wallet wallet) {
         if (CustomViewSettings.showManageTokens()) {
             assetsAdapter.setWalletAddress(wallet.address);
+            walletsViewModel.setDefaultWallet(wallet);
         }
 
         //Do we display new user backup popup?

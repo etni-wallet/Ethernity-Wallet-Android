@@ -249,6 +249,7 @@
     <string name="total_cost_for_x_tickets">Total cost for %1$d %2$s:</string>
     <string name="title_import_token">Import Tickets</string>
     <string name="action_cancel">Cancel</string>
+    <string name="action_done">Done</string>
     <string name="confirm_purchase">Confirm Purchase</string>
     <string name="bad_import_link">Invalid Import Link</string>
     <string name="bad_import_link_body">Import link contains an error; please re-request the link</string>

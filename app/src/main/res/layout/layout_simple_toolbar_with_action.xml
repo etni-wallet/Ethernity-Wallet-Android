@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginStart="@dimen/dp16"
+        android:text="@string/toolbar_header_wallet"
         tools:text="Wallet" />
 
     <ImageView

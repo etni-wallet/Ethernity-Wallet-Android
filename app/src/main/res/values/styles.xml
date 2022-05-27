@@ -27,6 +27,16 @@
         <item name="android:textSize">13sp</item>
     </style>
 
+    <style name="Aw.Component.Dialog.ActionItem" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_margin">32dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="Aw.Component.BottomSheet" parent="">
         <item name="android:background">?colorSurface</item>
     </style>

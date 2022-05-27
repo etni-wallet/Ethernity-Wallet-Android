@@ -34,7 +34,6 @@ import com.alphawallet.app.router.TokenDetailRouter;
 import com.alphawallet.app.service.AssetDefinitionService;
 import com.alphawallet.app.service.RealmManager;
 import com.alphawallet.app.service.TokensService;
-import com.alphawallet.app.ui.NameThisWalletActivity;
 import com.alphawallet.app.ui.QRScanning.QRScanner;
 import com.alphawallet.app.ui.TokenManagementActivity;
 import com.alphawallet.app.ui.widget.dialog.RenameWalletDialog;
@@ -52,6 +51,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
+import kotlin.Unit;
 
 @HiltViewModel
 public class WalletViewModel extends BaseViewModel {
@@ -223,9 +223,10 @@ public class WalletViewModel extends BaseViewModel {
         });
         actionsView.setOnRenameThisWalletClickListener(v -> {
             dialog.dismiss();
-//            new RenameWalletDialog().show(fragmentManager, "Rename wallet");
-            Intent intent = new Intent(context, NameThisWalletActivity.class);
-            context.startActivity(intent);
+            new RenameWalletDialog(this::setWalletName)
+                    .show(fragmentManager, "Rename wallet");
+//            Intent intent = new Intent(context, NameThisWalletActivity.class);
+//            context.startActivity(intent);
         });
 
         dialog = new BottomSheetDialog(context);
@@ -235,6 +236,15 @@ public class WalletViewModel extends BaseViewModel {
         BottomSheetBehavior<?> behavior = BottomSheetBehavior.from((View) actionsView.getParent());
         dialog.setOnShowListener(dialog -> behavior.setPeekHeight(actionsView.getHeight()));
         dialog.show();
+    }
+
+    public Unit setWalletName(String name) {
+        Wallet renamedWallet = defaultWallet().getValue();
+        if (renamedWallet != null) {
+            renamedWallet.name = name;
+            genericWalletInteract.updateWalletItem(renamedWallet, WalletItem.NAME, this::prepare);
+        }
+        return null;
     }
 
     public void addHideToken(Context context) {

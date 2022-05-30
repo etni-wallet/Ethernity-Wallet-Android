@@ -35,15 +35,15 @@
         style="@style/Aw.Component.ActionItem"
         android:layout_width="150dp"
         android:layout_height="100dp"
-        android:text="@string/rename_this_wallet_action"
+        android:text="@string/rename_wallet"
         app:drawableTopCompat="@drawable/ic_rename_wallet"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/remove_wallet_action"
+        app:layout_constraintEnd_toStartOf="@id/delete_wallet_action"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/show_copy_wallet_address_action" />
 
     <TextView
-        android:id="@+id/remove_wallet_action"
+        android:id="@+id/delete_wallet_action"
         style="@style/Aw.Component.ActionItem"
         android:layout_width="150dp"
         android:layout_height="100dp"

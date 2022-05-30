@@ -14,7 +14,7 @@ public class WalletFragmentActionsView extends FrameLayout implements View.OnCli
     private OnClickListener onCopyWalletAddressClickListener;
     private OnClickListener onShowSeedPhraseClickListener;
     private OnClickListener onRenameWalletListener;
-    private OnClickListener onRemoveWalletClickListener;
+    private OnClickListener onDeleteWalletClickListener;
 
     public WalletFragmentActionsView(Context context) {
         this(context, R.layout.layout_dialog_wallet_actions);
@@ -31,7 +31,7 @@ public class WalletFragmentActionsView extends FrameLayout implements View.OnCli
         findViewById(R.id.show_copy_wallet_address_action).setOnClickListener(this);
         findViewById(R.id.show_seed_action).setOnClickListener(this);
         findViewById(R.id.rename_wallet_action).setOnClickListener(this);
-        findViewById(R.id.remove_wallet_action).setOnClickListener(this);
+        findViewById(R.id.delete_wallet_action).setOnClickListener(this);
     }
 
     @Override
@@ -56,9 +56,9 @@ public class WalletFragmentActionsView extends FrameLayout implements View.OnCli
                 }
                 break;
             }
-            case R.id.remove_wallet_action: {
-                if (onRemoveWalletClickListener != null) {
-                    onRemoveWalletClickListener.onClick(view);
+            case R.id.delete_wallet_action: {
+                if (onDeleteWalletClickListener != null) {
+                    onDeleteWalletClickListener.onClick(view);
                 }
             }
         }
@@ -72,8 +72,8 @@ public class WalletFragmentActionsView extends FrameLayout implements View.OnCli
         this.onShowSeedPhraseClickListener = onClickListener;
     }
 
-    public void setOnRemoveWalletClickListener(OnClickListener onClickListener) {
-        this.onRemoveWalletClickListener = onClickListener;
+    public void setOnDeleteWalletClickListener(OnClickListener onClickListener) {
+        this.onDeleteWalletClickListener = onClickListener;
     }
 
     public void setOnRenameThisWalletClickListener(OnClickListener onClickListener) {

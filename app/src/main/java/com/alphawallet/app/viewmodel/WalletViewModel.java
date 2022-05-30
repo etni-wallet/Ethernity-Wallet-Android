@@ -21,6 +21,7 @@ import com.alphawallet.app.entity.tokendata.TokenGroup;
 import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.entity.tokens.TokenCardMeta;
 import com.alphawallet.app.interact.ChangeTokenEnableInteract;
+import com.alphawallet.app.interact.DeleteWalletInteract;
 import com.alphawallet.app.interact.FetchTokensInteract;
 import com.alphawallet.app.interact.GenericWalletInteract;
 import com.alphawallet.app.repository.EthereumNetworkRepository;
@@ -36,6 +37,7 @@ import com.alphawallet.app.service.RealmManager;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.QRScanning.QRScanner;
 import com.alphawallet.app.ui.TokenManagementActivity;
+import com.alphawallet.app.ui.widget.dialog.DeleteWalletDialog;
 import com.alphawallet.app.ui.widget.dialog.RenameWalletDialog;
 import com.alphawallet.app.widget.WalletFragmentActionsView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -76,6 +78,7 @@ public class WalletViewModel extends BaseViewModel {
     private long lastBackupCheck = 0;
     private BottomSheetDialog dialog;
     private final OnRampRepositoryType onRampRepository;
+    private final DeleteWalletInteract deleteWalletInteract;
 
     @Inject
     WalletViewModel(
@@ -89,7 +92,8 @@ public class WalletViewModel extends BaseViewModel {
             ManageWalletsRouter manageWalletsRouter,
             PreferenceRepositoryType preferenceRepository,
             RealmManager realmManager,
-            OnRampRepositoryType onRampRepository) {
+            OnRampRepositoryType onRampRepository,
+            DeleteWalletInteract deleteWalletInteract) {
         this.fetchTokensInteract = fetchTokensInteract;
         this.tokenDetailRouter = tokenDetailRouter;
         this.genericWalletInteract = genericWalletInteract;
@@ -101,6 +105,7 @@ public class WalletViewModel extends BaseViewModel {
         this.preferenceRepository = preferenceRepository;
         this.realmManager = realmManager;
         this.onRampRepository = onRampRepository;
+        this.deleteWalletInteract = deleteWalletInteract;
     }
 
     public LiveData<TokenCardMeta[]> tokens() {
@@ -219,14 +224,15 @@ public class WalletViewModel extends BaseViewModel {
         });
         actionsView.setOnShowSeedPhraseClickListener(v -> {
         });
-        actionsView.setOnRemoveWalletClickListener(v -> {
+        actionsView.setOnDeleteWalletClickListener(v -> {
+            dialog.dismiss();
+            new DeleteWalletDialog(this::deleteWalletAndRefresh)
+                    .show(fragmentManager, "Delete wallet");
         });
         actionsView.setOnRenameThisWalletClickListener(v -> {
             dialog.dismiss();
             new RenameWalletDialog(this::setWalletName)
                     .show(fragmentManager, "Rename wallet");
-//            Intent intent = new Intent(context, NameThisWalletActivity.class);
-//            context.startActivity(intent);
         });
 
         dialog = new BottomSheetDialog(context);
@@ -239,11 +245,24 @@ public class WalletViewModel extends BaseViewModel {
     }
 
     public Unit setWalletName(String name) {
-        Wallet renamedWallet = defaultWallet().getValue();
-        if (renamedWallet != null) {
-            renamedWallet.name = name;
-            genericWalletInteract.updateWalletItem(renamedWallet, WalletItem.NAME, this::prepare);
+        Wallet wallet = defaultWallet().getValue();
+        if (wallet != null) {
+            wallet.name = name;
+            genericWalletInteract.updateWalletItem(wallet, WalletItem.NAME, this::prepare);
         }
+        return null;
+    }
+
+    public Unit deleteWalletAndRefresh() {
+        Wallet wallet = defaultWallet().getValue();
+        if (wallet != null) {
+            disposable = deleteWalletInteract
+                    .delete(wallet)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe();
+        }
+        prepare();
         return null;
     }
 

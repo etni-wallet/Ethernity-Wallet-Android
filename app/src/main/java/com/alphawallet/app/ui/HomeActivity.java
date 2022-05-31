@@ -841,14 +841,14 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     @Override
     public void resetTokens()
     {
-        ((ActivityFragment) getFragment(ACTIVITY)).resetTokens();
+        ((TransactionFragment) getFragment(ACTIVITY)).resetTokens();
         ((WalletFragment) getFragment(WALLET)).resetTokens();
     }
 
     @Override
     public void resetTransactions()
     {
-        ((ActivityFragment) getFragment(ACTIVITY)).resetTransactions();
+        ((TransactionFragment) getFragment(ACTIVITY)).resetTransactions();
     }
 
     @Override
@@ -1028,7 +1028,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             case C.TERMINATE_ACTIVITY:
                 if (data != null && resultCode == Activity.RESULT_OK)
                 {
-                    ((ActivityFragment) getFragment(ACTIVITY)).scrollToTop();
+                    ((TransactionFragment) getFragment(ACTIVITY)).scrollToTop();
                     showPage(ACTIVITY);
                 }
                 break;

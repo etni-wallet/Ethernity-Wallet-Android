@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/background_white_round_corners_8"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    android:layout_marginBottom="16dp">
 
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/select_token"
@@ -191,9 +192,5 @@
         </LinearLayout>
 
     </RelativeLayout>
-
-    <View
-        style="@style/Aw.Component.Separator"
-        android:layout_alignBottom="@id/wrapped_layout" />
 
 </RelativeLayout>

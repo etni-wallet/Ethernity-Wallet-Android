@@ -47,7 +47,7 @@ import io.realm.RealmResults;
  * Created by JB on 26/06/2020.
  */
 @AndroidEntryPoint
-public class ActivityFragment extends BaseFragment implements View.OnClickListener, ActivityDataInteract {
+public class TransactionFragment extends BaseFragment implements View.OnClickListener, ActivityDataInteract {
     private ActivityViewModel viewModel;
 
     private SystemView systemView;
@@ -185,9 +185,9 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
 
     public void onDefaultWallet(Wallet wallet) {
         Log.i("AdapterItems","onDefaultWallet");
+        adapter.clear();
         adapter.setDefaultWallet(wallet);
-//        refreshTransactionList();
-//        startTxListener();
+        viewModel.prepare();
     }
 
     private void showEmptyTx() {

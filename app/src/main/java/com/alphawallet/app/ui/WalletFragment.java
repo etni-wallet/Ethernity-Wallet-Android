@@ -134,7 +134,7 @@ public class WalletFragment extends BaseFragment implements
     private String importFileName;
     private RecyclerView assetRecyclerView;
     private FrameLayout transactionHolder;
-    private ActivityFragment transactionFragment;
+    private TransactionFragment transactionFragment;
     private ViewPager2 walletHorizontalList;
     private SwipeRefreshLayout refreshAssetsLayout;
     private boolean isVisible;
@@ -189,7 +189,7 @@ public class WalletFragment extends BaseFragment implements
                     }
                 });
 
-        transactionFragment = new ActivityFragment();
+        transactionFragment = new TransactionFragment();
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.transaction_holder, transactionFragment)
                 .commit();

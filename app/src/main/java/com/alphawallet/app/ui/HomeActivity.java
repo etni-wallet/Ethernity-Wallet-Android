@@ -317,7 +317,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                 {
                     List<ContractLocator> contractList = b.getParcelableArrayList(ADDED_TOKEN);
                     if (contractList != null) {
-                        ((ActivityFragment) getFragment(ACTIVITY)).addedToken(contractList);
+                        ((TransactionFragment) getFragment(ACTIVITY)).addedToken(contractList);
                     }
                 });
 
@@ -751,7 +751,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                     walletFragment = new WalletFragment();
                     return walletFragment;
                 case ACTIVITY:
-                    activityFragment = new ActivityFragment();
+                    activityFragment = new TransactionFragment();
                     return activityFragment;
                 case DAPP_BROWSER:
                     if (CustomViewSettings.hideDappBrowser()) dappBrowserFragment = new Fragment();
@@ -790,8 +790,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                     return (BaseFragment) educationFragment;
             }
         }
-        //todo fix racing condition IndexOutOfBoundsException: Index: 0
-        else return (BaseFragment) getSupportFragmentManager().getFragments().get(page.ordinal());
+        else return (BaseFragment) getSupportFragmentManager().getFragments().get(0);
     }
 
     @Override
@@ -840,13 +839,15 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     }
 
     @Override
-    public void resetTokens() {
+    public void resetTokens()
+    {
         ((ActivityFragment) getFragment(ACTIVITY)).resetTokens();
         ((WalletFragment) getFragment(WALLET)).resetTokens();
     }
 
     @Override
-    public void resetTransactions() {
+    public void resetTransactions()
+    {
         ((ActivityFragment) getFragment(ACTIVITY)).resetTransactions();
     }
 
@@ -1025,7 +1026,8 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                 }
                 break;
             case C.TERMINATE_ACTIVITY:
-                if (data != null && resultCode == Activity.RESULT_OK) {
+                if (data != null && resultCode == Activity.RESULT_OK)
+                {
                     ((ActivityFragment) getFragment(ACTIVITY)).scrollToTop();
                     showPage(ACTIVITY);
                 }
@@ -1033,7 +1035,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
             case C.ADDED_TOKEN_RETURN:
                 if (data != null && data.hasExtra(C.EXTRA_TOKENID_LIST)) {
                     List<ContractLocator> tokenData = data.getParcelableArrayListExtra(C.EXTRA_TOKENID_LIST);
-                    ((ActivityFragment) getFragment(ACTIVITY)).addedToken(tokenData);
+                    ((TransactionFragment) getFragment(ACTIVITY)).addedToken(tokenData);
                 }
                 break;
             default:

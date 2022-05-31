@@ -20,7 +20,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
             toolbar.setTitle(R.string.empty);
         }
-        enableDisplayHomeAsUp();
+        enableDisplayHomeAsUp(R.drawable.ic_arrow_back_new);
         return toolbar;
     }
 

@@ -99,7 +99,7 @@
                 android:id="@+id/blockie"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/big_green_tick" />
+                android:src="@drawable/big_blue_tick" />
 
             <TextView
                 android:id="@+id/text_ens_name"

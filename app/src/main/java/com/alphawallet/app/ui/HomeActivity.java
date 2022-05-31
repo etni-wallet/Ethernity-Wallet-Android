@@ -758,7 +758,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
         ((NewSettingsFragment) getFragment(SETTINGS)).backupSeedSuccess(false);
         ((WalletFragment) getFragment(WALLET)).storeWalletBackupTime(keyBackup);
         removeSettingsBadgeKey(C.KEY_NEEDS_BACKUP);
-        if (successImage != null) successImage.setImageResource(R.drawable.big_green_tick);
+        if (successImage != null) successImage.setImageResource(R.drawable.big_blue_tick);
         if (successOverlay != null) successOverlay.setVisibility(View.VISIBLE);
         handler.postDelayed(this, 1000);
     }

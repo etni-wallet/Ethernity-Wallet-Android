@@ -464,7 +464,7 @@
     <string name="authentication_failed">Quá trình xác thực đã thất bại</string>
     <string name="backup_seed_phrase">Sao lưu ví của bạn bằng cụm từ bí mật</string>
     <string name="backup_seed_phrase_detail">Tạo một bản sao lưu rất đơn giản và an toàn: chỉ cần viết ra 12 từ và giữ chúng ở nơi bí mật, ngoại tuyến.</string>
-    <string name="action_back_up_my_wallet">Sao lưu ví của tôi</string>
+    <string name="action_back_up_my_wallet">Khởi đầu</string>
     <string name="write_down_seed_phrase">Viết ra cụm từ bí mật không phải trên giấy</string>
     <string name="wrote_down_seed_phrase">OK, tôi đã viết cụm từ này</string>
     <string name="verify_seed_phrase">Xác minh cụm từ</string>

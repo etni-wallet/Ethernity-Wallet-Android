@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:foregroundGravity="center"
-            android:src="@drawable/big_green_tick" />
+            android:src="@drawable/big_blue_tick" />
 
     </LinearLayout>
 

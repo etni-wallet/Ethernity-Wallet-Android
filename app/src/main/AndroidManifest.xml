@@ -36,6 +36,7 @@
         tools:replace="android:name, android:theme, android:allowBackup">
         <activity
             android:name=".ui.education.EducationOperatorActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:exported="false" />
         <activity
             android:name=".ui.HomeActivity"

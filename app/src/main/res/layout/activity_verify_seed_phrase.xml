@@ -9,6 +9,7 @@
     <include layout="@layout/layout_simple_toolbar" />
 
     <RelativeLayout
+        android:layout_marginTop="@dimen/large_32"
         android:id="@+id/relativeLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +18,7 @@
 
         <TextView
             android:id="@+id/text_title"
-            style="@style/Aw.Typography.Headline"
+            style="@style/Aw.Typography.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -37,8 +38,8 @@
             android:layout_marginEnd="@dimen/standard_16"
             app:cardBackgroundColor="@color/transparent"
             app:cardElevation="0dp"
-            app:strokeColor="?android:textColorSecondary"
-            app:strokeWidth="1dp">
+            app:strokeColor="?android:colorControlHighlight"
+            app:strokeWidth="2dp">
 
             <TextView
                 android:id="@+id/text_verify"
@@ -86,6 +87,8 @@
 
         <com.alphawallet.app.widget.FunctionButtonBar
             android:id="@+id/layoutButtons"
+            android:layout_marginStart="@dimen/standard_16"
+            android:layout_marginEnd="@dimen/standard_16"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true" />

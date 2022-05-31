@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,10 +33,7 @@ import com.alphawallet.app.widget.EmptyTransactionsView;
 import com.alphawallet.app.widget.SystemView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import io.realm.Realm;
@@ -85,7 +81,6 @@ public class TransactionFragment extends BaseFragment implements View.OnClickLis
     private void onItemsLoaded(ActivityMeta[] activityItems) {
         try (Realm realm = viewModel.getRealmInstance()) {
             adapter.updateActivityItems(buildTransactionList(realm, activityItems).toArray(new ActivityMeta[0]));
-            Log.i("AdapterItems","onItemsLoaded size " + adapter.getItemCount() + " " + adapter.getWallet().address);
             showEmptyTx();
 
             for (ActivityMeta am : activityItems) {
@@ -120,7 +115,6 @@ public class TransactionFragment extends BaseFragment implements View.OnClickLis
             if (metas.size() > 0) {
                 TransactionMeta[] metaArray = metas.toArray(new TransactionMeta[0]);
                 adapter.updateActivityItems(buildTransactionList(realm, metaArray).toArray(new ActivityMeta[0]));
-                Log.i("AdapterItems","startTxListener updated " + adapter.getItemCount());
                 systemView.hide();
             }
         });
@@ -184,7 +178,6 @@ public class TransactionFragment extends BaseFragment implements View.OnClickLis
     }
 
     public void onDefaultWallet(Wallet wallet) {
-        Log.i("AdapterItems","onDefaultWallet");
         adapter.clear();
         adapter.setDefaultWallet(wallet);
         viewModel.prepare();

@@ -658,7 +658,10 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
 
     void backupWalletFail(String keyBackup, boolean hasNoLock) {
         //postpone backup until later
-        ((NewSettingsFragment) getFragment(SETTINGS)).backupSeedSuccess(hasNoLock);
+        Fragment settingsFragment = getFragment(SETTINGS);
+        if(settingsFragment instanceof NewSettingsFragment){
+            ((NewSettingsFragment) settingsFragment).backupSeedSuccess(hasNoLock);
+        }
         if (keyBackup != null) {
             ((WalletFragment) getFragment(WALLET)).remindMeLater(new Wallet(keyBackup));
             viewModel.checkIsBackedUp(keyBackup);

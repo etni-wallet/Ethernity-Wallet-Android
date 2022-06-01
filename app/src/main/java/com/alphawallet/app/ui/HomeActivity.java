@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -184,6 +185,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         LocaleUtils.setDeviceLocale(getBaseContext());
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 

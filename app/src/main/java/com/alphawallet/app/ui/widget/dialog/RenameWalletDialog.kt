@@ -1,9 +1,9 @@
 package com.alphawallet.app.ui.widget.dialog
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -21,6 +21,8 @@ class RenameWalletDialog(val setWalletName: (name: String) -> Unit) : DialogFrag
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setBackgroundAndResize() // Set transparent background and no title
+        resizeDialog()
         return inflater.inflate(R.layout.dialog_rename_wallet, container, false)
     }
 
@@ -44,7 +46,7 @@ class RenameWalletDialog(val setWalletName: (name: String) -> Unit) : DialogFrag
     private fun setupListeners() {
         renameActionCancel.setOnClickListener { cancel() }
         renameActionDone.setOnClickListener {
-            val newName = getNameFromView()
+            val newName = getWalletNameFromView()
             newName?.let {
                 setWalletName(it)
                 cancel()
@@ -54,12 +56,33 @@ class RenameWalletDialog(val setWalletName: (name: String) -> Unit) : DialogFrag
         }
     }
 
+    private fun setBackgroundAndResize() {
+        dialog?.let {
+            it.window?.let { window ->
+                window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                window.requestFeature(Window.FEATURE_NO_TITLE)
+            }
+        }
+    }
+
+    private fun resizeDialog() {
+        this.dialog?.window?.let { window ->
+            val marginTop = resources.getDimensionPixelSize(R.dimen.dp18) * 2
+            val layoutParams: WindowManager.LayoutParams = window.attributes
+            layoutParams.gravity = Gravity.TOP
+            layoutParams.y = marginTop
+            layoutParams.flags =
+                layoutParams.flags and WindowManager.LayoutParams.FLAG_BLUR_BEHIND.inv()
+            window.attributes = layoutParams
+        }
+    }
+
     private fun cancel() {
         this.dismiss()
         errorToast.cancel()
     }
 
-    private fun getNameFromView(): String? {
+    private fun getWalletNameFromView(): String? {
         val input = renameWalletInput.text.toString()
         if (input.isEmpty())
             return null

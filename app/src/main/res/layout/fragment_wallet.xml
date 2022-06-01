@@ -32,9 +32,9 @@
             android:background="@color/ethernity_background_gray">
 
             <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/wallet_cards"
+                android:id="@+id/wallet_list_horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="220dp"
                 android:background="@color/white"
                 android:orientation="horizontal"
                 android:paddingBottom="16dp"
@@ -42,15 +42,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/wallet_card_dots"
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                app:layout_constraintBottom_toBottomOf="@id/wallet_cards"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:tabBackground="@drawable/tab_selector"
-                app:tabIndicatorHeight="0dp" />
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/wallet_list_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            app:layout_constraintBottom_toBottomOf="@id/wallet_list_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:tabBackground="@drawable/tab_selector"
+            app:tabIndicatorHeight="0dp" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
@@ -63,11 +63,12 @@
                 android:background="@drawable/background_wallet_tab"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/wallet_card_dots"
+                app:layout_constraintTop_toBottomOf="@id/wallet_list_indicator"
                 app:layout_scrollFlags="enterAlways"
                 app:tabIndicatorHeight="0dp"
                 app:tabSelectedTextColor="@color/white"
                 app:tabTextColor="@color/ethernity_tab_selected" />
+
 
             <com.alphawallet.app.widget.NotificationView
                 android:id="@+id/wallet_notification"
@@ -82,18 +83,26 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refresh_layout"
+        android:id="@+id/refresh_assets_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="16dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
+            android:id="@+id/asset_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <FrameLayout
+        android:id="@+id/transaction_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <com.alphawallet.app.widget.ProgressView
         android:id="@+id/progress_view"

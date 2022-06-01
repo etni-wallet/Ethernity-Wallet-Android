@@ -1,33 +1,59 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/copy_wallet_address_action"
+        android:id="@+id/show_copy_wallet_address_action"
         style="@style/Aw.Component.ActionItem"
-        android:text="@string/copy_wallet_address" />
-
-    <View style="@style/Aw.Component.Separator" />
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:text="@string/copy_wallet_address"
+        app:drawableTopCompat="@drawable/ic_show_copy_address"
+        app:layout_constraintBottom_toTopOf="@id/rename_wallet_action"
+        app:layout_constraintEnd_toStartOf="@id/show_seed_action"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/show_my_wallet_address_action"
+        android:id="@+id/show_seed_action"
         style="@style/Aw.Component.ActionItem"
-        android:text="@string/title_show_wallet_address" />
-
-    <View style="@style/Aw.Component.Separator" />
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:text="@string/show_seed_phrase"
+        app:drawableTopCompat="@drawable/ic_show_seed_phrase"
+        app:layout_constraintBottom_toTopOf="@id/rename_wallet_action"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/show_copy_wallet_address_action"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/add_hide_tokens_action"
+        android:id="@+id/rename_wallet_action"
         style="@style/Aw.Component.ActionItem"
-        android:text="@string/add_hide_tokens" />
-
-    <View style="@style/Aw.Component.Separator" />
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:text="@string/rename_wallet"
+        app:drawableTopCompat="@drawable/ic_rename_wallet"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/delete_wallet_action"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/show_copy_wallet_address_action" />
 
     <TextView
-        android:id="@+id/rename_this_wallet_action"
+        android:id="@+id/delete_wallet_action"
         style="@style/Aw.Component.ActionItem"
-        android:text="@string/rename_this_wallet_action" />
-</LinearLayout>
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:text="@string/remove_wallet"
+        app:drawableTopCompat="@drawable/ic_remove_wallet"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/rename_wallet_action"
+        app:layout_constraintTop_toBottomOf="@id/show_seed_action" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 

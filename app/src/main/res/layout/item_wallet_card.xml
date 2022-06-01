@@ -13,7 +13,7 @@
         android:background="@drawable/ic_card_texture">
 
         <TextView
-            android:id="@+id/card_name_tv"
+            android:id="@+id/wallet_name_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp16"
@@ -24,7 +24,7 @@
             tools:text="Main Account" />
 
         <TextView
-            android:id="@+id/card_balance_tv"
+            android:id="@+id/wallet_balance_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp16"
@@ -37,7 +37,7 @@
             tools:text="$310.000" />
 
         <TextView
-            android:id="@+id/card_address_tv"
+            android:id="@+id/wallet_address_tv"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp12"
@@ -49,14 +49,14 @@
             android:paddingStart="@dimen/dp8"
             android:paddingEnd="@dimen/dp8"
             android:textColor="@color/white"
-            app:drawableEndCompat="@drawable/ic_card_address_copy_paste"
-            app:layout_constraintBottom_toTopOf="@id/card_action_send_tv"
+            app:drawableEndCompat="@drawable/ic_copy"
+            app:layout_constraintBottom_toTopOf="@id/wallet_action_send"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_name_tv"
+            app:layout_constraintTop_toBottomOf="@id/wallet_name_tv"
             tools:text="0xRdad274.." />
 
         <TextView
-            android:id="@+id/card_action_send_tv"
+            android:id="@+id/wallet_action_send"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp16"
@@ -69,12 +69,12 @@
             android:textColor="@color/white"
             app:drawableEndCompat="@drawable/ic_action_send"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/card_action_receive_tv"
+            app:layout_constraintEnd_toStartOf="@id/wallet_action_receive"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_address_tv" />
+            app:layout_constraintTop_toBottomOf="@id/wallet_address_tv" />
 
         <TextView
-            android:id="@+id/card_action_receive_tv"
+            android:id="@+id/wallet_action_receive"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp16"
@@ -85,20 +85,21 @@
             android:textAlignment="center"
             android:textColor="@color/white"
             app:drawableEndCompat="@drawable/ic_action_receive"
-            app:layout_constraintBaseline_toBaselineOf="@id/card_action_send_tv"
+            app:layout_constraintBaseline_toBaselineOf="@id/wallet_action_send"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/card_action_send_tv"
-            app:layout_constraintTop_toBottomOf="@id/card_address_tv" />
+            app:layout_constraintStart_toEndOf="@id/wallet_action_send"
+            app:layout_constraintTop_toBottomOf="@id/wallet_address_tv" />
 
         <ImageView
-            android:id="@+id/card_action_dots"
+            android:id="@+id/wallet_action_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp30"
+            android:padding="16dp"
             android:src="@drawable/ic_card_action_dots"
-            app:layout_constraintBottom_toBottomOf="@id/card_action_receive_tv"
+            app:layout_constraintBottom_toBottomOf="@id/wallet_action_receive"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/card_action_receive_tv" />
+            app:layout_constraintTop_toTopOf="@+id/wallet_action_receive" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -26,7 +26,6 @@ import com.alphawallet.app.interact.ActivityDataInteract;
 import com.alphawallet.app.repository.entity.RealmTransaction;
 import com.alphawallet.app.repository.entity.RealmTransfer;
 import com.alphawallet.app.ui.widget.adapter.ActivityAdapter;
-import com.alphawallet.app.ui.widget.divider.ListDivider;
 import com.alphawallet.app.ui.widget.entity.TokenTransferData;
 import com.alphawallet.app.util.LocaleUtils;
 import com.alphawallet.app.viewmodel.ActivityViewModel;
@@ -36,8 +35,6 @@ import com.alphawallet.app.widget.SystemView;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import dagger.hilt.android.AndroidEntryPoint;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -46,12 +43,10 @@ import io.realm.RealmResults;
  * Created by JB on 26/06/2020.
  */
 @AndroidEntryPoint
-public class ActivityFragment extends BaseFragment implements View.OnClickListener, ActivityDataInteract
-{
+public class TransactionFragment extends BaseFragment implements View.OnClickListener, ActivityDataInteract {
     private ActivityViewModel viewModel;
 
     private SystemView systemView;
-    private ActivityAdapter adapter;
     private RecyclerView listView;
     private RealmResults<RealmTransaction> realmUpdates;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -59,48 +54,45 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     private Realm realm;
     private long lastUpdateTime = 0;
     private boolean isVisible = false;
+    private ActivityAdapter adapter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         LocaleUtils.setActiveLocale(getContext());
         View view = inflater.inflate(R.layout.fragment_transactions, container, false);
-        toolbar(view);
-        setToolbarTitle(R.string.activity_label);
         initViewModel();
         initViews(view);
         return view;
     }
 
-    private void initViewModel()
-    {
-        if (viewModel == null)
-        {
+    private void initViewModel() {
+        if (viewModel == null) {
             viewModel = new ViewModelProvider(this)
                     .get(ActivityViewModel.class);
             viewModel.defaultWallet().observe(getViewLifecycleOwner(), this::onDefaultWallet);
             viewModel.activityItems().observe(getViewLifecycleOwner(), this::onItemsLoaded);
+
+            adapter = new ActivityAdapter(viewModel.getTokensService(), viewModel.provideTransactionsInteract(),
+                    viewModel.getAssetDefinitionService(), this);
         }
     }
 
-    private void onItemsLoaded(ActivityMeta[] activityItems)
-    {
-        try (Realm realm = viewModel.getRealmInstance())
-        {
+    private void onItemsLoaded(ActivityMeta[] activityItems) {
+        try (Realm realm = viewModel.getRealmInstance()) {
             adapter.updateActivityItems(buildTransactionList(realm, activityItems).toArray(new ActivityMeta[0]));
             showEmptyTx();
 
-            for (ActivityMeta am : activityItems)
-            {
-                if (am instanceof TransactionMeta && am.getTimeStampSeconds() > lastUpdateTime) lastUpdateTime = am.getTimeStampSeconds() - 60;
+            for (ActivityMeta am : activityItems) {
+                if (am instanceof TransactionMeta && am.getTimeStampSeconds() > lastUpdateTime)
+                    lastUpdateTime = am.getTimeStampSeconds() - 60;
             }
         }
 
         if (isVisible) startTxListener();
     }
 
-    private void startTxListener()
-    {
+    private void startTxListener() {
         if (viewModel.defaultWallet().getValue() == null) return;
         if (realm == null || realm.isClosed()) realm = viewModel.getRealmInstance();
         if (realmUpdates != null) realmUpdates.removeAllChangeListeners();
@@ -112,18 +104,15 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
             List<TransactionMeta> metas = new ArrayList<>();
             //make list
             if (realmTransactions.size() == 0) return;
-            for (RealmTransaction item : realmTransactions)
-            {
-                if (viewModel.getTokensService().getNetworkFilters().contains(item.getChainId()))
-                {
+            for (RealmTransaction item : realmTransactions) {
+                if (viewModel.getTokensService().getNetworkFilters().contains(item.getChainId())) {
                     TransactionMeta newMeta = new TransactionMeta(item.getHash(), item.getTimeStamp(), item.getTo(), item.getChainId(), item.getBlockNumber());
                     metas.add(newMeta);
                     lastUpdateTime = newMeta.getTimeStampSeconds() + 1;
                 }
             }
 
-            if (metas.size() > 0)
-            {
+            if (metas.size() > 0) {
                 TransactionMeta[] metaArray = metas.toArray(new TransactionMeta[0]);
                 adapter.updateActivityItems(buildTransactionList(realm, metaArray).toArray(new ActivityMeta[0]));
                 systemView.hide();
@@ -131,20 +120,19 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         });
     }
 
-    private List<ActivityMeta> buildTransactionList(Realm realm, ActivityMeta[] activityItems)
-    {
+    private List<ActivityMeta> buildTransactionList(Realm realm, ActivityMeta[] activityItems) {
         //selectively filter the items with the following rules:
         // - allow through all normal transactions with no token transfer consequences
         // - for any transaction with token transfers; if there's only one token transfer, only show the transfer
         // - for any transaction with more than one token transfer, show the transaction and show the child transfer consequences
         List<ActivityMeta> filteredList = new ArrayList<>();
 
-        for (ActivityMeta am : activityItems)
-        {
-            if (am instanceof TransactionMeta)
-            {
-                List<TokenTransferData> tokenTransfers = getTokenTransfersForHash(realm, (TransactionMeta)am);
-                if (tokenTransfers.size() != 1) { filteredList.add(am); } //only 1 token transfer ? No need to show the underlying transaction
+        for (ActivityMeta am : activityItems) {
+            if (am instanceof TransactionMeta) {
+                List<TokenTransferData> tokenTransfers = getTokenTransfersForHash(realm, (TransactionMeta) am);
+                if (tokenTransfers.size() != 1) {
+                    filteredList.add(am);
+                } //only 1 token transfer ? No need to show the underlying transaction
                 filteredList.addAll(tokenTransfers);
             }
         }
@@ -152,8 +140,7 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         return filteredList;
     }
 
-    private List<TokenTransferData> getTokenTransfersForHash(Realm realm, TransactionMeta tm)
-    {
+    private List<TokenTransferData> getTokenTransfersForHash(Realm realm, TransactionMeta tm) {
         List<TokenTransferData> transferData = new ArrayList<>();
         //summon realm items
         //get matching entries for this transaction
@@ -161,12 +148,10 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
                 .equalTo("hash", tm.hash)
                 .findAll();
 
-        if (transfers != null && transfers.size() > 0)
-        {
+        if (transfers != null && transfers.size() > 0) {
             //list of transfers, descending in time to give ordered list
             long nextTransferTime = transfers.size() == 1 ? tm.getTimeStamp() : tm.getTimeStamp() - 1; // if there's only 1 transfer, keep the transaction timestamp
-            for (RealmTransfer rt : transfers)
-            {
+            for (RealmTransfer rt : transfers) {
                 TokenTransferData ttd = new TokenTransferData(rt.getHash(), tm.chainId,
                         rt.getTokenAddress(), rt.getEventName(), rt.getTransferDetail(), nextTransferTime);
                 transferData.add(ttd);
@@ -177,16 +162,12 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         return transferData;
     }
 
-    private void initViews(View view)
-    {
-        adapter = new ActivityAdapter(viewModel.getTokensService(), viewModel.provideTransactionsInteract(),
-                viewModel.getAssetDefinitionService(), this);
+    private void initViews(View view) {
         SwipeRefreshLayout refreshLayout = view.findViewById(R.id.refresh_layout);
         systemView = view.findViewById(R.id.system_view);
         listView = view.findViewById(R.id.list);
         listView.setLayoutManager(new LinearLayoutManager(getContext()));
         listView.setAdapter(adapter);
-        listView.addItemDecoration(new ListDivider(getContext()));
         listView.addRecyclerListener(holder -> adapter.onRViewRecycled(holder));
 
         systemView.attachRecyclerView(listView);
@@ -196,49 +177,41 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
         refreshLayout.setOnRefreshListener(this::refreshTransactionList);
     }
 
-    private void onDefaultWallet(Wallet wallet)
-    {
+    public void onDefaultWallet(Wallet wallet) {
+        adapter.clear();
         adapter.setDefaultWallet(wallet);
+        viewModel.prepare();
     }
 
-    private void showEmptyTx()
-    {
-        if (adapter.isEmpty())
-        {
+    private void showEmptyTx() {
+        if (adapter.isEmpty()) {
             EmptyTransactionsView emptyView = new EmptyTransactionsView(getContext(), this);
             systemView.showEmpty(emptyView);
-        }
-        else
-        {
+        } else {
             systemView.hide();
         }
     }
 
-    private void refreshTransactionList()
-    {
+    private void refreshTransactionList() {
         //clear tx list and reload
         adapter.clear();
         viewModel.prepare();
     }
 
-    public void resetTokens()
-    {
-        if (adapter != null)
-        {
+    public void resetTokens() {
+        if (adapter != null) {
             //wallet changed, reset
             adapter.clear();
             viewModel.prepare();
         }
     }
 
-    public void addedToken(List<ContractLocator> tokenContracts)
-    {
+    public void addedToken(List<ContractLocator> tokenContracts) {
         if (adapter != null) adapter.updateItems(tokenContracts);
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         if (realmUpdates != null) realmUpdates.removeAllChangeListeners();
         if (realm != null && !realm.isClosed()) realm.close();
@@ -247,15 +220,11 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
-        if (viewModel == null)
-        {
-            ((HomeActivity)getActivity()).resetFragment(WalletPage.ACTIVITY);
-        }
-        else
-        {
+        if (viewModel == null) {
+            ((HomeActivity) getActivity()).resetFragment(WalletPage.ACTIVITY);
+        } else {
             viewModel.prepare();
         }
 
@@ -263,49 +232,42 @@ public class ActivityFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void fetchMoreData(long latestDate)
-    {
-        if (checkTimer)
-        {
+    public void fetchMoreData(long latestDate) {
+        if (checkTimer) {
             viewModel.fetchMoreTransactions(latestDate);
             checkTimer = false;
             handler.postDelayed(() -> {
                 checkTimer = true;
-            }, 5*DateUtils.SECOND_IN_MILLIS); //restrict checking for previous transactions every 5 seconds
+            }, 5 * DateUtils.SECOND_IN_MILLIS); //restrict checking for previous transactions every 5 seconds
         }
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
 
     }
 
     @Override
-    public void comeIntoFocus()
-    {
+    public void comeIntoFocus() {
         isVisible = true;
         //start listener
         startTxListener(); //adjust for timestamp delay
     }
 
     @Override
-    public void leaveFocus()
-    {
+    public void leaveFocus() {
         isVisible = false;
         //stop listener
         if (realmUpdates != null) realmUpdates.removeAllChangeListeners();
         if (realm != null && !realm.isClosed()) realm.close();
     }
 
-    public void resetTransactions()
-    {
+    public void resetTransactions() {
         //called when we just refreshed the database
         refreshTransactionList();
     }
 
-    public void scrollToTop()
-    {
+    public void scrollToTop() {
         if (listView != null) listView.smoothScrollToPosition(0);
     }
 }

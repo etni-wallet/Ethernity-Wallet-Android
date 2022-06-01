@@ -107,12 +107,15 @@
     <string name="error_fail_load_tokens">Failed to load tokens list</string>
     <string name="error_create_wallet">Failed to create a wallet</string>
 
-    <string name="app_name">AlphaWallet</string>
+    <string name="app_name">EthernityWallet</string>
     <string name="all">All</string>
     <string name="currency">Currencies</string>
     <string name="advanced">Advanced Options</string>
-    <string name="copy_wallet_address">Copy Wallet Address</string>
-    <string name="rename_this_wallet_action">Rename this Wallet</string>
+    <string name="copy_wallet_address">Show/Copy \n Wallet Address</string>
+    <string name="rename_wallet">Rename Wallet</string>
+    <string name="rename_not_complete">Please enter a valid Wallet name</string>
+    <string name="delete_wallet_title">Are you sure you would like to \n remove this wallet from the app?</string>
+    <string name="delete_wallet_description">If you made a backup, you can import it back again</string>
     <string name="hint_contract_name">Name</string>
     <string name="hint_contract_venue">Venue</string>
     <string name="hint_contract_date">Date</string>
@@ -249,6 +252,7 @@
     <string name="total_cost_for_x_tickets">Total cost for %1$d %2$s:</string>
     <string name="title_import_token">Import Tickets</string>
     <string name="action_cancel">Cancel</string>
+    <string name="action_done">Done</string>
     <string name="confirm_purchase">Confirm Purchase</string>
     <string name="bad_import_link">Invalid Import Link</string>
     <string name="bad_import_link_body">Import link contains an error; please re-request the link</string>
@@ -477,7 +481,7 @@
     <string name="action_continue">Verify Seed Phrase</string>
     <string name="invalid_phrase">Invalid recovery phrase. Please check and try again.</string>
     <string name="manage_wallet">Manage Wallet</string>
-    <string name="show_seed_phrase">Show Seed Phrase</string>
+    <string name="show_seed_phrase">Show My \n Seed Phrase</string>
     <string name="lose_this_wallet">Lose this Wallet</string>
     <string name="seed_phrase_loss_warning">If you lose access to this device, your funds will be lost, unless you back up!</string>
     <string name="delete_lose_funds_warning">Be careful with deleting your wallet. If you have not backed up your wallet, you might lose all your funds.</string>
@@ -906,6 +910,7 @@
     <string name="switch_to_list_view">Switch to List View</string>
     <string name="reload_metadata">Reload Metadata</string>
     <string name="label_market_price">Market Price:</string>
+    <string name="i_already_have_a_wallet">I already have a Wallet</string>
     <string name="title_select_theme">Select Mode</string>
     <string name="title_network_info">Network Info</string>
     <string name="website_text">Website</string>
@@ -929,6 +934,8 @@
     <string name="unable_store_key">Unable to store key: %1$s</string>
     <string name="title_ens_lookup_warning">ENS Lookup Warning</string>
     <string name="message_ens_node_not_sync">AlphaWallet has detected a discrepancy between ethereum\'s timestamp and your device\'s current time, or possibly the blockchain connection is not synchronized, please check your phone\'s time is correct, or ignore this warning.</string>
+    <string name="transaction_item_dot_separator">.</string>
+    <string name="remove_wallet">Remove wallet</string>
     <string name="wallet_backup_successful">Wallet Backup Successful</string>
     <string name="create_or_import_wallet">Create or Import Wallet</string>
     <string name="search_for_assets">Search for assets</string>

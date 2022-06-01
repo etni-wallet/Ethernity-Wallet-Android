@@ -12,9 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginStart="@dimen/dp16"
+        android:text="@string/toolbar_header_wallet"
         tools:text="Wallet" />
 
     <ImageView
+        android:id="@+id/toolbar_action_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_plus"/>

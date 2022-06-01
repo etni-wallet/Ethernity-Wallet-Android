@@ -148,6 +148,11 @@ public class ActivityViewModel extends BaseViewModel
         return realmManager.getRealmInstance(wallet.getValue());
     }
 
+    public Realm getRealmInstance(Wallet wallet)
+    {
+        return realmManager.getRealmInstance(wallet);
+    }
+
     public Transaction getTransaction(String hash)
     {
         return fetchTransactionsInteract.fetchCached(wallet.getValue().address, hash);

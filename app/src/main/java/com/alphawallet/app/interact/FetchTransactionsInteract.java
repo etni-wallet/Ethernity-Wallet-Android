@@ -51,6 +51,11 @@ public class FetchTransactionsInteract {
         return transactionRepository.fetchCachedTransaction(walletAddress, hash);
     }
 
+    public Transaction fetchCached(Wallet wallet, String hash)
+    {
+        return transactionRepository.fetchCachedTransaction(wallet, hash);
+    }
+
     public long fetchTxCompletionTime(String walletAddr, String hash)
     {
         return transactionRepository.fetchTxCompletionTime(walletAddr, hash);

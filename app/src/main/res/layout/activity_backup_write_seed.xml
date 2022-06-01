@@ -8,8 +8,9 @@
     <include layout="@layout/layout_simple_toolbar" />
 
     <TextView
+        android:layout_marginTop="@dimen/large_32"
         android:id="@+id/text_title"
-        style="@style/Aw.Typography.Headline"
+        style="@style/Aw.Typography.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
@@ -32,6 +33,8 @@
 
     <com.alphawallet.app.widget.FunctionButtonBar
         android:id="@+id/layoutButtons"
+        android:layout_marginStart="@dimen/standard_16"
+        android:layout_marginEnd="@dimen/standard_16"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />

@@ -470,7 +470,7 @@
     <string name="authentication_failed">ခွင့်ပြုချက်ပျက်ပြယ်သည်</string>
     <string name="backup_seed_phrase">သင့်ဝေါလက်၏ seed phrase များကို သိမ်းဆည်းပါ</string>
     <string name="backup_seed_phrase_detail">အလွန်လွယ်ကူလုံခြုံစွာသိမ်းဆည်းနိုင်ပါသည်။ လုံခြုံသောနေရာတခုကိုသွား၍ သိမ်းဆည်းရန်လိုအပ်သည့်စကားလုံး၁၂လုံးကိုရေးမှတ်ထားပါ။</string>
-    <string name="action_back_up_my_wallet">ကျွန်ုပ်၏ဝေါလက်ကိုသိမ်းဆည်းမည်</string>
+    <string name="action_back_up_my_wallet">စတင်ပါ။</string>
     <string name="write_down_seed_phrase">Seed Phrase ကိုစာရွက်ပေါ်တွင်ရေးမှတ်ပါ</string>
     <string name="wrote_down_seed_phrase">ဟုတ်ကဲ့၊ ရေးချပြီးပါပြီ</string>
     <string name="verify_seed_phrase">Seed Phraseများကိုအတည်ပြုမည်</string>

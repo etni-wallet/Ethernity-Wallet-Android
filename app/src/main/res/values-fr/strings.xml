@@ -461,7 +461,7 @@
     <string name="authentication_failed">Authentication échouée</string>
     <string name="backup_seed_phrase">Sauvegardez votre portefeuille avec une phrase seed</string>
     <string name="backup_seed_phrase_detail">Faire une sauvegarde est très simple et sûr: il suffit d\'écrire 12 mots et de les conserver dans un endroit secret, hors ligne.</string>
-    <string name="action_back_up_my_wallet">Sauvegarder mon portefeuille</string>
+    <string name="action_back_up_my_wallet">Commencez</string>
     <string name="write_down_seed_phrase">Écrivez la phrase seed\non papier</string>
     <string name="wrote_down_seed_phrase">OK, j\'ai noté ceci</string>
     <string name="verify_seed_phrase">Verifier Seed Phrase</string>

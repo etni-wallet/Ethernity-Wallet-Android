@@ -81,6 +81,7 @@
         <item name="radioButtonStyle">@style/Aw.Component.RadioButton</item>
         <item name="bottomSheetDialogTheme">@style/AppTheme.BottomSheetDialog</item>
         <item name="seedWordStyle">@style/Aw.Component.SeedWord</item>
+        <item name="seedWordStyleVerify">@style/Aw.Component.SeedWord2</item>
         <item name="whatsNewEntryStyle">@style/Aw.Component.WhatsNewEntry</item>
         <item name="materialAlertDialogTheme">@style/AppTheme.AlertDialog</item>
         <item name="fontFamily">@font/inter_regular</item>

@@ -93,7 +93,7 @@ public class BackupFlowActivity extends BaseActivity implements
         setContentView(R.layout.activity_backup);
         initViews();
         title.setText(R.string.backup_seed_phrase);
-        backupImage.setImageResource(R.drawable.seed);
+        backupImage.setImageResource(R.drawable.ic_backup_wallet);
         detail.setText(R.string.backup_seed_phrase_detail);
         functionButtonBar.setPrimaryButtonText(R.string.action_back_up_my_wallet);
         functionButtonBar.setPrimaryButtonClickListener(this);
@@ -150,7 +150,7 @@ public class BackupFlowActivity extends BaseActivity implements
         functionButtonBar = findViewById(R.id.layoutButtons);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         toolbar();
-        setTitle(getString(R.string.empty));
+        setTitle("Backup Wallet");
     }
 
     @Override

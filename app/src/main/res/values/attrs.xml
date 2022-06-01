@@ -96,6 +96,7 @@
         <attr name="showActionText" format="boolean"/>
     </declare-styleable>
     <attr name="seedWordStyle" format="reference" />
+    <attr name="seedWordStyleVerify" format="reference" />
     <attr name="whatsNewEntryStyle" format="reference" />
     <attr name="colorSurfaceSecondary" format="reference" />
     <attr name="colorSurfaceTertiary" format="reference" />

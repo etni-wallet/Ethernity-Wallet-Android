@@ -1,23 +1,26 @@
 package com.alphawallet.app.ui;
 
+import static com.alphawallet.ethereum.EthereumNetworkBase.MAINNET_ID;
+
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.alphawallet.app.BuildConfig;
 import com.alphawallet.app.C;
 import com.alphawallet.app.R;
 import com.alphawallet.app.entity.AddressMode;
@@ -33,7 +36,6 @@ import com.alphawallet.app.util.AWEnsResolver;
 import com.alphawallet.app.util.KeyboardUtils;
 import com.alphawallet.app.util.QRUtils;
 import com.alphawallet.app.viewmodel.MyAddressViewModel;
-import com.alphawallet.app.widget.CopyTextView;
 import com.alphawallet.app.widget.InputAmount;
 import com.alphawallet.ethereum.EthereumNetworkBase;
 
@@ -41,18 +43,13 @@ import org.web3j.crypto.Keys;
 
 import java.math.BigDecimal;
 
-import javax.inject.Inject;
-
 import dagger.hilt.android.AndroidEntryPoint;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-import static com.alphawallet.ethereum.EthereumNetworkBase.MAINNET_ID;
-
 @AndroidEntryPoint
-public class MyAddressActivity extends BaseActivity implements AmountReadyCallback
-{
+public class MyAddressActivity extends BaseActivity implements AmountReadyCallback {
     public static final String KEY_ADDRESS = "key_address";
     public static final String KEY_MODE = "mode";
     public static final String OVERRIDE_DEFAULT = "override";
@@ -70,14 +67,13 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
     private long overrideNetwork;
     private int screenWidth;
     private TextView copyAddress;
-    private CopyTextView copyWalletName;
-    private ProgressBar ensFetchProgressBar;
+    private TextView copyButton;
 
     private InputAmount amountInput;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        screenWidth = (int) ((float)DisplayUtils.getScreenResolution(this).x * 0.8f);
+        screenWidth = (int) ((float) DisplayUtils.getScreenResolution(this).x * 0.8f);
         super.onCreate(savedInstanceState);
         initViewModel();
         overrideNetwork = 0;
@@ -85,22 +81,15 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         getPreviousMode();
     }
 
-    private void getPreviousMode()
-    {
+    private void getPreviousMode() {
         Intent intent = getIntent();
-        if (token != null && token.isNonFungible())
-        {
+        if (token != null && token.isNonFungible()) {
             showContract();
-        }
-        else if (intent != null)
-        {
+        } else if (intent != null) {
             AddressMode mode = AddressMode.values()[intent.getIntExtra(KEY_MODE, AddressMode.MODE_ADDRESS.ordinal())];
-            if (mode == AddressMode.MODE_POS)
-            {
+            if (mode == AddressMode.MODE_POS) {
                 showPointOfSaleMode();
-            }
-            else
-            {
+            } else {
                 showAddress();
             }
         }
@@ -110,8 +99,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         toolbar();
         layoutInputAmount = findViewById(R.id.layout_define_request);
         qrImageView = findViewById(R.id.qr_image);
-        qrImageView.setBackgroundResource(R.color.ethernity_blue);
-        ensFetchProgressBar = findViewById(R.id.ens_fetch_progress);
+//        qrImageView.setBackgroundResource(R.color.ethernity_blue);
 
         if (viewModel == null) initViewModel();
     }
@@ -122,32 +110,27 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         findViewById(R.id.layout_holder).setOnClickListener(view -> {
-            if (getCurrentFocus() != null)
-            {
+            if (getCurrentFocus() != null) {
                 KeyboardUtils.hideKeyboard(getCurrentFocus());
             }
         });
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         if (amountInput != null) amountInput.onDestroy();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         if (CustomViewSettings.hideEIP681()) return super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_receive, menu);
 
-        switch (currentMode)
-        {
+        switch (currentMode) {
             case MODE_ADDRESS:
                 menu.findItem(R.id.action_my_address)
                         .setVisible(false);
@@ -169,8 +152,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         }
 
         //Only show contract if we've come from a token and the token is not base chain
-        if (token == null || token.isEthereum())
-        {
+        if (token == null || token.isEthereum()) {
             menu.findItem(R.id.action_show_contract)
                     .setVisible(false);
         }
@@ -179,25 +161,19 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if (item.getItemId() == R.id.action_show_contract)
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_show_contract) {
             showContract();
-        }
-        else if (item.getItemId() == R.id.action_my_address)
-        {
+        } else if (item.getItemId() == R.id.action_my_address) {
             showAddress();
-        }
-        else if (item.getItemId() == R.id.action_networks) {
+        } else if (item.getItemId() == R.id.action_networks) {
             selectNetwork();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void showPointOfSaleMode()
-    {
+    private void showPointOfSaleMode() {
         setContentView(R.layout.activity_eip681);
         initViews();
         findViewById(R.id.toolbar_title).setVisibility(View.GONE);
@@ -211,26 +187,27 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         setupPOSMode(networkInfo);
     }
 
-    private void setupPOSMode(NetworkInfo info)
-    {
-        if (token == null) token = viewModel.getTokenService().getToken(info.chainId, wallet.address);
+    private void setupPOSMode(NetworkInfo info) {
+        if (token == null)
+            token = viewModel.getTokenService().getToken(info.chainId, wallet.address);
         amountInput.setupToken(token, viewModel.getAssetDefinitionService(), viewModel.getTokenService(), this);
         amountInput.setAmount("");
         updateCryptoAmount(BigDecimal.ZERO);
     }
 
-    private void showAddress()
-    {
+    private void showAddress() {
         getInfo();
         setContentView(R.layout.activity_my_address);
         initViews();
         findViewById(R.id.toolbar_title).setVisibility(View.VISIBLE);
 
-        copyWalletName = findViewById(R.id.copy_wallet_name);
         copyAddress = findViewById(R.id.copy_address);
+        copyButton = findViewById(R.id.action_copy);
+        copyButton.setOnClickListener(v -> {
+            copyText(copyAddress.getText().toString());
+        });
 
-        if (amountInput != null)
-        {
+        if (amountInput != null) {
             amountInput.onDestroy();
             amountInput = null;
         }
@@ -247,32 +224,31 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         updateAddressWithENS(wallet.ENSname); //JB: see if there's any cached value to display while we wait for ENS
 
         //When view changes, this function loads again. It will again try to fetch ENS
-        if(TextUtils.isEmpty(displayName))
-        {
+        if (TextUtils.isEmpty(displayName)) {
             new AWEnsResolver(TokenRepository.getWeb3jService(MAINNET_ID), getApplicationContext())
                     .reverseResolveEns(displayAddress)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(this::updateAddressWithENS, this::printTrace).isDisposed();
-            if (ensFetchProgressBar != null) {
-                ensFetchProgressBar.setVisibility(View.VISIBLE);
-            }
-        }
-        else
-        {
+        } else {
             updateAddressWithENS(displayName);
         }
     }
 
-    private void printTrace(Throwable throwable) {
-        if (ensFetchProgressBar != null) {
-            ensFetchProgressBar.setVisibility(View.GONE);
+    private void copyText(String message) {
+        ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("wallet-address", message);
+        if (clipboard != null) {
+            clipboard.setPrimaryClip(clip);
         }
+        Toast.makeText(this, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
+    }
+
+    private void printTrace(Throwable throwable) {
         updateAddressWithENS(wallet.ENSname); // JB: if there's any issue then fall back to cached name
     }
 
-    private void showContract()
-    {
+    private void showContract() {
         getInfo();
         setContentView(R.layout.activity_contract_address);
         initViews();
@@ -287,32 +263,18 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         onWindowFocusChanged(true);
     }
 
-    private void updateAddressWithENS(String ensName)
-    {
-        if (ensFetchProgressBar != null) {
-            ensFetchProgressBar.setVisibility(View.GONE);
-        }
-
-        if (!TextUtils.isEmpty(ensName))
-        {
+    private void updateAddressWithENS(String ensName) {
+        if (!TextUtils.isEmpty(ensName)) {
             displayName = ensName;
-            copyWalletName.setVisibility(View.VISIBLE);
-            copyWalletName.setText(ensName);
-        }
-        else
-        {
-            copyWalletName.setVisibility(View.GONE);
         }
     }
 
     ActivityResultLauncher<Intent> getNetwork = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == RESULT_OK)
-                {
+                if (result.getResultCode() == RESULT_OK) {
                     long networkId = result.getData().getLongExtra(C.EXTRA_CHAIN_ID, -1);
                     NetworkInfo info = viewModel.getNetworkByChain(networkId);
-                    if (info != null)
-                    {
+                    if (info != null) {
                         networkInfo = info;
                         getInfo();
                         token = null;
@@ -320,7 +282,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
                         setupPOSMode(info);
                     }
                 }
-    });
+            });
 
     private void selectNetwork() {
         Intent intent = new Intent(MyAddressActivity.this, SelectNetworkActivity.class);
@@ -330,26 +292,20 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus)
-    {
+    public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus)
-        {
-            if (amountInput == null)
-            {
+        if (hasFocus) {
+            if (amountInput == null) {
                 getInfo();
                 qrImageView.setImageBitmap(QRUtils.createQRImage(this, displayAddress, screenWidth));
 //                qrImageView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in)); //<-- check if this is causing the load delay (it was)
-            }
-            else
-            {
+            } else {
                 amountInput.setupToken(token, viewModel.getAssetDefinitionService(), viewModel.getTokenService(), this);
             }
         }
     }
 
-    private void getInfo()
-    {
+    private void getInfo() {
         if (viewModel == null) initViewModel();
         wallet = getIntent().getParcelableExtra(C.Key.WALLET);
         long chainId = getIntent().getLongExtra(C.EXTRA_CHAIN_ID, EthereumNetworkBase.MAINNET_ID);
@@ -357,41 +313,32 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         long fallBackChainId = token != null ? token.tokenInfo.chainId : MAINNET_ID;
         overrideNetwork = getIntent().getLongExtra(OVERRIDE_DEFAULT, fallBackChainId);
 
-        if (wallet == null)
-        {
+        if (wallet == null) {
             //have no address. Can only quit the activity
             finish();
         }
     }
 
     @Override
-    public void amountReady(BigDecimal value, BigDecimal gasFee)
-    {
+    public void amountReady(BigDecimal value, BigDecimal gasFee) {
         // unimplemented
     }
 
     @Override
-    public void updateCryptoAmount(BigDecimal weiAmount)
-    {
-        if (token != null)
-        {
+    public void updateCryptoAmount(BigDecimal weiAmount) {
+        if (token != null) {
             //generate payment request link
             //EIP681 format
             Timber.d("AMT: %s", weiAmount.toString());
             EIP681Request request;
             String eip681String;
-            if (token.isEthereum())
-            {
+            if (token.isEthereum()) {
                 request = new EIP681Request(displayAddress, networkInfo.chainId, weiAmount);
                 eip681String = request.generateRequest();
-            }
-            else if (token.isERC20())
-            {
+            } else if (token.isERC20()) {
                 request = new EIP681Request(displayAddress, token.getAddress(), networkInfo.chainId, weiAmount);
                 eip681String = request.generateERC20Request();
-            }
-            else
-            {
+            } else {
                 return;
             }
             qrImageView.setImageBitmap(QRUtils.createQRImage(this, eip681String, screenWidth));

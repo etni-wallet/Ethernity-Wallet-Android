@@ -3,6 +3,7 @@ package com.alphawallet.app.util;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
@@ -23,13 +24,18 @@ public class QRUtils {
                     null);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
-            int[] allpixels = new int[bitmap.getHeight() * bitmap.getWidth()];
-            bitmap.getPixels(allpixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
-            for (int i = 6; i < 9; i++) {
-                allpixels[i] = context.getColor(R.color.ethernity_blue); // your rgb color
-            }
+            int[] allPixels = new int[bitmap.getHeight() * bitmap.getWidth()];
+            bitmap.getPixels(allPixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+//            for (int i = 0; i < bitmap.getHeight(); i++) {
+//                for (int j = i; i < bitmap.getWidth(); j++) {
+//                    int pixel = bitmap.getPixel(i, j);
+//                    if(pixel == Color.BLACK){
+//                        allPixels[i] = context.getColor(R.color.ethernity_blue); // your rgb color
+//                    }
+//                }
+//            }
             int qrCodeDimension = dpToPx(imageSize);
-            bitmap.setPixels(allpixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+            bitmap.setPixels(allPixels, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
             return Bitmap.createScaledBitmap(bitmap, qrCodeDimension, qrCodeDimension, false);
         } catch (Exception e) {
             Toast.makeText(context, context.getString(R.string.error_fail_generate_qr), Toast.LENGTH_SHORT)

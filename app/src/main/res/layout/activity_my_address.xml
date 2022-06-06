@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,8 +15,7 @@
         android:layout_gravity="center_horizontal"
         android:animateLayoutChanges="true"
         android:paddingLeft="@dimen/cozy_20"
-        android:paddingRight="@dimen/cozy_20"
-        android:background="@color/ethernity_tab_selected">
+        android:paddingRight="@dimen/cozy_20">
 
         <ImageView
             android:id="@+id/qr_image"
@@ -27,77 +25,48 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/ic_action_qrx"/>
+            tools:src="@drawable/ic_action_qrx" />
 
         <ImageView
             android:id="@+id/address_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_qr_logo"
+            android:background="@drawable/background_white"
             android:paddingStart="4dp"
             android:paddingTop="16dp"
             android:paddingEnd="4dp"
             android:paddingBottom="16dp"
-            android:background="@drawable/background_white"
-            app:layout_constraintTop_toTopOf="@id/qr_image"
+            android:src="@drawable/ic_qr_logo"
             app:layout_constraintBottom_toBottomOf="@id/qr_image"
+            app:layout_constraintEnd_toEndOf="@id/qr_image"
             app:layout_constraintStart_toStartOf="@id/qr_image"
-            app:layout_constraintEnd_toEndOf="@id/qr_image"/>
+            app:layout_constraintTop_toTopOf="@id/qr_image" />
 
         <TextView
             android:id="@+id/copy_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:lines="1"
-            custom:bold="true"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            app:layout_constraintTop_toBottomOf="@id/qr_image"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <LinearLayout
-            android:id="@+id/copy_address_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/base_24"
-            android:animateLayoutChanges="true"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center"
+            android:lines="1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/qr_image">
+            app:layout_constraintTop_toBottomOf="@id/qr_image" />
 
-            <ProgressBar
-                android:id="@+id/ens_fetch_progress"
-                android:layout_width="@dimen/base_24"
-                android:layout_height="@dimen/base_24"
-                android:visibility="gone"
-                tools:visibility="visible" />
 
-            <com.alphawallet.app.widget.CopyTextView
-                android:id="@+id/copy_wallet_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:visibility="gone"
-                custom:bold="true"
-                custom:removePadding="true"
-                custom:text="@string/ethereum"
-                tools:visibility="visible" />
-
-            <com.alphawallet.app.widget.CopyTextView
-                android:id="@+id/copy_address_extra"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:lines="1"
-                custom:bold="true" />
-
-        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/action_copy"
+            style="@style/Aw.Component.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
+            android:text="@string/copy_wallet_address"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

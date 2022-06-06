@@ -111,7 +111,7 @@
     <string name="all">All</string>
     <string name="currency">Currencies</string>
     <string name="advanced">Advanced Options</string>
-    <string name="copy_wallet_address">Show/Copy \n Wallet Address</string>
+    <string name="copy_wallet_address">Copy Wallet Address</string>
     <string name="rename_wallet">Rename Wallet</string>
     <string name="rename_not_complete">Please enter a valid Wallet name</string>
     <string name="delete_wallet_title">Are you sure you would like to \n remove this wallet from the app?</string>

@@ -47,6 +47,8 @@ import timber.log.Timber;
 import static com.alphawallet.app.C.GAS_LIMIT_MIN;
 import static com.alphawallet.app.repository.TokensRealmSource.databaseKey;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 /**
  * Created by JB on 10/11/2020.
  */
@@ -236,9 +238,7 @@ public class InputAmount extends LinearLayout
 
     private void setupViewListeners()
     {
-        LinearLayout clickMore = findViewById(R.id.layout_more_click);
-
-        clickMore.setOnClickListener(v -> {
+        findViewById(R.id.text_token_symbol).setOnClickListener(v -> {
             //on down caret clicked - switch to fiat currency equivalent if there's a ticker
             if (getTickerQuery() == null) return;
 
@@ -464,8 +464,8 @@ public class InputAmount extends LinearLayout
             boolean showChainName = a.getBoolean(R.styleable.InputView_showChainName, true);
             boolean currencyMode = a.getBoolean(R.styleable.InputView_currencyMode, false);
             int headerTextId = a.getResourceId(R.styleable.InputView_label, R.string.amount);
-            header.setVisibility(showHeader ? View.VISIBLE : View.GONE);
-            allFunds.setVisibility(showAllFunds ? View.VISIBLE : View.GONE);
+            header.setVisibility(View.GONE);
+            allFunds.setVisibility(View.GONE);
             header.setText(headerTextId);
             header.getChainName().setVisibility(showChainName ? View.VISIBLE : View.GONE);
             if (currencyMode)

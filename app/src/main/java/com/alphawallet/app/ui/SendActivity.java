@@ -69,8 +69,7 @@ import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 @AndroidEntryPoint
-public class SendActivity extends BaseActivity implements AmountReadyCallback, StandardFunctionInterface, AddressReadyCallback, ActionSheetCallback
-{
+public class SendActivity extends BaseActivity implements AmountReadyCallback, StandardFunctionInterface, AddressReadyCallback, ActionSheetCallback {
     private static final BigDecimal NEGATIVE = BigDecimal.ZERO.subtract(BigDecimal.ONE);
 
     SendViewModel viewModel;
@@ -95,8 +94,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
     private Disposable calcGasCost;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState)
-    {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send);
         toolbar();
@@ -117,43 +115,36 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         sendGasPrice = BigDecimal.ZERO;
         sendAmount = NEGATIVE;
 
-        if (!checkTokenValidity(currentChain, contractAddress))
-        {
+        if (!checkTokenValidity(currentChain, contractAddress)) {
             return;
         }
 
         setTitle(getString(R.string.action_send_tkn, token.getShortName()));
         setupTokenContent();
 
-        if (result != null)
-        {
+        if (result != null) {
             //restore payment request
             validateEIP681Request(result, true);
         }
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
 
         QRResult result = getIntent().getParcelableExtra(C.EXTRA_AMOUNT);
 
-        if (result != null && (result.type == EIP681Type.PAYMENT || result.type == EIP681Type.TRANSFER))
-        {
-            handleClick("", R.string.action_next);
+        if (result != null && (result.type == EIP681Type.PAYMENT || result.type == EIP681Type.TRANSFER)) {
+            handleClick("", R.string.action_send);
         }
     }
 
-    private boolean checkTokenValidity(long currentChain, String contractAddress)
-    {
-        if (token == null || token.tokenInfo == null)
-        {
+    private boolean checkTokenValidity(long currentChain, String contractAddress) {
+        if (token == null || token.tokenInfo == null) {
             //bad token - try to load from service
             token = viewModel.getToken(currentChain, contractAddress);
 
-            if (token == null)
-            {
+            if (token == null) {
                 //TODO: possibly invoke token finder in tokensService
                 finish();
             }
@@ -162,26 +153,20 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         return (token != null);
     }
 
-    private void onBack()
-    {
+    private void onBack() {
         finish();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if (item.getItemId() == android.R.id.home)
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
             onBack();
-        }
-        else if (item.getItemId() == R.id.action_show_contract)
-        {
+        } else if (item.getItemId() == R.id.action_show_contract) {
             viewModel.showContractInfo(this, wallet, token);
         }
 
@@ -189,57 +174,42 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         onBack();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Operation taskCode = null;
-        if (requestCode >= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS && requestCode <= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS + 10)
-        {
+        if (requestCode >= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS && requestCode <= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS + 10) {
             taskCode = Operation.values()[requestCode - SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS];
             requestCode = SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS;
         }
 
-        if (requestCode >= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS && requestCode <= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS + 10)
-        {
+        if (requestCode >= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS && requestCode <= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS + 10) {
             if (confirmationDialog != null && confirmationDialog.isShowing())
                 confirmationDialog.completeSignRequest(resultCode == RESULT_OK);
-        }
-        else if (requestCode == C.BARCODE_READER_REQUEST_CODE)
-        {
-            switch (resultCode)
-            {
+        } else if (requestCode == C.BARCODE_READER_REQUEST_CODE) {
+            switch (resultCode) {
                 case Activity.RESULT_OK:
-                    if (data != null)
-                    {
+                    if (data != null) {
                         String qrCode = data.getStringExtra(C.EXTRA_QR_CODE);
 
                         //if barcode is still null, ensure we don't GPF
-                        if (qrCode == null)
-                        {
+                        if (qrCode == null) {
                             //Toast.makeText(this, R.string.toast_qr_code_no_address, Toast.LENGTH_SHORT).show();
                             displayScanError();
                             return;
-                        }
-                        else if (qrCode.startsWith("wc:"))
-                        {
+                        } else if (qrCode.startsWith("wc:")) {
                             startWalletConnect(qrCode);
-                        }
-                        else
-                        {
+                        } else {
 
                             QRParser parser = QRParser.getInstance(EthereumNetworkBase.extraChains());
                             QRResult result = parser.parse(qrCode);
                             String extracted_address = null;
-                            if (result != null)
-                            {
+                            if (result != null) {
                                 extracted_address = result.getAddress();
-                                switch (result.getProtocol())
-                                {
+                                switch (result.getProtocol()) {
                                     case "address":
                                         addressInput.setAddress(extracted_address);
                                         break;
@@ -250,12 +220,10 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
                                     default:
                                         break;
                                 }
-                            }
-                            else //try magiclink
+                            } else //try magiclink
                             {
                                 ParseMagicLink magicParser = new ParseMagicLink(new CryptoFunctions(), EthereumNetworkRepository.extraChains());
-                                try
-                                {
+                                try {
                                     if (magicParser.parseUniversalLink(qrCode).chainId > 0) //see if it's a valid link
                                     {
                                         //let's try to import the link
@@ -263,15 +231,12 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
                                         finish();
                                         return;
                                     }
-                                }
-                                catch (SalesOrderMalformed e)
-                                {
+                                } catch (SalesOrderMalformed e) {
                                     e.printStackTrace();
                                 }
                             }
 
-                            if (extracted_address == null)
-                            {
+                            if (extracted_address == null) {
                                 displayScanError();
                             }
                         }
@@ -286,15 +251,12 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
                     ));
                     break;
             }
-        }
-        else
-        {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-    private void startWalletConnect(String qrCode)
-    {
+    private void startWalletConnect(String qrCode) {
         Intent intent = new Intent(this, WalletConnectActivity.class);
         intent.putExtra("qrCode", qrCode);
         intent.putExtra(C.EXTRA_CHAIN_ID, token.tokenInfo.chainId);
@@ -303,8 +265,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         finish();
     }
 
-    private void showCameraDenied()
-    {
+    private void showCameraDenied() {
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
         dialog = new AWalletAlertDialog(this);
         dialog.setTitle(R.string.title_dialog_error);
@@ -317,8 +278,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         dialog.show();
     }
 
-    private void showTokenFetch()
-    {
+    private void showTokenFetch() {
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
         dialog = new AWalletAlertDialog(this);
         dialog.setTitle(R.string.searching_for_token);
@@ -328,8 +288,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         dialog.show();
     }
 
-    private void calculateEstimateDialog()
-    {
+    private void calculateEstimateDialog() {
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
         dialog = new AWalletAlertDialog(this);
         dialog.setTitle(getString(R.string.calc_gas_limit));
@@ -339,24 +298,19 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         dialog.show();
     }
 
-    private void validateEIP681Request(QRResult result, boolean overrideNetwork)
-    {
+    private void validateEIP681Request(QRResult result, boolean overrideNetwork) {
         if (dialog != null) dialog.dismiss();
         //check chain
-        if (result == null)
-        {
+        if (result == null) {
             displayScanError();
             return;
         }
 
         NetworkInfo info = viewModel.getNetworkInfo(result.chainId);
-        if (info == null)
-        {
+        if (info == null) {
             displayScanError();
             return;
-        }
-        else if (result.type != EIP681Type.ADDRESS && result.chainId != token.tokenInfo.chainId && token.isEthereum())
-        {
+        } else if (result.type != EIP681Type.ADDRESS && result.chainId != token.tokenInfo.chainId && token.isEthereum()) {
             //Display chain change warning
             currentResult = result;
             showChainChangeDialog(result.chainId);
@@ -365,8 +319,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
 
         TextView sendText = findViewById(R.id.text_payment_request);
 
-        switch (result.type)
-        {
+        switch (result.type) {
             case ADDRESS:
                 addressInput.setAddress(result.getAddress());
                 break;
@@ -385,14 +338,11 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
 
             case TRANSFER:
                 Token resultToken = viewModel.getToken(result.chainId, result.getAddress());
-                if (resultToken == null)
-                {
+                if (resultToken == null) {
                     currentResult = result;
                     showTokenFetch();
                     viewModel.fetchToken(result.chainId, result.getAddress(), wallet.address);
-                }
-                else if (resultToken.isERC20())
-                {
+                } else if (resultToken.isERC20()) {
                     //ERC20 send request
                     token = resultToken;
                     setupTokenContent();
@@ -419,8 +369,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         }
     }
 
-    private void showChainChangeDialog(long chainId)
-    {
+    private void showChainChangeDialog(long chainId) {
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
         dialog = new AWalletAlertDialog(this);
         dialog.setIcon(AWalletAlertDialog.WARNING);
@@ -444,8 +393,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         dialog.show();
     }
 
-    private void displayScanError()
-    {
+    private void displayScanError() {
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
         dialog = new AWalletAlertDialog(this);
         dialog.setIcon(AWalletAlertDialog.ERROR);
@@ -455,8 +403,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         dialog.show();
     }
 
-    private void displayScanError(int titleId, String message)
-    {
+    private void displayScanError(int titleId, String message) {
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
         dialog = new AWalletAlertDialog(this);
         dialog.setIcon(AWalletAlertDialog.ERROR);
@@ -468,10 +415,8 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
     }
 
     @Override
-    protected void onDestroy()
-    {
-        if (dialog != null && dialog.isShowing())
-        {
+    protected void onDestroy() {
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
         super.onDestroy();
@@ -483,8 +428,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
             addressInput.setEnsNodeNotSyncCallback(null); // prevent leak by removing reference to activity method
     }
 
-    private void setupTokenContent()
-    {
+    private void setupTokenContent() {
         amountInput = findViewById(R.id.input_amount);
         amountInput.setupToken(token, viewModel.getAssetDefinitionService(), viewModel.getTokenService(), this);
         addressInput = findViewById(R.id.input_address);
@@ -494,14 +438,13 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         addressInput.setEnsNodeNotSyncCallback(this::showNodeNotSyncSheet);  // callback to invoke if node not synced
         FunctionButtonBar functionBar = findViewById(R.id.layoutButtons);
         functionBar.revealButtons();
-        List<Integer> functions = new ArrayList<>(Collections.singletonList(R.string.action_next));
+        List<Integer> functions = new ArrayList<>(Collections.singletonList(R.string.action_send));
         functionBar.setupFunctions(this, functions);
         viewModel.startGasCycle(token.tokenInfo.chainId);
     }
 
     @Override
-    public void amountReady(BigDecimal value, BigDecimal gasPrice)
-    {
+    public void amountReady(BigDecimal value, BigDecimal gasPrice) {
         //validate that we have sufficient balance
         if ((token.isEthereum() && token.balance.subtract(value).compareTo(BigDecimal.ZERO) > 0) // if sending base ethereum then check we have more than just the value
                 || (token.getBalanceRaw().subtract(value).compareTo(BigDecimal.ZERO) >= 0)) // contract token, check sufficient token balance (gas widget will check sufficient gas)
@@ -509,9 +452,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
             sendAmount = value;
             sendGasPrice = gasPrice;
             calculateTransactionCost();
-        }
-        else
-        {
+        } else {
             sendAmount = NEGATIVE;
             //insufficient balance
             amountInput.showError(true, 0);
@@ -521,11 +462,9 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
     }
 
     @Override
-    public void handleClick(String action, int actionId)
-    {
+    public void handleClick(String action, int actionId) {
         //clicked the next button
-        if (actionId == R.string.action_next)
-        {
+        if (actionId == R.string.action_send) {
             KeyboardUtils.hideKeyboard(getCurrentFocus());
             amountInput.getInputAmount();
             addressInput.getAddress();
@@ -533,28 +472,22 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
     }
 
     @Override
-    public void addressReady(String address, String ensName)
-    {
+    public void addressReady(String address, String ensName) {
         sendAddress = address;
         ensAddress = ensName;
-        if (!Utils.isAddressValid(address))
-        {
+        if (!Utils.isAddressValid(address)) {
             //show address error
             addressInput.setError(getString(R.string.error_invalid_address));
-        }
-        else
-        {
+        } else {
             calculateTransactionCost();
         }
     }
 
-    private void calculateTransactionCost()
-    {
+    private void calculateTransactionCost() {
         if ((calcGasCost != null && !calcGasCost.isDisposed()) ||
                 (confirmationDialog != null && confirmationDialog.isShowing())) return;
 
-        if (sendAmount.compareTo(NEGATIVE) > 0 && Utils.isAddressValid(sendAddress))
-        {
+        if (sendAmount.compareTo(NEGATIVE) > 0 && Utils.isAddressValid(sendAddress)) {
             final String txSendAddress = sendAddress;
             sendAddress = null;
             //either sending base chain or ERC20 tokens.
@@ -572,8 +505,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         }
     }
 
-    private void handleError(Throwable throwable, final byte[] transactionBytes, final String txSendAddress, final String resolvedAddress)
-    {
+    private void handleError(Throwable throwable, final byte[] transactionBytes, final String txSendAddress, final String resolvedAddress) {
         Timber.w(throwable);
         checkConfirm(BigInteger.ZERO, transactionBytes, txSendAddress, resolvedAddress);
     }
@@ -581,8 +513,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
     /**
      * Called to check if we're ready to send user to confirm screen / activity sheet popup
      */
-    private void checkConfirm(final BigInteger sendGasLimit, final byte[] transactionBytes, final String txSendAddress, final String resolvedAddress)
-    {
+    private void checkConfirm(final BigInteger sendGasLimit, final byte[] transactionBytes, final String txSendAddress, final String resolvedAddress) {
         BigInteger ethValue = token.isEthereum() ? sendAmount.toBigInteger() : BigInteger.ZERO;
         long leafCode = amountInput.isSendAll() ? -2 : -1;
         Web3Transaction w3tx = new Web3Transaction(
@@ -595,12 +526,9 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
                 Numeric.toHexString(transactionBytes),
                 leafCode);
 
-        if (sendGasLimit.equals(BigInteger.ZERO))
-        {
+        if (sendGasLimit.equals(BigInteger.ZERO)) {
             estimateError(w3tx, transactionBytes, txSendAddress, resolvedAddress);
-        }
-        else
-        {
+        } else {
             if (dialog != null && dialog.isShowing()) dialog.dismiss();
             confirmationDialog = new ActionSheetDialog(this, w3tx, token, ensAddress,
                     resolvedAddress, viewModel.getTokenService(), this);
@@ -616,23 +544,19 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
      * @param callback
      */
     @Override
-    public void getAuthorisation(SignAuthenticationCallback callback)
-    {
+    public void getAuthorisation(SignAuthenticationCallback callback) {
         viewModel.getAuthentication(this, wallet, callback);
     }
 
     @Override
-    public void sendTransaction(Web3Transaction finalTx)
-    {
+    public void sendTransaction(Web3Transaction finalTx) {
         viewModel.sendTransaction(finalTx, wallet, token.tokenInfo.chainId);
     }
 
     @Override
-    public void dismissed(String txHash, long callbackId, boolean actionCompleted)
-    {
+    public void dismissed(String txHash, long callbackId, boolean actionCompleted) {
         //ActionSheet was dismissed
-        if (!TextUtils.isEmpty(txHash))
-        {
+        if (!TextUtils.isEmpty(txHash)) {
             Intent intent = new Intent();
             intent.putExtra(C.EXTRA_TXHASH, txHash);
             setResult(RESULT_OK, intent);
@@ -645,25 +569,21 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
             result -> confirmationDialog.setCurrentGasIndex(result));
 
     @Override
-    public ActivityResultLauncher<Intent> gasSelectLauncher()
-    {
+    public ActivityResultLauncher<Intent> gasSelectLauncher() {
         return getGasSettings;
     }
 
     @Override
-    public void notifyConfirm(String mode)
-    {
+    public void notifyConfirm(String mode) {
         viewModel.actionSheetConfirm(mode);
     }
 
-    private void txWritten(TransactionData transactionData)
-    {
+    private void txWritten(TransactionData transactionData) {
         confirmationDialog.transactionWritten(transactionData.txHash);
     }
 
     //Transaction failed to be sent
-    private void txError(Throwable throwable)
-    {
+    private void txError(Throwable throwable) {
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
         dialog = new AWalletAlertDialog(this);
         dialog.setIcon(ERROR);
@@ -678,8 +598,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         confirmationDialog.dismiss();
     }
 
-    private void estimateError(final Web3Transaction w3tx, final byte[] transactionBytes, final String txSendAddress, final String resolvedAddress)
-    {
+    private void estimateError(final Web3Transaction w3tx, final byte[] transactionBytes, final String txSendAddress, final String resolvedAddress) {
         if (dialog != null && dialog.isShowing()) dialog.dismiss();
         dialog = new AWalletAlertDialog(this);
         dialog.setIcon(WARNING);
@@ -699,11 +618,9 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
         dialog.show();
     }
 
-    void showNodeNotSyncSheet()
-    {
+    void showNodeNotSyncSheet() {
         Timber.d("showNodeNotSync: ");
-        try
-        {
+        try {
             if (alertDialog != null && alertDialog.isShowing()) alertDialog.dismiss();
             alertDialog = new AWalletAlertDialog(this, R.drawable.ic_warning);
             alertDialog.setTitle(R.string.title_ens_lookup_warning);
@@ -721,9 +638,7 @@ public class SendActivity extends BaseActivity implements AmountReadyCallback, S
                 alertDialog.dismiss();
             });
             alertDialog.show();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Timber.e(e);
         }
     }

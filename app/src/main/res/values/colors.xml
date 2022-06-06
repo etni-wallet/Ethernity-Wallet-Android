@@ -70,4 +70,5 @@
     <color name="surface_faded">@color/translucent_light</color>
 
     <color name="ethernity_background_gray">@color/ethernity_gray</color>
+    <color name="ethernity_hint">#AAAAAA</color>
 </resources>

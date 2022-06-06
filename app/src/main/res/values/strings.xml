@@ -392,7 +392,7 @@
     <string name="check_feemaster">Checking for gas free service</string>
     <string name="erc20_details">ERC20 Details</string>
     <string name="title_send_activity">Send</string>
-    <string name="available">Available</string>
+    <string name="available">Available:</string>
     <string name="usd_label">US$</string>
     <string name="recent_transactions">Recent Transactions</string>
     <string name="no_recent_transactions">You have no transactions yet</string>
@@ -721,7 +721,7 @@
     <string name="popular_tokens">Popular Tokens</string>
     <string name="unable_to_get_biometrics">Unable to obtain Biometric unlock</string>
     <string name="all_funds">All Funds</string>
-    <string name="recipient_address">Recipient\'s Address</string>
+    <string name="recipient_address">Recipient Address</string>
 
     <string name="address_separator" translatable="false">%1$s | %2$s</string>
     <string name="bracketed" translatable="false">(%1$s)</string>
@@ -954,4 +954,7 @@ Dictumst semper at nibh scelerisque vitae neque diam diam venenatis. Tortor lore
 </string>
     <string name="ethernity_education_date">February 19, 2020 5mins read</string>
     <string name="ethernity_education_staking">How to stake your ETNY tokens</string>
+    <string name="zero">000.00</string>
+    <string name="amount_to_send">amount to send</string>
+    <string name="enter_address_or_scan_code">Enter Address or Scan Code</string>
 </resources>

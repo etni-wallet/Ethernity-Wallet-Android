@@ -46,12 +46,11 @@
                     custom:show_allFunds="true"
                     custom:show_header="true" />
 
-                <View style="@style/Aw.Component.Separator" />
-
                 <com.alphawallet.app.widget.InputAddress
                     android:id="@+id/input_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
                     android:layout_marginBottom="@dimen/standard_16"
                     android:visibility="visible"
                     custom:ens="true"
@@ -67,7 +66,8 @@
             android:id="@+id/layoutButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="32dp"/>
 
     </RelativeLayout>
 </LinearLayout>

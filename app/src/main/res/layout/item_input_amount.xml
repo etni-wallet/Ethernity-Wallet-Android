@@ -1,154 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View style="@style/Aw.Component.Separator" />
-
     <com.alphawallet.app.widget.StandardHeader
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:headerText="@string/amount" />
+        android:visibility="gone"
+        app:headerText="@string/amount"
+        app:layout_constraintBottom_toBottomOf="@id/text_available"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_available" />
 
-    <LinearLayout
+    <com.alphawallet.app.widget.TokenIcon
+        android:id="@+id/token_icon"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="@dimen/tiny_8"
+        android:foregroundGravity="center_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_ethereum" />
+
+    <TextView
+        android:id="@+id/text_token_symbol"
+        style="@style/Aw.Typography.Title.XLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textAllCaps="true"
+        android:textColor="@color/ethernity_blue"
+        android:textSize="27sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@id/token_icon"
+        app:layout_constraintTop_toBottomOf="@id/token_icon"
+        tools:text="ETH" />
+
+    <ImageView
+        android:id="@+id/expand_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/tiny_8"
+        android:src="@drawable/ic_expand_more"
+        app:layout_constraintBottom_toBottomOf="@id/text_token_symbol"
+        app:layout_constraintEnd_toEndOf="@id/token_icon"
+        app:layout_constraintTop_toTopOf="@id/text_token_symbol" />
+
+    <ProgressBar
+        android:id="@+id/gas_fetch_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:paddingTop="@dimen/tiny_8"
+        android:paddingBottom="@dimen/tiny_8"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/amount_to_send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="@string/amount_to_send"
+        android:textAllCaps="true"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/text_available"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/text_available" />
+
+    <TextView
+        android:id="@+id/input_available_txt"
+        style="@style/Aw.Typography.Sub.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="8dp"
+        android:paddingStart="2dp"
+        android:text="@string/available"
+        android:textColor="@color/ethernity_tab_selected"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@id/text_available"
+        app:layout_constraintTop_toBottomOf="@id/expand_more" />
+
+    <TextView
+        android:id="@+id/text_available"
+        style="@style/Aw.Typography.Sub.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/mini_4"
+        android:layout_marginEnd="32dp"
+        android:textColor="@color/ethernity_tab_selected"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@id/input_available_txt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/input_available_txt"
+        tools:text="4.4328" />
+
+    <com.alphawallet.app.ui.widget.entity.NumericInput
+        android:id="@+id/amount_entry"
+        style="@style/Aw.Typography.Title.XLarge"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/background_send_amount"
+        android:completionThreshold="1"
+        android:gravity="center"
+        android:hint="@string/zero"
+        android:imeOptions="actionDone"
+        android:inputType="numberDecimal"
+        android:lines="1"
+        android:maxLines="1"
+        android:paddingStart="@dimen/dp5"
+        android:paddingEnd="@dimen/dp5"
+        android:textColor="@color/ethernity_blue"
+        android:textColorHint="@color/ethernity_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/input_available_txt" />
+
+    <TextView
+        android:id="@+id/text_symbol"
+        style="@style/Aw.Typography.Sub.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/mini_4"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/amount_entry"
+        tools:text="ETH" />
+
+    <TextView
+        android:id="@+id/text_error"
+        style="@style/Aw.Typography.SemiBold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/standard_16"
-        android:paddingTop="@dimen/comfy_28"
-        android:paddingEnd="@dimen/standard_16"
-        android:paddingBottom="@dimen/cozy_20">
+        android:gravity="end"
+        android:text="@string/error_insufficient_funds"
+        android:textColor="?colorError"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_symbol"
+        tools:visibility="visible" />
 
-        <LinearLayout
-            android:id="@+id/layout_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/text_all_funds"
+        style="@style/Aw.Typography.Control"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:lines="1"
+        android:text="@string/all_funds"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_error" />
 
-            <LinearLayout
-                android:id="@+id/layout_more_click"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <com.alphawallet.app.widget.TokenIcon
-                    android:id="@+id/token_icon"
-                    android:layout_width="@dimen/token_icon"
-                    android:layout_height="@dimen/token_icon"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/tiny_8"
-                    android:foregroundGravity="center_vertical" />
-
-                <TextView
-                    android:id="@+id/text_token_symbol"
-                    style="@style/Aw.Typography.Title.XLarge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:textAllCaps="true"
-                    tools:text="ETH" />
-
-                <ImageView
-                    android:id="@+id/expand_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/tiny_8"
-                    android:src="@drawable/ic_expand_more"
-                    app:tint="?colorControlNormal" />
-
-            </LinearLayout>
-
-            <ProgressBar
-                android:id="@+id/gas_fetch_progress"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:paddingTop="@dimen/tiny_8"
-                android:paddingBottom="@dimen/tiny_8"
-                android:visibility="gone" />
-
-            <com.alphawallet.app.ui.widget.entity.NumericInput
-                android:id="@+id/amount_entry"
-                style="@style/Aw.Typography.Title.XLarge"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:completionThreshold="1"
-                android:gravity="end"
-                android:hint="0"
-                android:imeOptions="actionDone"
-                android:inputType="numberDecimal"
-                android:lines="1"
-                android:maxLines="1"
-                android:paddingStart="@dimen/dp5"
-                android:paddingEnd="@dimen/dp5" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/small_12"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                style="@style/Aw.Typography.Sub.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="2dp"
-                android:text="@string/available" />
-
-            <TextView
-                style="@style/Aw.Typography.Sub.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=":" />
-
-            <TextView
-                android:id="@+id/text_available"
-                style="@style/Aw.Typography.Sub.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/mini_4"
-                tools:text="4.4328" />
-
-            <TextView
-                android:id="@+id/text_symbol"
-                style="@style/Aw.Typography.Sub.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/mini_4"
-                tools:text="ETH" />
-
-            <TextView
-                android:id="@+id/text_error"
-                style="@style/Aw.Typography.SemiBold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:text="@string/error_insufficient_funds"
-                android:textColor="?colorError"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/text_all_funds"
-                style="@style/Aw.Typography.Control"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:lines="1"
-                android:text="@string/all_funds"
-                android:visibility="visible" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

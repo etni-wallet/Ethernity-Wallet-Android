@@ -192,8 +192,10 @@ dependencies {
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
     // Bar code scanning
-    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
     implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    implementation 'com.journeyapps:zxing-android-legacy:4.3.0'
+    implementation 'com.journeyapps:zxing-android-integration:4.3.0'
 
     // Sugar
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'

@@ -69,7 +69,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
     private AddressMode currentMode = AddressMode.MODE_ADDRESS;
     private long overrideNetwork;
     private int screenWidth;
-    private CopyTextView copyAddress;
+    private TextView copyAddress;
     private CopyTextView copyWalletName;
     private ProgressBar ensFetchProgressBar;
 
@@ -110,7 +110,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
         toolbar();
         layoutInputAmount = findViewById(R.id.layout_define_request);
         qrImageView = findViewById(R.id.qr_image);
-        qrImageView.setBackgroundResource(R.color.surface);
+        qrImageView.setBackgroundResource(R.color.ethernity_blue);
         ensFetchProgressBar = findViewById(R.id.ens_fetch_progress);
 
         if (viewModel == null) initViewModel();
@@ -339,7 +339,7 @@ public class MyAddressActivity extends BaseActivity implements AmountReadyCallba
             {
                 getInfo();
                 qrImageView.setImageBitmap(QRUtils.createQRImage(this, displayAddress, screenWidth));
-                qrImageView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in)); //<-- check if this is causing the load delay (it was)
+//                qrImageView.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in)); //<-- check if this is causing the load delay (it was)
             }
             else
             {

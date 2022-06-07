@@ -4,11 +4,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 
 import com.alphawallet.app.R;
 import com.alphawallet.app.entity.tokens.Token;
@@ -19,12 +20,12 @@ import com.alphawallet.app.ui.widget.OnTokenManageClickListener;
 import com.alphawallet.app.widget.TokenIcon;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-public class TokenListHolder extends BinderViewHolder<TokenCardMeta> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener
-{
+public class TokenListHolder extends BinderViewHolder<TokenCardMeta> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    final RelativeLayout layout;
+    final CardView layout;
     final TextView tokenName;
     final SwitchMaterial switchEnabled;
+    final ImageView imageIndicator;
     final TokenIcon tokenIcon;
     //need to cache this locally, unless we cache every string we need in the constructor
     private final AssetDefinitionService assetDefinition;
@@ -35,8 +36,7 @@ public class TokenListHolder extends BinderViewHolder<TokenCardMeta> implements 
     long chainId;
     private OnTokenManageClickListener onTokenClickListener;
 
-    public TokenListHolder(int resId, ViewGroup parent, AssetDefinitionService assetService, TokensService tokensService)
-    {
+    public TokenListHolder(int resId, ViewGroup parent, AssetDefinitionService assetService, TokensService tokensService) {
         super(resId, parent);
 
         this.assetDefinition = assetService;
@@ -46,20 +46,19 @@ public class TokenListHolder extends BinderViewHolder<TokenCardMeta> implements 
         tokenName = itemView.findViewById(R.id.name);
         switchEnabled = itemView.findViewById(R.id.switch_enabled);
         tokenIcon = itemView.findViewById(R.id.token_icon);
+        imageIndicator = itemView.findViewById(R.id.image_indicator);
 
         layout.setOnClickListener(this);
         itemView.setOnClickListener(this);
     }
 
     @Override
-    public void bind(@Nullable TokenCardMeta data, @NonNull Bundle addition)
-    {
+    public void bind(@Nullable TokenCardMeta data, @NonNull Bundle addition) {
         this.data = data;
         position = addition.getInt("position");
         token = tokensService.getToken(data.getChain(), data.getAddress());
 
-        if (token == null)
-        {
+        if (token == null) {
             bindEmptyText(data);
             return;
         }
@@ -71,18 +70,16 @@ public class TokenListHolder extends BinderViewHolder<TokenCardMeta> implements 
         switchEnabled.setOnCheckedChangeListener(this);
         tokenIcon.bindData(token, assetDefinition);
 
-        if (data.isEnabled)
-        {
+        if (data.isEnabled) {
             layout.setAlpha(1.0f);
-        }
-        else
-        {
-            layout.setAlpha(0.4f);
+            imageIndicator.setImageResource(R.drawable.ic_remove_circle);
+        } else {
+            layout.setAlpha(1.0f);
+            imageIndicator.setImageResource(R.drawable.ic_add_circle);
         }
     }
 
-    private void bindEmptyText(TokenCardMeta data)
-    {
+    private void bindEmptyText(TokenCardMeta data) {
         tokenIcon.setVisibility(View.GONE);
         tokenName.setText(data.balance);
         switchEnabled.setOnCheckedChangeListener(null);
@@ -91,21 +88,17 @@ public class TokenListHolder extends BinderViewHolder<TokenCardMeta> implements 
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         switchEnabled.setChecked(!switchEnabled.isChecked());
     }
 
-    public void setOnTokenClickListener(OnTokenManageClickListener onTokenClickListener)
-    {
+    public void setOnTokenClickListener(OnTokenManageClickListener onTokenClickListener) {
         this.onTokenClickListener = onTokenClickListener;
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked)
-    {
-        if (onTokenClickListener != null)
-        {
+    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+        if (onTokenClickListener != null) {
             onTokenClickListener.onTokenClick(token, position, isChecked);
         }
     }

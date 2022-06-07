@@ -939,6 +939,7 @@
     <string name="wallet_backup_successful">Wallet Backup Successful</string>
     <string name="create_or_import_wallet">Create or Import Wallet</string>
     <string name="search_for_assets">Search for assets</string>
+    <string name="search_for_a_token">Search for a token</string>
     <string name="search_for_transactions">Search for transactions</string>
     <string name="ethernity_education_tips">Safety Tip</string>
     <string name="ethernity_backup_reminder">Remember to backup your wallet, if your device gets lost or stolen you will lose all your funds, unless you made a backup</string>

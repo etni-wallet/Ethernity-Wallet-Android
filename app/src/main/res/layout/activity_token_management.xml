@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,49 +10,71 @@
 
     <include layout="@layout/layout_simple_toolbar" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_below="@+id/toolbar"
         android:id="@+id/layout_search_tokens"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="@dimen/massive_44"
         android:layout_marginStart="@dimen/tiny_8"
-        android:layout_marginTop="?actionBarSize"
+        android:layout_marginTop="@dimen/standard_16"
         android:layout_marginEnd="@dimen/tiny_8"
         android:layout_marginBottom="@dimen/standard_16"
         android:background="@drawable/background_round_search"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/background_round_search"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/search_icon"
             android:layout_width="@dimen/base_24"
             android:layout_height="@dimen/base_24"
-            android:layout_marginStart="@dimen/dp12"
-            android:src="@drawable/ic_search_small" />
+            android:layout_marginEnd="@dimen/small_12"
+            android:src="@drawable/ic_search"
+            app:layout_constraintBottom_toBottomOf="@id/layout_search_tokens"
+            app:layout_constraintEnd_toStartOf="@id/edit_search"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="?android:textColorSecondary" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_search"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp8"
-            android:layout_marginEnd="@dimen/dp16"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             android:background="@null"
-            android:hint="@string/search_for_tokens"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:hint="@string/search_for_a_token"
+            android:imeOptions="actionSearch"
             android:inputType="textFilter"
             android:maxLength="20"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:textColorHint="@color/ethernity_text_gray"
+            android:textSize="@dimen/sp15"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/layout_search_tokens"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
-
-    <View
-        android:id="@+id/search_separator"
-        style="@style/Aw.Component.Separator"
-        android:layout_below="@id/layout_search_tokens" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/token_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/layout_buttons"
-        android:layout_below="@id/search_separator"
+        android:layout_below="@id/layout_search_tokens"
+        android:background="@color/ethernity_background_gray"
         tools:listitem="@layout/item_manage_token" />
 
     <LinearLayout

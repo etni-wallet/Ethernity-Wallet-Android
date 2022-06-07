@@ -77,7 +77,7 @@ public class TokenManagementActivity extends BaseActivity implements TokenListAd
         saveButton = findViewById(R.id.btn_apply);
         search = findViewById(R.id.edit_search);
 
-        tokenList.addItemDecoration(new ListDivider(this));
+//        tokenList.addItemDecoration(new ListDivider(this));
         tokenList.setLayoutManager(new LinearLayoutManager(this));
 
         saveButton.setOnClickListener(v -> {

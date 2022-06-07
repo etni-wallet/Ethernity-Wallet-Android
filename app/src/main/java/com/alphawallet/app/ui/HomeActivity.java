@@ -659,7 +659,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     void backupWalletFail(String keyBackup, boolean hasNoLock) {
         //postpone backup until later
         Fragment settingsFragment = getFragment(SETTINGS);
-        if(settingsFragment instanceof NewSettingsFragment){
+        if (settingsFragment instanceof NewSettingsFragment) {
             ((NewSettingsFragment) settingsFragment).backupSeedSuccess(hasNoLock);
         }
         if (keyBackup != null) {
@@ -794,8 +794,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                 case EDUCATION:
                     return (BaseFragment) educationFragment;
             }
-        }
-        else return (BaseFragment) getSupportFragmentManager().getFragments().get(0);
+        } else return (BaseFragment) getSupportFragmentManager().getFragments().get(0);
     }
 
     @Override
@@ -844,15 +843,13 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     }
 
     @Override
-    public void resetTokens()
-    {
-        ((TransactionFragment) getFragment(ACTIVITY)).resetTokens();
+    public void resetTokens() {
+//        ((TransactionFragment) getFragment(ACTIVITY)).resetTokens();
         ((WalletFragment) getFragment(WALLET)).resetTokens();
     }
 
     @Override
-    public void resetTransactions()
-    {
+    public void resetTransactions() {
         ((TransactionFragment) getFragment(ACTIVITY)).resetTransactions();
     }
 
@@ -1031,8 +1028,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
                 }
                 break;
             case C.TERMINATE_ACTIVITY:
-                if (data != null && resultCode == Activity.RESULT_OK)
-                {
+                if (data != null && resultCode == Activity.RESULT_OK) {
                     ((TransactionFragment) getFragment(ACTIVITY)).scrollToTop();
                     showPage(ACTIVITY);
                 }

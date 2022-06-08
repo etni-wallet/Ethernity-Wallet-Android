@@ -93,7 +93,7 @@ public class BackupFlowActivity extends BaseActivity implements
         setContentView(R.layout.activity_backup);
         initViews();
         title.setText(R.string.backup_seed_phrase);
-        backupImage.setImageResource(R.drawable.ic_backup_wallet);
+//        backupImage.setImageResource(R.drawable.ic_backup_wallet);
         detail.setText(R.string.backup_seed_phrase_detail);
         functionButtonBar.setPrimaryButtonText(R.string.action_back_up_my_wallet);
         functionButtonBar.setPrimaryButtonClickListener(this);
@@ -103,7 +103,7 @@ public class BackupFlowActivity extends BaseActivity implements
         setContentView(R.layout.activity_backup);
         initViews();
         title.setText(R.string.what_is_keystore_json);
-        backupImage.setImageResource(R.drawable.ic_keystore);
+//        backupImage.setImageResource(R.drawable.ic_keystore);
         detail.setText(R.string.keystore_detail_text);
         state = ENTER_JSON_BACKUP;
         functionButtonBar.setPrimaryButtonText(R.string.export_keystore_json);

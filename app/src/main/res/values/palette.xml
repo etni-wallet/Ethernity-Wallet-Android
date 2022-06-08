@@ -61,4 +61,5 @@
 	<color name="ethernity_text_gray">#8D8D92</color>
 	<color name="ethernity_light">#E8E8E8</color>
 	<color name="ethernity_dots_unselected">#6e6e6e</color>
+	<color name="ethernity_backup_alert">#EE6A5F</color>
 </resources>

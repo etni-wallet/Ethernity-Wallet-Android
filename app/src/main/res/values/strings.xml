@@ -530,7 +530,7 @@
     <string name="action_close">Close</string>
     <string name="back_up_this_wallet">Back up this Wallet</string>
     <string name="not_locked">Not Locked</string>
-    <string name="back_up_now">Back up now!</string>
+    <string name="back_up_now">Backup now</string>
     <string name="key_secure">Do not share your key</string>
     <string name="lock_key_upgrade">Lock your seed phrase to increase security</string>
     <string name="upgrade_key_security_detail">AlphaWallet security is being upgraded to the best achievable. Lock your seed phrase with biometrics.</string>
@@ -958,4 +958,5 @@ Dictumst semper at nibh scelerisque vitae neque diam diam venenatis. Tortor lore
     <string name="zero">000.00</string>
     <string name="amount_to_send">amount to send</string>
     <string name="enter_address_or_scan_code">Enter Address or Scan Code</string>
+    <string name="wallet_backup_message">Don’t forget to \nbackup your wallet</string>
 </resources>

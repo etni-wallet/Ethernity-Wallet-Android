@@ -59,9 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/small_12"
-            android:src="@drawable/ic_arrow_right"
+            android:src="@drawable/ic_settings_arrow"
             android:visibility="gone"
-            app:tint="?colorControlNormal"
             tools:visibility="visible" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -79,5 +78,7 @@
 
     <View
         style="@style/Aw.Component.Separator"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="32dp"/>
 </RelativeLayout>

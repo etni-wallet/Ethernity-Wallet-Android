@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.alphawallet.app.R;
@@ -76,7 +77,7 @@ public class BackupKeyActivity extends BaseActivity implements
     private TextView verifyTextBox;
     private MaterialCardView verifyTextContainer;
     private String[] mnemonicArray;
-    private LinearLayout successOverlay;
+    private ConstraintLayout successOverlay;
     private final Handler handler = new Handler();
     private AWalletAlertDialog alertDialog;
     private String keystorePassword;
@@ -308,7 +309,7 @@ public class BackupKeyActivity extends BaseActivity implements
     public void run() {
         if (successOverlay == null) return;
         if (successOverlay.getAlpha() > 0) {
-            successOverlay.animate().alpha(0.0f).setDuration(500);
+            successOverlay.animate().setDuration(500);
             handler.postDelayed(this, 750);
         } else {
             successOverlay.setVisibility(View.GONE);

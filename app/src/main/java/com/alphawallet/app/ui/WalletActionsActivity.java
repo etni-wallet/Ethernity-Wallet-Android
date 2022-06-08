@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.alphawallet.app.R;
@@ -54,7 +55,7 @@ public class WalletActionsActivity extends BaseActivity implements Runnable, Vie
     private SettingsItemView deleteWalletSetting;
     private SettingsItemView backUpSetting;
     private InputAddress inputAddress;
-    private LinearLayout successOverlay;
+    private ConstraintLayout successOverlay;
     private AWalletAlertDialog aDialog;
     private final Handler handler = new Handler();
 

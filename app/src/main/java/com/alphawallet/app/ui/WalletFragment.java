@@ -75,11 +75,9 @@ import com.alphawallet.app.ui.widget.adapter.TokensAdapter;
 import com.alphawallet.app.ui.widget.adapter.WalletAdapter;
 import com.alphawallet.app.ui.widget.entity.AvatarWriteCallback;
 import com.alphawallet.app.ui.widget.entity.TokenTransferData;
-import com.alphawallet.app.ui.widget.entity.WarningData;
 import com.alphawallet.app.ui.widget.holder.TokenGridHolder;
 import com.alphawallet.app.ui.widget.holder.TokenHolder;
 import com.alphawallet.app.ui.widget.holder.WarningHolder;
-import com.alphawallet.app.util.LocaleUtils;
 import com.alphawallet.app.viewmodel.WalletViewModel;
 import com.alphawallet.app.viewmodel.WalletsViewModel;
 import com.alphawallet.app.widget.AWalletAlertDialog;
@@ -147,13 +145,14 @@ public class WalletFragment extends BaseFragment implements
     private AWalletAlertDialog aDialog;
     private String dialogError;
     private Dialog dialog;
+    private Wallet currentWallet;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_wallet, container, false);
-        LocaleUtils.setActiveLocale(getContext()); // Can't be placed before above line
+//        LocaleUtils.setActiveLocale(getContext()); // Can't be placed before above line
 
         if (CustomViewSettings.canAddTokens()) {
             toolbar(view, R.menu.menu_wallet, this::onMenuItemClick);
@@ -215,18 +214,19 @@ public class WalletFragment extends BaseFragment implements
                 this::onWalletAdd,
                 this::onWalletMenu,
                 this::onWalletSend,
-                this::onWalletReceive
+                this::onWalletReceive,
+                this::onWalletBackup
         );
         walletHorizontalList.setAdapter(walletAdapter);
         walletHorizontalList.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
-                Wallet wallet = walletAdapter.getWallet(position);
-                if (wallet != null) {
-                    assetsAdapter.setWalletAddress(wallet.address);
-                    walletsViewModel.setDefaultWallet(wallet);
-                    transactionFragment.onDefaultWallet(wallet);
+                currentWallet = walletAdapter.getWallet(position);
+                if (currentWallet != null) {
+                    assetsAdapter.setWalletAddress(currentWallet.address);
+                    walletsViewModel.setDefaultWallet(currentWallet);
+                    transactionFragment.onDefaultWallet(currentWallet);
                 }
                 refreshList();
             }
@@ -343,6 +343,11 @@ public class WalletFragment extends BaseFragment implements
         return null;
     }
 
+    private Unit onWalletBackup() {
+        startActivity(new Intent(getActivity(), BackupFlowActivity.class));
+        return null;
+    }
+
     private List<ActivityMeta> buildTransactionList(Realm realm, ActivityMeta[] activityItems) {
         //selectively filter the items with the following rules:
         // - allow through all normal transactions with no token transfer consequences
@@ -386,6 +391,9 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private void onFetchWallets(Wallet[] wallets) {
+        if(wallets.length == 0){
+            startActivity(new Intent(requireActivity(), SplashActivity.class));
+        }
         walletAdapter.setWallets(Arrays.asList(wallets));
     }
 
@@ -738,28 +746,14 @@ public class WalletFragment extends BaseFragment implements
 
     private void backupEvent(GenericWalletInteract.BackupLevel backupLevel) {
         if (assetsAdapter.hasBackupWarning()) return;
-
-        WarningData wData;
         switch (backupLevel) {
             case BACKUP_NOT_REQUIRED:
                 break;
             case WALLET_HAS_LOW_VALUE:
-                wData = new WarningData(this);
-                wData.title = getString(R.string.time_to_backup_wallet);
-                wData.detail = getString(R.string.recommend_monthly_backup);
-                wData.buttonText = getString(R.string.back_up_wallet_action, viewModel.getWalletAddr().substring(0, 5));
-                wData.colour = R.color.text_secondary;
-                wData.wallet = viewModel.getWallet();
-                assetsAdapter.addWarning(wData);
+                walletAdapter.setBackupWarning(currentWallet);
                 break;
             case WALLET_HAS_HIGH_VALUE:
-                wData = new WarningData(this);
-                wData.title = getString(R.string.wallet_not_backed_up);
-                wData.detail = getString(R.string.not_backed_up_detail);
-                wData.buttonText = getString(R.string.back_up_wallet_action, viewModel.getWalletAddr().substring(0, 5));
-                wData.colour = R.color.error;
-                wData.wallet = viewModel.getWallet();
-                assetsAdapter.addWarning(wData);
+                walletAdapter.setBackupWarning(currentWallet);
                 break;
         }
     }

@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.alphawallet.app.BuildConfig;
@@ -535,7 +536,7 @@ public class FunctionActivity extends BaseActivity implements FunctionCallback,
     @Override
     public void functionSuccess()
     {
-        LinearLayout successOverlay = findViewById(R.id.layout_success_overlay);
+        ConstraintLayout successOverlay = findViewById(R.id.layout_success_overlay);
         if (successOverlay != null) successOverlay.setVisibility(View.VISIBLE);
         handler.postDelayed(closer, 1000);
     }

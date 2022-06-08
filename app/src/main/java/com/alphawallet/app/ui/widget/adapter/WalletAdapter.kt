@@ -6,13 +6,16 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.alphawallet.app.R
 import com.alphawallet.app.entity.Wallet
 import com.alphawallet.app.widget.CopyTextView
+import com.google.android.material.textview.MaterialTextView
 
 
 class WalletAdapter(
@@ -20,6 +23,7 @@ class WalletAdapter(
     private val menuAction: () -> Unit,
     private val sendAction: () -> Unit,
     private val receiveAction: () -> Unit,
+    private val backupAction: () -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var wallets = emptyList<Wallet>()
@@ -60,7 +64,7 @@ class WalletAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is WalletCardViewHolder -> {
-                holder.bind(wallets[position], menuAction, sendAction, receiveAction)
+                holder.bind(wallets[position], menuAction, sendAction, receiveAction, backupAction)
             }
             is CreateOrImportWalletViewHolder -> {
                 holder.bind { addAction() }
@@ -75,6 +79,11 @@ class WalletAdapter(
             in 0..wallets.size - 2 -> WalletCardViewHolder.VIEW_TYPE
             else -> CreateOrImportWalletViewHolder.VIEW_TYPE
         }
+    }
+
+    fun setBackupWarning(wallet: Wallet) {
+        wallet.backupRequired = true
+        notifyItemChanged(wallets.indexOf(wallet))
     }
 }
 
@@ -91,12 +100,14 @@ class WalletCardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         itemView.findViewById<AppCompatImageView>(R.id.wallet_action_menu)
     private val walletActionSend = itemView.findViewById<TextView>(R.id.wallet_action_send)
     private val walletActionReceive = itemView.findViewById<TextView>(R.id.wallet_action_receive)
+    private val backupBanner = itemView.findViewById<ConstraintLayout>(R.id.backup_banner)
 
     fun bind(
         wallet: Wallet,
         menuAction: () -> Unit,
         sendAction: () -> Unit,
         receiveAction: () -> Unit,
+        backupAction: () -> Unit,
     ) {
         walletName.text = wallet.name.ifBlank { "MainAccount" }
         walletBalance.text = wallet.balance
@@ -105,6 +116,20 @@ class WalletCardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         walletActionMenu.setOnClickListener { menuAction() }
         walletActionSend.setOnClickListener { sendAction() }
         walletActionReceive.setOnClickListener { receiveAction() }
+        initBackupBanner(wallet, backupAction)
+    }
+
+    private fun initBackupBanner(wallet: Wallet, backupAction: () -> Unit) {
+        if (wallet.backupRequired)
+            backupBanner.visibility = View.VISIBLE
+        else
+            backupBanner.visibility = View.GONE
+        itemView.findViewById<TextView>(R.id.backup_now).setOnClickListener {
+            backupAction()
+        }
+        itemView.findViewById<AppCompatImageView>(R.id.close_backup).setOnClickListener {
+            backupBanner.visibility = View.GONE
+        }
     }
 
     private fun copyText() {

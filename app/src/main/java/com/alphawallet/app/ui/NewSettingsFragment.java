@@ -113,8 +113,8 @@ public class NewSettingsFragment extends BaseFragment
         viewModel = new ViewModelProvider(this)
                 .get(NewSettingsViewModel.class);
         viewModel.defaultWallet().observe(getViewLifecycleOwner(), this::onDefaultWallet);
-        viewModel.backUpMessage().observe(getViewLifecycleOwner(), this::backupWarning);
-        LocaleUtils.setActiveLocale(getContext());
+//        viewModel.backUpMessage().observe(getViewLifecycleOwner(), this::backupWarning);
+//        LocaleUtils.setActiveLocale(getContext());
 
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
@@ -128,9 +128,9 @@ public class NewSettingsFragment extends BaseFragment
 
         setInitialSettingsData(view);
 
-        initBackupWarningViews(view);
+//        initBackupWarningViews(view);
 
-        initNotificationView(view);
+//        initNotificationView(view);
 
         checkPendingUpdate(view);
 
@@ -245,13 +245,13 @@ public class NewSettingsFragment extends BaseFragment
                 .withListener(this::onChangeCurrencyClicked)
                 .build();
 
-//        biometricsSetting =
-//                new SettingsItemView.Builder(getContext())
-//                        .withType(SettingsItemView.Type.TOGGLE)
-//                        .withIcon(R.drawable.ic_settings_biometrics)
-//                        .withTitle(R.string.title_biometrics)
-//                        .withListener(this::onBiometricsSettingClicked)
-//                        .build();
+        biometricsSetting =
+                new SettingsItemView.Builder(getContext())
+                        .withType(SettingsItemView.Type.TOGGLE)
+                        .withIcon(R.drawable.ic_face_id)
+                        .withTitle(R.string.title_biometrics)
+                        .withListener(this::onBiometricsSettingClicked)
+                        .build();
 
         selectNetworksSetting =
                 new SettingsItemView.Builder(getContext())

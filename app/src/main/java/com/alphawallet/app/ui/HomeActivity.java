@@ -37,6 +37,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -104,7 +105,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     private Dialog dialog;
     private ViewPager2 viewPager;
     private final FragmentStateAdapter pager2Adapter;
-    private LinearLayout successOverlay;
+    private ConstraintLayout successOverlay;
     private ImageView successImage;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private HomeReceiver homeReceiver;
@@ -190,7 +191,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
 
         super.onCreate(savedInstanceState);
-        LocaleUtils.setActiveLocale(this);
+//        LocaleUtils.setActiveLocale(this);
         getLifecycle().addObserver(this);
         isForeground = true;
 
@@ -401,31 +402,7 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
         if (!viewModel.isFindWalletAddressDialogShown()) {
             //check if wallet was imported - in which case no need to display
             if (!walletImported) {
-                int background = ContextCompat.getColor(getApplicationContext(), R.color.translucent_dark);
-                int statusBarColor = getWindow().getStatusBarColor();
-                backupWalletDialog = TutoShowcase.from(this);
-                backupWalletDialog.setContentView(R.layout.showcase_backup_wallet)
-                        .setBackgroundColor(background)
-                        .onClickContentView(R.id.btn_close, view ->
-                        {
-                            getWindow().setStatusBarColor(statusBarColor);
-                            backupWalletDialog.dismiss();
-                        })
-                        .onClickContentView(R.id.showcase_layout, view ->
-                        {
-                            getWindow().setStatusBarColor(statusBarColor);
-                            backupWalletDialog.dismiss();
-                        })
-                        .on(R.id.settings_tab)
-                        .addCircle()
-                        .onClick(v ->
-                        {
-                            getWindow().setStatusBarColor(statusBarColor);
-                            backupWalletDialog.dismiss();
-                            showPage(SETTINGS);
-                        });
-                backupWalletDialog.show();
-                getWindow().setStatusBarColor(background);
+//                ((WalletFragment) getFragment(WALLET)).onShowBackup();
             }
             viewModel.setFindWalletAddressDialogShown(true);
         }
@@ -669,7 +646,6 @@ public class HomeActivity extends BaseNavigationActivity implements View.OnClick
     }
 
     void backupWalletSuccess(String keyBackup) {
-        ((NewSettingsFragment) getFragment(SETTINGS)).backupSeedSuccess(false);
         ((WalletFragment) getFragment(WALLET)).storeWalletBackupTime(keyBackup);
         removeSettingsBadgeKey(C.KEY_NEEDS_BACKUP);
         if (successImage != null) successImage.setImageResource(R.drawable.big_blue_tick);

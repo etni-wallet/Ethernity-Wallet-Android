@@ -22,6 +22,7 @@ public class Wallet implements Parcelable {
     public String balanceSymbol;
     public String ENSAvatar;
     public boolean isSynced;
+    public boolean backupRequired;
 
 	public Wallet(String address) {
 		this.address = address;
@@ -34,6 +35,7 @@ public class Wallet implements Parcelable {
 		this.walletCreationTime = 0;
 		this.balanceSymbol = "";
 		this.ENSAvatar = "";
+		backupRequired = false;
 	}
 
 	private Wallet(Parcel in)

@@ -288,7 +288,7 @@ public class DappBrowserFragment extends BaseFragment implements OnSignTransacti
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
-        LocaleUtils.setActiveLocale(getContext());
+//        LocaleUtils.setActiveLocale(getContext());
         super.onCreate(savedInstanceState);
         focusFlag = false;
 
@@ -331,7 +331,7 @@ public class DappBrowserFragment extends BaseFragment implements OnSignTransacti
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        LocaleUtils.setActiveLocale(getContext());
+//        LocaleUtils.setActiveLocale(getContext());
         loadOnInit = null;
         int webViewID = CustomViewSettings.minimiseBrowserURLBar() ? R.layout.fragment_webview_compact : R.layout.fragment_webview;
         View view = inflater.inflate(webViewID, container, false);

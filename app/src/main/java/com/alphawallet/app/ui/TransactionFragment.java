@@ -59,7 +59,7 @@ public class TransactionFragment extends BaseFragment implements View.OnClickLis
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        LocaleUtils.setActiveLocale(getContext());
+//        LocaleUtils.setActiveLocale(getContext());
         View view = inflater.inflate(R.layout.fragment_transactions, container, false);
         initViewModel();
         initViews(view);

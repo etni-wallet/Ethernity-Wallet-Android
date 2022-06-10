@@ -290,8 +290,8 @@ public class NewSettingsFragment extends BaseFragment
 
         walletSettingsLayout.addView(myAddressSetting, walletIndex++);
 
-        if (CustomViewSettings.canChangeWallets())
-            walletSettingsLayout.addView(changeWalletSetting, walletIndex++);
+//        if (CustomViewSettings.canChangeWallets())
+//            walletSettingsLayout.addView(changeWalletSetting, walletIndex++);
 
         walletSettingsLayout.addView(backUpWalletSetting, walletIndex++);
 
